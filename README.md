@@ -24,6 +24,25 @@ npm run dev      # http://localhost:5173
 npm run check    # everything CI checks, then a full build
 ```
 
+## Writing pages
+
+Front-matter carries `title`, a one-line `description` and `tags` (only the
+tags listed in `.vitepress/tags.ts`; an unknown one fails the build).
+
+Link between pages wiki-style; a link is resolved in the page's own language,
+and one that leads nowhere fails the build:
+
+| write | gives |
+|---|---|
+| `[[users]]` | the page whose path ends in `users`, titled with its title |
+| `[[use/users\|text]]` | that page with your own text |
+| `[[users#limits]]` | a heading on that page |
+| `[[~inbound]]` | a glossary term: a link with a hover card (`src/reference/glossary.md`, `## Term {#id}`) |
+
+Every page lists the pages that link to it and the pages sharing its tags.
+Search is per language and understands Persian spelling variants
+(ي/ی, ك/ک, the zero-width non-joiner, Persian digits) and Chinese words.
+
 ## Rules a change must pass
 
 - **Every page in every language.** A page added in English needs its `fa`,

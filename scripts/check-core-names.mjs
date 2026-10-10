@@ -95,8 +95,16 @@ for (const target of targets) {
   for (const file of files(target)) {
     if (file.endsWith('check-core-names.mjs')) continue
     if (/\/assets\/.*\.js$/.test(file)) continue
-    const lines = textOf(file, readFileSync(file, 'utf8')).split('\n')
-    lines.forEach((line, i) => {
+    // A paragraph is checked as one line: Markdown wraps sentences, and the
+    // client word may sit on the line before the name.
+    const blocks = []
+    let at = 1
+    for (const block of textOf(file, readFileSync(file, 'utf8')).split(/\n[ \t]*\n/)) {
+      blocks.push([at, block.replace(/\s*\n\s*/g, ' ')])
+      at += block.split('\n').length + 1
+    }
+    blocks.forEach(([lineNo, line]) => {
+      const i = lineNo - 1
       for (const re of REFUSED) {
         if (re.test(line)) problems.push(`${file}:${i + 1}: refused phrase ${re}: ${line.trim().slice(0, 160)}`)
       }

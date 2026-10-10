@@ -11,6 +11,7 @@
     "check": "npm run check:src && npm run build && npm run check:dist"
   },
   "devDependencies": {
+    "gray-matter": "4.0.3",
     "primeicons": "8.0.0",
     "vazirmatn": "33.0.3",
     "vitepress": "1.6.4",

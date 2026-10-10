@@ -20,7 +20,16 @@ export const locales: Record<string, Locale> = {
     lang: 'en',
     description: 'Documentation for Nexora: a self-hosted panel and nodes for running a VPN fleet.',
     themeConfig: {
-      nav: [{ text: 'Home', link: '/' }],
+      nav: [{ text: 'Glossary', link: '/reference/glossary' }, { text: 'Tags', link: '/tags' }],
+      sidebar: [
+        {
+          text: 'Reference',
+          items: [
+            { text: 'Glossary', link: '/reference/glossary' },
+            { text: 'Tags', link: '/tags' },
+          ],
+        },
+      ],
       editLink: edit('Edit this page on GitHub'),
       outline: { label: 'On this page', level: [2, 3] },
       docFooter: { prev: 'Previous', next: 'Next' },
@@ -47,7 +56,16 @@ export const locales: Record<string, Locale> = {
     link: '/fa/',
     description: 'مستندات نکسورا: پنل و نودهای خودمیزبان برای اداره‌ی ناوگان VPN.',
     themeConfig: {
-      nav: [{ text: 'خانه', link: '/fa/' }],
+      nav: [{ text: 'واژه‌نامه', link: '/fa/reference/glossary' }, { text: 'تگ‌ها', link: '/fa/tags' }],
+      sidebar: [
+        {
+          text: 'مرجع',
+          items: [
+            { text: 'واژه‌نامه', link: '/fa/reference/glossary' },
+            { text: 'تگ‌ها', link: '/fa/tags' },
+          ],
+        },
+      ],
       editLink: edit('ویرایش این صفحه در GitHub'),
       outline: { label: 'در این صفحه', level: [2, 3] },
       docFooter: { prev: 'قبلی', next: 'بعدی' },
@@ -73,7 +91,16 @@ export const locales: Record<string, Locale> = {
     link: '/ru/',
     description: 'Документация Nexora: собственная панель и узлы для управления VPN-флотом.',
     themeConfig: {
-      nav: [{ text: 'Главная', link: '/ru/' }],
+      nav: [{ text: 'Глоссарий', link: '/ru/reference/glossary' }, { text: 'Теги', link: '/ru/tags' }],
+      sidebar: [
+        {
+          text: 'Справочник',
+          items: [
+            { text: 'Глоссарий', link: '/ru/reference/glossary' },
+            { text: 'Теги', link: '/ru/tags' },
+          ],
+        },
+      ],
       editLink: edit('Изменить страницу на GitHub'),
       outline: { label: 'На этой странице', level: [2, 3] },
       docFooter: { prev: 'Назад', next: 'Далее' },
@@ -99,7 +126,16 @@ export const locales: Record<string, Locale> = {
     link: '/zh/',
     description: 'Nexora 文档:自托管的面板与节点,用于运营 VPN 节点集群。',
     themeConfig: {
-      nav: [{ text: '首页', link: '/zh/' }],
+      nav: [{ text: '术语表', link: '/zh/reference/glossary' }, { text: '标签', link: '/zh/tags' }],
+      sidebar: [
+        {
+          text: '参考',
+          items: [
+            { text: '术语表', link: '/zh/reference/glossary' },
+            { text: '标签', link: '/zh/tags' },
+          ],
+        },
+      ],
       editLink: edit('在 GitHub 上编辑此页'),
       outline: { label: '本页内容', level: [2, 3] },
       docFooter: { prev: '上一页', next: '下一页' },

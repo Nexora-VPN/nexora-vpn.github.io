@@ -129,3 +129,116 @@
   color: var(--vp-c-text-2);
   margin-top: 56px;
 }
+
+/* ---- Wiki layer ---- */
+
+.nx-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+.nx-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: 7px;
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+.nx-tag:hover {
+  background: rgba(109, 74, 255, 0.22);
+}
+.nx-tag .pi {
+  font-size: 10px;
+  opacity: 0.7;
+}
+.nx-count {
+  font-variant-numeric: tabular-nums;
+  color: var(--vp-c-text-3);
+  margin-inline-start: 2px;
+}
+
+/* A link to another page reads as a link; a glossary term is dotted. */
+.vp-doc a.nx-term {
+  text-decoration: underline dotted;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--vp-c-brand-2);
+}
+
+.nx-term-card {
+  position: absolute;
+  z-index: 100;
+  width: min(340px, calc(100vw - 24px));
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-elv);
+  box-shadow: 0 12px 32px -12px rgba(15, 23, 42, 0.35);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--vp-c-text-2);
+  pointer-events: none;
+}
+.nx-term-card strong {
+  display: block;
+  color: var(--vp-c-text-1);
+  margin-bottom: 4px;
+}
+.nx-term-card p {
+  margin: 0;
+}
+
+.nx-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--vp-c-divider);
+}
+.nx-links h2 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--vp-c-text-2);
+  margin: 0 0 8px;
+}
+.nx-links ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+}
+.nx-links a {
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
+}
+.nx-links a:hover {
+  text-decoration: underline;
+}
+
+.nx-tag-index .nx-tags {
+  margin-bottom: 8px;
+}
+.nx-desc {
+  color: var(--vp-c-text-3);
+  font-size: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-tag {
+    transition: none;
+  }
+}
+.vp-doc a.nx-tag {
+  text-decoration: none;
+}
