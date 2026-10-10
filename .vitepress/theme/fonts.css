@@ -1,0 +1,10 @@
+/* Vazirmatn (SIL OFL 1.1, see OFL-vazirmatn.txt), variable weight. The range
+   keeps every page that has no Persian text from downloading it. */
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('./fonts/vazirmatn.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+200C-200F;
+}
