@@ -37,7 +37,8 @@ features:
 ---
 
 <div class="nx-shot">
-  <img src="/img/panel-screenshot.png" alt="Панель Nexora: пользователи, узлы, трафик и состояние каждого узла" width="1440" height="940" loading="lazy">
+  <img class="nx-light" src="/img/dashboard-light.webp" alt="Панель Nexora: пользователи, узлы, трафик и состояние каждого узла" width="1440" height="750">
+  <img class="nx-dark" src="/img/dashboard-dark.webp" alt="Панель Nexora: пользователи, узлы, трафик и состояние каждого узла" width="1440" height="750">
 </div>
 
 <p class="nx-section-title">Поддерживаемые протоколы</p>

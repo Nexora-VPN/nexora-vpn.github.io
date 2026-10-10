@@ -242,3 +242,9 @@
 .vp-doc a.nx-tag {
   text-decoration: none;
 }
+
+/* A picture drawn in both themes shows the one matching the page. */
+.dark .nx-light,
+html:not(.dark) .nx-dark {
+  display: none !important;
+}
