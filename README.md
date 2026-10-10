@@ -44,7 +44,11 @@ npm run check    # everything CI checks, then a full build
 ## Deploy
 
 Every push to `main` builds and publishes to GitHub Pages
-(`.github/workflows/deploy.yml`). The site answers only on
-`docs.nexora-panel.org`; `nexora-vpn.github.io/docs` redirects there.
+(`.github/workflows/deploy.yml`). This repository is the organisation's own
+Pages site (`nexora-vpn.github.io`) with the custom domain
+`docs.nexora-panel.org`, so the site answers only there: every address under
+`nexora-vpn.github.io` redirects to the same path on the domain. A Pages site
+in another repository of the organisation would be served under this domain
+too (`docs.nexora-panel.org/<repo>`), so none should be switched on.
 
 Licence: text and images CC BY 4.0, code MIT — see `LICENSE.md`.

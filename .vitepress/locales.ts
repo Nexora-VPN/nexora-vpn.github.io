@@ -6,7 +6,9 @@ import type { DefaultTheme, LocaleSpecificConfig } from 'vitepress'
 
 type Locale = LocaleSpecificConfig<DefaultTheme.Config> & { label: string; link?: string }
 
-const REPO = 'https://github.com/Nexora-VPN/docs'
+// The repository is the org's own Pages site, so that nexora-vpn.github.io
+// itself (not only a /docs path under it) redirects to the custom domain.
+const REPO = 'https://github.com/Nexora-VPN/nexora-vpn.github.io'
 
 function edit(text: string): DefaultTheme.EditLink {
   return { pattern: `${REPO}/edit/main/src/:path`, text }
