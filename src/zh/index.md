@@ -36,6 +36,9 @@ features:
     details: "接入面板的独立程序:销售套餐的商店、通知客户的工具,或你自己的插件。"
 ---
 
+<p class="nx-section-title">各部分如何协同工作</p>
+<div class="nx-home-diagram"><NxDiagram id="overview" /></div>
+
 <div class="nx-shot">
   <img class="nx-light" src="/img/dashboard-light.webp" alt="Nexora 面板仪表盘:用户、节点、流量以及每个节点的健康状况" width="1440" height="940">
   <img class="nx-dark" src="/img/dashboard-dark.webp" alt="Nexora 面板仪表盘:用户、节点、流量以及每个节点的健康状况" width="1440" height="940">

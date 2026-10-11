@@ -36,6 +36,9 @@ features:
     details: "Отдельные программы, подключаемые к панели: магазин для продажи тарифов, уведомления клиентам или ваше собственное."
 ---
 
+<p class="nx-section-title">Как части работают вместе</p>
+<div class="nx-home-diagram"><NxDiagram id="overview" /></div>
+
 <div class="nx-shot">
   <img class="nx-light" src="/img/dashboard-light.webp" alt="Панель Nexora: пользователи, узлы, трафик и состояние каждого узла" width="1440" height="940">
   <img class="nx-dark" src="/img/dashboard-dark.webp" alt="Панель Nexora: пользователи, узлы, трафик и состояние каждого узла" width="1440" height="940">

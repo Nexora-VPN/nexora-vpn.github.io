@@ -4,10 +4,13 @@
 import { h } from 'vue'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 import type { Theme } from 'vitepress'
+import NxCommandBuilder from './NxCommandBuilder.vue'
+import NxDiagram from './NxDiagram.vue'
 import NxPageLinks from './NxPageLinks.vue'
 import NxPageTags from './NxPageTags.vue'
 import NxTagIndex from './NxTagIndex.vue'
 import NxTermCard from './NxTermCard.vue'
+import NxTerminal from './NxTerminal.vue'
 import 'primeicons/primeicons.css'
 import './fonts.css'
 import './style.css'
@@ -22,5 +25,8 @@ export default {
     }),
   enhanceApp({ app }) {
     app.component('NxTagIndex', NxTagIndex)
+    app.component('NxDiagram', NxDiagram)
+    app.component('NxTerminal', NxTerminal)
+    app.component('NxCommandBuilder', NxCommandBuilder)
   },
 } satisfies Theme

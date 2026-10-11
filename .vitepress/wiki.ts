@@ -281,3 +281,17 @@ export function tagWords(frontmatter: Record<string, unknown> | undefined, lang:
   const tags = Array.isArray(frontmatter?.tags) ? (frontmatter!.tags as string[]) : []
   return tags.map((t) => TAGS[t]?.[lang] ?? '').filter(Boolean).join(' · ')
 }
+
+// ```terminal title="…" fences become an animated <NxTerminal>. The session
+// travels base64-encoded so no character in it can break the attribute.
+export function terminalFences(md: MarkdownIt) {
+  const fence = md.renderer.rules.fence!
+  md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+    const token = tokens[idx]
+    const info = token.info.trim()
+    if (!info.startsWith('terminal')) return fence(tokens, idx, options, env, self)
+    const title = info.match(/title="([^"]*)"/)?.[1] ?? ''
+    const data = Buffer.from(token.content.replace(/\n$/, ''), 'utf8').toString('base64')
+    return `<NxTerminal data="${data}" title="${md.utils.escapeHtml(title)}" />\n`
+  }
+}

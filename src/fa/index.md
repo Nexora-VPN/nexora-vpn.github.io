@@ -36,6 +36,9 @@ features:
     details: "برنامه‌های جدا که به پنل وصل می‌شوند: فروشگاهی که پلن‌هایت را می‌فروشد، اطلاع‌رسان مشتری‌ها، یا افزونه‌ی خودت."
 ---
 
+<p class="nx-section-title">اجزا چطور کنار هم کار می‌کنند</p>
+<div class="nx-home-diagram"><NxDiagram id="overview" /></div>
+
 <div class="nx-shot">
   <img class="nx-light" src="/img/dashboard-light.webp" alt="داشبورد پنل نکسورا: کاربرها، نودها، ترافیک و سلامت هر نود" width="1440" height="940">
   <img class="nx-dark" src="/img/dashboard-dark.webp" alt="داشبورد پنل نکسورا: کاربرها، نودها، ترافیک و سلامت هر نود" width="1440" height="940">

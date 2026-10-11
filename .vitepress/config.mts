@@ -2,7 +2,7 @@ import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitepress'
 import { locales, searchLocales } from './locales'
 import { processTerm, tokenize } from './search'
-import { locate, pageFacts, tagWords, wikiLinks } from './wiki'
+import { locate, pageFacts, tagWords, terminalFences, wikiLinks } from './wiki'
 
 const SRC = fileURLToPath(new URL('../src', import.meta.url))
 
@@ -22,7 +22,10 @@ export default defineConfig({
   ],
   locales,
   markdown: {
-    config: (md) => wikiLinks(md, SRC),
+    config: (md) => {
+      wikiLinks(md, SRC)
+      terminalFences(md)
+    },
   },
   transformPageData(pageData) {
     pageFacts(pageData, SRC)

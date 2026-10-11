@@ -36,6 +36,9 @@ features:
     details: "Separate programs that attach to the panel: a shop that sells your plans, a notifier for your customers, or your own."
 ---
 
+<p class="nx-section-title">How the pieces fit together</p>
+<div class="nx-home-diagram"><NxDiagram id="overview" /></div>
+
 <div class="nx-shot">
   <img class="nx-light" src="/img/dashboard-light.webp" alt="The Nexora panel dashboard: users, nodes, traffic and the health of every node" width="1440" height="940">
   <img class="nx-dark" src="/img/dashboard-dark.webp" alt="The Nexora panel dashboard: users, nodes, traffic and the health of every node" width="1440" height="940">
