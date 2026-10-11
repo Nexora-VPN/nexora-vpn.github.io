@@ -39,7 +39,7 @@ tags: [install, node, panel]
      --panel PANEL --token TOKEN --listen 127.0.0.1:62050
    ```
 
-如果面板仍使用自签名证书，请像 [[start/add-node]] 所说，给 `curl` 加上 `-k`，给脚本加上 `--insecure`。
+如果面板仍使用自签名证书，它显示的命令会带上证书的密钥（`--pinnedpubkey` 和 `--pin`），两者都请保留。面板 v0.0.3 及更早版本则需要改用 `-k` 和 `--insecure`，详见 [[start/add-node]]。
 
 5. 编辑节点，在 **链接地址** 下添加服务器的公网地址。该列表为空时，链接使用节点的地址，而 `127.0.0.1` 对你的用户毫无用处。
 

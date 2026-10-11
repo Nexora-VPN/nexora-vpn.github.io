@@ -37,20 +37,40 @@ nodes it drives.
 
 4. Run it as root on the node's server.
 
-::: warning A panel on its own self-signed certificate
-The setup wizard starts the panel on a self-signed certificate, which `curl`
-on the node refuses. Until the panel has a certificate from Let's Encrypt or
-another ACME authority ([[use/certificates]]), add `-k` to `curl` and
-`--insecure` to the script:
+::: info A panel on its own self-signed certificate
+The setup wizard starts the panel on a self-signed certificate, which plain
+`curl` on the node refuses. The panel knows when that is so, and its command
+then checks the panel by the key of its certificate:
+
+```bash
+curl -fsSLk --pinnedpubkey 'sha256//KEY' https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --pin 'sha256//KEY'
+```
+
+The `-k` here does not switch the check off: `--pinnedpubkey` still refuses
+any server whose key is not your panel's, and `--pin` makes the installer's own
+downloads from the panel do the same. Copy the command as the panel shows it.
+Once the panel has a certificate from Let's Encrypt or another ACME authority
+([[use/certificates]]), the command is the plain one again.
+
+A panel on plain HTTP shows the command with `http://` written out. Nothing on
+that connection is checked, so between servers you do not trust the network
+of, prefer [the automatic install over SSH](#install-automatically-over-ssh):
+
+```bash
+curl -fsSL http://PANEL/install-node.sh | bash -s -- --panel http://PANEL --token TOKEN
+```
+:::
+
+::: warning Panel v0.0.3 and earlier
+These panels show the plain command whatever their certificate. On a
+self-signed panel, add `-k` to `curl` and `--insecure` to the script:
 
 ```bash
 curl -fsSLk https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --insecure
 ```
 
-This skips the check that the download really comes from your panel. Between servers you do not trust the network of, prefer the automatic install over SSH, which needs no download from the panel.
-
-A panel on plain HTTP cannot use this command at all; use
-[the automatic install over SSH](#install-automatically-over-ssh) instead.
+This skips the check that the download really comes from your panel. A panel
+on plain HTTP cannot use the command at all; use the automatic install over SSH.
 :::
 
 In under a minute it:
@@ -124,6 +144,7 @@ Add these to the end of the command:
 | `--binary-url URL` | download the binary from another address |
 | `--binary-file PATH` | use a binary already on this server |
 | `--ca-file PATH` | use a panel certificate already on this server instead of a token |
+| `--pin sha256//KEY` | accept the panel's certificate by its key (the panel adds it when it is needed) |
 | `--insecure` | do not check the panel's TLS certificate while downloading |
 | `--detect` | print what is on this server and change nothing |
 | `--uninstall` | stop and remove the node |

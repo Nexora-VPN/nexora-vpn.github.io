@@ -32,16 +32,30 @@ tags: [install, node]
 
 4. 在节点服务器上以 root 身份运行它。
 
-::: warning 使用自签名证书的面板
-设置向导让面板以自签名证书启动，节点上的 `curl` 会拒绝它。在面板拿到 Let's Encrypt 或其他 ACME 机构签发的证书（[[use/certificates]]）之前，请给 `curl` 加上 `-k`，给脚本加上 `--insecure`：
+::: info 使用自签名证书的面板
+设置向导让面板以自签名证书启动，节点上普通的 `curl` 会拒绝它。面板知道这种情况，此时它给出的命令会按证书的密钥来校验面板：
+
+```bash
+curl -fsSLk --pinnedpubkey 'sha256//KEY' https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --pin 'sha256//KEY'
+```
+
+这里的 `-k` 并没有关闭校验：`--pinnedpubkey` 仍会拒绝任何密钥与你的面板不符的服务器，`--pin` 让安装脚本从面板的下载也同样校验。请按面板显示的原样复制命令。面板拿到 Let's Encrypt 或其他 ACME 机构签发的证书（[[use/certificates]]）后，命令会恢复为普通形式。
+
+使用纯 HTTP 的面板显示的命令会明确写出 `http://`。这种连接上没有任何校验；如果你不信任两台服务器之间的网络，请优先使用[通过 SSH 自动安装](#install-automatically-over-ssh)：
+
+```bash
+curl -fsSL http://PANEL/install-node.sh | bash -s -- --panel http://PANEL --token TOKEN
+```
+:::
+
+::: warning 面板 v0.0.3 及更早版本
+这些面板无论证书如何都显示普通命令。面板使用自签名证书时，请给 `curl` 加上 `-k`，给脚本加上 `--insecure`：
 
 ```bash
 curl -fsSLk https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --insecure
 ```
 
-这样会跳过“下载确实来自你的面板”这一检查。如果你不信任两台服务器之间的网络，请优先使用通过 SSH 自动安装，它不需要从面板下载。
-
-使用纯 HTTP 的面板根本无法使用这条命令；请改用[通过 SSH 自动安装](#install-automatically-over-ssh)。
+这样会跳过“下载确实来自你的面板”这一检查。使用纯 HTTP 的面板根本无法使用这条命令；请改用通过 SSH 自动安装。
 :::
 
 不到一分钟，它会：
@@ -95,6 +109,7 @@ ufw allow from 203.0.113.10 to any port 62050 proto tcp
 | `--binary-url URL` | 从其他地址下载程序 |
 | `--binary-file PATH` | 使用本服务器上已有的程序 |
 | `--ca-file PATH` | 使用本服务器上已有的面板证书，而不是令牌 |
+| `--pin sha256//KEY` | 按密钥接受面板的证书（需要时面板会自动加上） |
 | `--insecure` | 下载时不检查面板的 TLS 证书 |
 | `--detect` | 打印本服务器上的情况，不做任何修改 |
 | `--uninstall` | 停止并移除节点 |

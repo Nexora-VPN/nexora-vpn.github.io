@@ -56,7 +56,7 @@ node's.
      --panel PANEL --token TOKEN --listen 127.0.0.1:62050
    ```
 
-With the panel still on its self-signed certificate, add `-k` to `curl` and `--insecure` to the script, as [[start/add-node]] explains.
+With the panel still on its self-signed certificate, the command it shows carries the certificate's key (`--pinnedpubkey` and `--pin`); keep both. Panel v0.0.3 and earlier need `-k` and `--insecure` instead, as [[start/add-node]] explains.
 
 5. Edit the node and add the server's public address under **Link addresses**.
    Links use the node's address when this list is empty, and `127.0.0.1` is of
