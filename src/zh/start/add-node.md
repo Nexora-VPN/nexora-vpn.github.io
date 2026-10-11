@@ -39,6 +39,8 @@ tags: [install, node]
 curl -fsSLk https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --insecure
 ```
 
+这样会跳过“下载确实来自你的面板”这一检查。如果你不信任两台服务器之间的网络，请优先使用通过 SSH 自动安装，它不需要从面板下载。
+
 使用纯 HTTP 的面板根本无法使用这条命令；请改用[通过 SSH 自动安装](#install-automatically-over-ssh)。
 :::
 

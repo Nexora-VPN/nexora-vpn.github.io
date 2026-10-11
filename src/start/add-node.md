@@ -47,6 +47,8 @@ another ACME authority ([[use/certificates]]), add `-k` to `curl` and
 curl -fsSLk https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --insecure
 ```
 
+This skips the check that the download really comes from your panel. Between servers you do not trust the network of, prefer the automatic install over SSH, which needs no download from the panel.
+
 A panel on plain HTTP cannot use this command at all; use
 [the automatic install over SSH](#install-automatically-over-ssh) instead.
 :::
