@@ -4,7 +4,7 @@
 
 import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import yaml from 'js-yaml'
+import { load } from 'js-yaml'
 import { createMarkdownRenderer, defineLoader } from 'vitepress'
 
 const FILE = fileURLToPath(new URL('../src/public/openapi.yaml', import.meta.url))
@@ -36,7 +36,7 @@ export default defineLoader({
   async load(): Promise<Data> {
     const md = await createMarkdownRenderer(fileURLToPath(new URL('../src', import.meta.url)))
     const html = (s?: string) => (s ? md.render(String(s)) : '')
-    const doc = yaml.load(fs.readFileSync(FILE, 'utf8')) as any
+    const doc = load(fs.readFileSync(FILE, 'utf8')) as any
     const comp = doc.components ?? {}
     const deref = (o: any): any => {
       if (o && o.$ref) {
