@@ -40,6 +40,15 @@ export interface Diagram {
   title: Words
   boxes: Box[]
   arrows: Arrow[]
+  // The same picture for a phone: a narrower canvas where it flows top to
+  // bottom. Boxes are placed by id as [x, y, w, h]; an arrow keeps a route of
+  // its own only when `points` names its index, and runs straight otherwise.
+  tall?: {
+    width: number
+    height: number
+    boxes: Record<string, [number, number, number, number]>
+    points?: Record<number, [number, number][]>
+  }
 }
 
 const w = (en: string, fa: string, ru: string, zh: string): Words => ({ en, fa, ru, zh })
@@ -92,6 +101,26 @@ export const DIAGRAMS: Record<string, Diagram> = {
       { from: 'panel', to: 'addons', flow: 'events', both: true },
       { from: 'panel', to: 'apps', flow: 'fetch', points: [[375, 360], [250, 360], [250, 236], [115, 236], [115, 196]] },
     ],
+    tall: {
+      width: 440,
+      height: 580,
+      boxes: {
+        apps: [130, 10, 180, 70],
+        n1: [30, 130, 120, 60],
+        n2: [160, 130, 120, 60],
+        n3: [290, 130, 120, 60],
+        net: [130, 250, 180, 64],
+        panel: [130, 380, 180, 64],
+        admin: [30, 500, 180, 64],
+        addons: [230, 500, 180, 64],
+      },
+      points: {
+        6: [[310, 400], [428, 400], [428, 160], [410, 160]],
+        7: [[280, 380], [280, 348], [326, 348], [326, 214], [240, 214], [240, 190]],
+        8: [[130, 400], [18, 400], [18, 160], [30, 160]],
+        11: [[130, 430], [6, 430], [6, 45], [130, 45]],
+      },
+    },
   },
 
   // One connection through one node, stage by stage (how/packet-path).
@@ -252,6 +281,28 @@ export const DIAGRAMS: Record<string, Diagram> = {
       { from: 'tout', to: 'net', flow: 'traffic', both: true },
       { from: 'route', to: 'panel', flow: 'control', both: true },
     ],
+    tall: {
+      width: 440,
+      height: 716,
+      boxes: {
+        app: [120, 10, 190, 56],
+        listen: [10, 100, 190, 56],
+        ep: [220, 100, 190, 56],
+        tls: [10, 190, 190, 56],
+        tin: [220, 190, 190, 56],
+        proto: [10, 280, 190, 56],
+        panel: [220, 280, 190, 56],
+        sniff: [10, 370, 190, 56],
+        route: [120, 460, 190, 56],
+        out: [120, 560, 190, 56],
+        net: [10, 650, 190, 56],
+        tout: [220, 650, 190, 56],
+      },
+      points: {
+        6: [[410, 128], [432, 128], [432, 502], [310, 502]],
+        7: [[410, 218], [422, 218], [422, 474], [310, 474]],
+      },
+    },
   },
 
   // A reverse tunnel: users on the relay, traffic out of the origins (how/tunnels).
@@ -341,6 +392,18 @@ export const DIAGRAMS: Record<string, Diagram> = {
       { from: 'panel', to: 'o2', flow: 'control', both: true },
       { from: 'panel', to: 'o1', flow: 'control', both: true, points: [[440, 388], [470, 388], [470, 92], [500, 92]] },
     ],
+    tall: {
+      width: 400,
+      height: 460,
+      boxes: {
+        apps: [200, 10, 190, 64],
+        relay: [200, 120, 190, 64],
+        panel: [10, 120, 150, 64],
+        o1: [10, 250, 180, 64],
+        o2: [210, 250, 180, 64],
+        net: [105, 380, 190, 64],
+      },
+    },
   },
 
   // The event bus: outbox, one delivery per subscriber, retries (how/events).
@@ -428,5 +491,17 @@ export const DIAGRAMS: Record<string, Diagram> = {
       { from: 'worker', to: 'addon', flow: 'events' },
       { from: 'worker', to: 'people', flow: 'events' },
     ],
+    tall: {
+      width: 400,
+      height: 420,
+      boxes: {
+        src: [105, 10, 190, 64],
+        outbox: [105, 110, 190, 64],
+        worker: [105, 210, 190, 64],
+        hook: [6, 320, 124, 84],
+        addon: [138, 320, 124, 84],
+        people: [270, 320, 124, 84],
+      },
+    },
   },
 }

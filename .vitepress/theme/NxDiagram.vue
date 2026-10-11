@@ -2,7 +2,7 @@
 // Draws a diagram from .vitepress/diagrams.ts: boxes, arrows, and packets that
 // travel along the arrows — unless the reader asked for less motion, in which
 // case the picture is the same without the packets.
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useData } from 'vitepress'
 import { DIAGRAMS, LEGEND, PICK, type Arrow, type Box, type Words } from '../diagrams'
 
@@ -12,16 +12,35 @@ const d = computed(() => DIAGRAMS[props.id])
 const key = computed(() => (lang.value.slice(0, 2) as keyof Words) || 'en')
 const t = (w?: Words) => (w ? w[key.value] ?? w.en : '')
 const moving = ref(false)
+// Below 600 px a diagram with a phone layout switches to it: shrinking the
+// wide one to a phone's width leaves its labels unreadable.
+const tall = ref(false)
+const figure = ref<HTMLElement>()
+let sizer: ResizeObserver | undefined
+const layout = computed(() => (tall.value ? d.value.tall : undefined))
+const W = computed(() => layout.value?.width ?? d.value.width)
+const H = computed(() => layout.value?.height ?? d.value.height)
+const boxes = computed<Box[]>(() =>
+  d.value.boxes.map((b) => {
+    const r = layout.value?.boxes[b.id]
+    return r ? { ...b, x: r[0], y: r[1], w: r[2], h: r[3] } : b
+  }),
+)
 const chosen = ref('')
 const walkthrough = computed(() => d.value.boxes.some((b) => b.note))
 const picked = computed(() => d.value.boxes.find((b) => b.id === chosen.value))
 
 onMounted(() => {
   moving.value = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (figure.value && d.value.tall) {
+    sizer = new ResizeObserver(([e]) => (tall.value = e.contentRect.width < 600))
+    sizer.observe(figure.value)
+  }
 })
+onBeforeUnmount(() => sizer?.disconnect())
 
 function box(id: string): Box {
-  return d.value.boxes.find((b) => b.id === id)!
+  return boxes.value.find((b) => b.id === id)!
 }
 
 // Where the line from a box's centre towards (tx, ty) leaves the box.
@@ -37,8 +56,9 @@ function edge(b: Box, tx: number, ty: number): [number, number] {
   return [cx + dx * s, cy + dy * s]
 }
 
-function route(a: Arrow): [number, number][] {
-  if (a.points) return a.points
+function route(a: Arrow, i: number): [number, number][] {
+  const own = layout.value ? layout.value.points?.[i] : a.points
+  if (own) return own
   const f = box(a.from)
   const to = box(a.to)
   return [edge(f, to.x + to.w / 2, to.y + to.h / 2), edge(to, f.x + f.w / 2, f.y + f.h / 2)]
@@ -55,7 +75,7 @@ function length(pts: [number, number][]) {
 
 const arrows = computed(() =>
   d.value.arrows.map((a, i) => {
-    const pts = route(a)
+    const pts = route(a, i)
     const [x1, y1] = pts[pts.length - 2]
     const [x2, y2] = pts[pts.length - 1]
     return {
@@ -74,9 +94,9 @@ const flows = computed(() => [...new Set(d.value.arrows.map((a) => a.flow))])
 </script>
 
 <template>
-  <figure v-if="d" class="nx-diagram" dir="ltr">
+  <figure v-if="d" ref="figure" class="nx-diagram" :class="{ tall }" dir="ltr">
     <svg
-      :viewBox="`0 0 ${d.width} ${d.height}`"
+      :viewBox="`0 0 ${W} ${H}`"
       role="img"
       :aria-label="t(d.title)"
       xmlns="http://www.w3.org/2000/svg"
@@ -101,9 +121,9 @@ const flows = computed(() => [...new Set(d.value.arrows.map((a) => a.flow))])
         </g>
       </g>
       <g
-        v-for="b in d.boxes"
+        v-for="b in boxes"
         :key="b.id"
-        :class="['box', b.kind, { pickable: !!b.note, chosen: chosen === b.id }]"
+        :class="['box', b.kind, { pickable: !!b.note, chosen: chosen === b.id, narrow: b.w < 150 }]"
         :tabindex="b.note ? 0 : undefined"
         :role="b.note ? 'button' : undefined"
         :aria-pressed="b.note ? chosen === b.id : undefined"

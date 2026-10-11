@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url'
+import rtlcss from 'postcss-rtlcss'
 import { defineConfig } from 'vitepress'
 import { locales, searchLocales } from './locales'
 import { processTerm, tokenize } from './search'
@@ -30,6 +31,15 @@ export default defineConfig({
     ['meta', { name: 'theme-color', content: '#6d4aff' }],
   ],
   locales,
+  // The default theme lays itself out left to right whatever the language: on
+  // a Persian page the sidebar stayed on the left and the phone menu slid in
+  // from the left. rtlcss adds a [dir="rtl"] mirror of every rule that names a
+  // side, and leaves the left-to-right rules as they are. The site's own
+  // style.css opts out: it is written with logical properties already, and
+  // its diagrams, code and API reference are deliberately left to right.
+  vite: {
+    css: { postcss: { plugins: [rtlcss({ mode: 'override' })] } },
+  },
   markdown: {
     config: (md) => {
       wikiLinks(md, SRC)
