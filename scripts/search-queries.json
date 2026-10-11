@@ -1,0 +1,170 @@
+{
+  "root": [
+    [
+      "install the panel",
+      "/start/install-panel"
+    ],
+    [
+      "reality",
+      "/protocols/vless-reality"
+    ],
+    [
+      "tunnel relay origin",
+      "tunnels"
+    ],
+    [
+      "reseller",
+      "/use/resellers"
+    ],
+    [
+      "webhook signature",
+      "webhooks|/reference/events|/how/events"
+    ],
+    [
+      "backup restore",
+      "/use/backup"
+    ],
+    [
+      "port hopping",
+      "/protocols/hysteria2"
+    ],
+    [
+      "two-factor",
+      "/use/security|/how/security"
+    ],
+    [
+      "prometheus",
+      "/how/monitoring"
+    ],
+    [
+      "claim code",
+      "/addons/|/use/addons|install-addon"
+    ]
+  ],
+  "fa": [
+    [
+      "نصب پنل",
+      "/fa/start/install-panel"
+    ],
+    [
+      "نماینده",
+      "/fa/use/resellers"
+    ],
+    [
+      "تونل",
+      "tunnels"
+    ],
+    [
+      "پشتیبان",
+      "backup"
+    ],
+    [
+      "پرش پورت",
+      "/fa/protocols/hysteria2"
+    ],
+    [
+      "گواهی",
+      "certificates"
+    ],
+    [
+      "اشتراک",
+      "subscriptions|first-user"
+    ],
+    [
+      "افزونه",
+      "/fa/addons/|addons"
+    ],
+    [
+      "وبهوک",
+      "webhooks|events"
+    ],
+    [
+      "کاربر",
+      "users|first-user"
+    ]
+  ],
+  "ru": [
+    [
+      "установка панели",
+      "/ru/start/install-panel"
+    ],
+    [
+      "реселлер",
+      "/ru/use/resellers"
+    ],
+    [
+      "туннель",
+      "tunnels"
+    ],
+    [
+      "резервная копия",
+      "backup"
+    ],
+    [
+      "двухфакторная",
+      "security|setup-wizard"
+    ],
+    [
+      "сертификат",
+      "certificates"
+    ],
+    [
+      "подписка",
+      "subscriptions|first-user|glossary#subscription|users#the-subscription"
+    ],
+    [
+      "дополнение",
+      "addons"
+    ],
+    [
+      "вебхук",
+      "webhooks|events"
+    ],
+    [
+      "установка узла",
+      "add-node|same-server"
+    ]
+  ],
+  "zh": [
+    [
+      "安装面板",
+      "/zh/start/install-panel"
+    ],
+    [
+      "代理商",
+      "/zh/use/resellers"
+    ],
+    [
+      "隧道",
+      "tunnels"
+    ],
+    [
+      "备份",
+      "backup"
+    ],
+    [
+      "端口跳跃",
+      "/zh/protocols/hysteria2"
+    ],
+    [
+      "证书",
+      "certificates"
+    ],
+    [
+      "订阅",
+      "subscriptions|first-user"
+    ],
+    [
+      "插件",
+      "addons"
+    ],
+    [
+      "Webhook",
+      "webhooks|events"
+    ],
+    [
+      "节点",
+      "nodes|add-node|node-lifecycle"
+    ]
+  ]
+}

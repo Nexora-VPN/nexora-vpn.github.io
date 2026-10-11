@@ -7,7 +7,7 @@
     "build": "vitepress build",
     "preview": "vitepress preview",
     "check:src": "node scripts/check-core-names.mjs src .vitepress && node scripts/check-locales.mjs && node scripts/check-images.mjs",
-    "check:dist": "node scripts/check-dist.mjs .vitepress/dist",
+    "check:dist": "node scripts/check-dist.mjs .vitepress/dist && node scripts/check-search.mjs .vitepress/dist",
     "check": "npm run check:src && npm run build && npm run check:dist"
   },
   "devDependencies": {
