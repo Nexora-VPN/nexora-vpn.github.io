@@ -37,6 +37,20 @@ nodes it drives.
 
 4. Run it as root on the node's server.
 
+::: warning A panel on its own self-signed certificate
+The setup wizard starts the panel on a self-signed certificate, which `curl`
+on the node refuses. Until the panel has a certificate from Let's Encrypt or
+another ACME authority ([[use/certificates]]), add `-k` to `curl` and
+`--insecure` to the script:
+
+```bash
+curl -fsSLk https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --insecure
+```
+
+A panel on plain HTTP cannot use this command at all; use
+[the automatic install over SSH](#install-automatically-over-ssh) instead.
+:::
+
 In under a minute it:
 
 1. downloads the node binary **from your panel**, not from the internet;

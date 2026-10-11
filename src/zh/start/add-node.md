@@ -32,6 +32,16 @@ tags: [install, node]
 
 4. 在节点服务器上以 root 身份运行它。
 
+::: warning 使用自签名证书的面板
+设置向导让面板以自签名证书启动，节点上的 `curl` 会拒绝它。在面板拿到 Let's Encrypt 或其他 ACME 机构签发的证书（[[use/certificates]]）之前，请给 `curl` 加上 `-k`，给脚本加上 `--insecure`：
+
+```bash
+curl -fsSLk https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --insecure
+```
+
+使用纯 HTTP 的面板根本无法使用这条命令；请改用[通过 SSH 自动安装](#install-automatically-over-ssh)。
+:::
+
 不到一分钟，它会：
 
 1. **从你的面板** 而不是从互联网下载节点程序；
