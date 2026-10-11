@@ -37,8 +37,8 @@ features:
 ---
 
 <div class="nx-shot">
-  <img class="nx-light" src="/img/dashboard-light.webp" alt="The Nexora panel dashboard: users, nodes, traffic and the health of every node" width="1440" height="750">
-  <img class="nx-dark" src="/img/dashboard-dark.webp" alt="The Nexora panel dashboard: users, nodes, traffic and the health of every node" width="1440" height="750">
+  <img class="nx-light" src="/img/dashboard-light.webp" alt="The Nexora panel dashboard: users, nodes, traffic and the health of every node" width="1440" height="940">
+  <img class="nx-dark" src="/img/dashboard-dark.webp" alt="The Nexora panel dashboard: users, nodes, traffic and the health of every node" width="1440" height="940">
 </div>
 
 <p class="nx-section-title">Supported protocols</p>
