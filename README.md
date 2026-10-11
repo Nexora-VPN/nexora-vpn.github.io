@@ -26,6 +26,25 @@ npm run check    # everything CI checks, then a full build
 
 ## Writing pages
 
+Pages are written by the rules in [CONTRIBUTING.md](CONTRIBUTING.md): voice,
+page shape, pictures, and the two rules no page may break.
+
+Building blocks a page can use:
+
+| write | gives |
+|---|---|
+| `<NxShot page="users" alt="…" />` | a screenshot of that panel page in the reader's theme (`src/public/shots/<lang>/`, taken by the demo fleet's `shots.sh`) |
+| `<NxDiagram id="overview" />` | a diagram from `.vitepress/diagrams.ts`; boxes with a `note` make a click-through walk |
+| a ```` ```terminal title="…" ```` fence | an animated terminal: `$ ` lines are commands |
+| `<NxCommandBuilder />` | the install command builder |
+| `<NxApi />` | the API reference, from `src/public/openapi.yaml` |
+
+The sidebar is built from the pages: a section per directory, ordered by each
+page's `order`, grouped by its `group`. Every build also writes `llms.txt` and
+`llms-full.txt` (the English pages as plain text, for AI assistants). A tag
+`v…` publishes an offline copy of the whole site on the releases page
+(`.github/workflows/offline.yml`).
+
 Front-matter carries `title`, a one-line `description` and `tags` (only the
 tags listed in `.vitepress/tags.ts`; an unknown one fails the build).
 

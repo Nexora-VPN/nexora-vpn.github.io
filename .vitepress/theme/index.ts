@@ -8,6 +8,7 @@ import NxCommandBuilder from './NxCommandBuilder.vue'
 import NxDiagram from './NxDiagram.vue'
 import NxPageLinks from './NxPageLinks.vue'
 import NxPageTags from './NxPageTags.vue'
+import NxShot from './NxShot.vue'
 import NxTagIndex from './NxTagIndex.vue'
 import NxTermCard from './NxTermCard.vue'
 import NxTerminal from './NxTerminal.vue'
@@ -28,5 +29,6 @@ export default {
     app.component('NxDiagram', NxDiagram)
     app.component('NxTerminal', NxTerminal)
     app.component('NxCommandBuilder', NxCommandBuilder)
+    app.component('NxShot', NxShot)
   },
 } satisfies Theme

@@ -38,6 +38,31 @@ function walk(dir) {
 }
 
 walk(SRC)
+
+// Every <NxShot page="x"> needs its pictures: English always, Persian for
+// Persian pages; Russian and Chinese pages show the English ones unless `own`.
+import { existsSync } from 'node:fs'
+function shotsIn(dir) {
+  for (const name of readdirSync(dir)) {
+    const p = join(dir, name)
+    if (statSync(p).isDirectory()) {
+      if (name !== 'public') shotsIn(p)
+      continue
+    }
+    if (extname(name) !== '.md') continue
+    const lang = p.split('/')[1]
+    const text = readFileSync(p, 'utf8')
+    for (const m of text.matchAll(/<NxShot[^>]*\spage="([^"]+)"[^>]*>/g)) {
+      const own = /\sown\b/.test(m[0])
+      const dirLang = lang === 'fa' || (own && ['ru', 'zh'].includes(lang)) ? lang : 'en'
+      for (const theme of ['light', 'dark']) {
+        const f = join(SRC, 'public', 'shots', dirLang, `${m[1]}-${theme}.webp`)
+        if (!existsSync(f)) problems.push(`${p}: <NxShot page="${m[1]}"> has no ${f}`)
+      }
+    }
+  }
+}
+shotsIn(SRC)
 if (total > MAX_TOTAL) problems.push(`images total ${Math.round(total / 1048576)} MB, over ${MAX_TOTAL / 1048576} MB`)
 
 if (problems.length) {

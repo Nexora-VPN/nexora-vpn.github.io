@@ -1,6 +1,7 @@
 ---
 title: 术语表
 description: Nexora 使用的词语,每个用一两句话说明。
+order: 1
 tags: [reference]
 ---
 

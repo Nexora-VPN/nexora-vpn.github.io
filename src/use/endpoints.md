@@ -1,0 +1,134 @@
+---
+title: "Endpoints"
+description: "Serve WireGuard, OpenVPN and OpenConnect to your users with per-user keys and app config files, or connect a node to another network."
+order: 12
+group: core
+tags: [protocols]
+---
+
+# Endpoints
+
+An [[~endpoint]] is an interface that is a way in and a way out at once.
+WireGuard, OpenVPN and OpenConnect are endpoints: users connect to them with
+the dedicated app for that protocol, and the panel gives each user a config
+file to import. Endpoints live under **Core configs → Endpoints** and reach
+nodes through [[templates]], like inbounds.
+
+<NxShot page="endpoints" alt="The Endpoints page: a list of endpoint tags and types, with the listen address and the client address pool of each" />
+
+## Serving users or connecting out
+
+An endpoint does one of two jobs, and the listen port decides which:
+
+- **With a listen port**, it serves your users. Each user of its template gets
+  an account on it.
+- **Without one**, it is a client: the node connects out to another network,
+  and routing can send traffic through it like an [[~outbound]]. The list marks
+  such an endpoint **client only**.
+
+| Type | Serves users | Connects out |
+| --- | --- | --- |
+| `wireguard` | yes, with a listen port | yes, without one |
+| `openvpn-server` | yes | |
+| `openconnect-server` | yes | |
+| `openvpn-client` | | yes |
+| `openconnect` | | yes |
+| `tailscale` | | joins a Tailscale network |
+
+The **Client addresses** column shows the address pool users draw their
+tunnel address from.
+
+## WireGuard
+
+A WireGuard endpoint that serves users needs an **Address (CIDR list)**, the
+pool user addresses come from, and a **Listen port (set to serve panel
+users)**. The server's **Private key** is made for you.
+
+You never handle user keys. For every user who reaches the endpoint, the panel:
+
+- makes a key pair of the user's own;
+- gives the user a fixed address from the pool, worked out from the account's
+  id, so it never changes and never collides with another user's;
+- adds the user as a peer on every node of the template.
+
+Because the address follows the account id, the pool must reach as far as
+your highest account id, not just your number of users. An account whose
+id lies past the end of the pool gets no peer on that endpoint. With
+`10.8.0.1/24`, account ids up to about 250 fit; for a larger or older panel use a
+bigger pool such as `10.8.0.1/16`.
+
+Adding or removing a user rebuilds the WireGuard endpoint on its nodes, and
+connected WireGuard clients come back within about twenty seconds.
+
+See [[protocols/wireguard]] for the options and for client apps.
+
+## OpenVPN and OpenConnect
+
+An `openvpn-server` or `openconnect-server` endpoint authenticates each user
+by their account name and password. Both serve TLS, so they take a
+certificate like a TLS inbound: under **TLS certificate**, pick the node's
+certificate, a stored certificate from [[use/certificates]], or the endpoint's
+own.
+
+On an OpenVPN server, **Address (CIDR list)** is the pool user addresses come
+from; **Push: redirect gateway** and **Push: DNS servers** decide whether
+clients send all traffic through it and which resolvers they use. On
+OpenConnect the pool is **Client IP pool (CIDR)**, with **Pushed DNS servers**
+and **Split-include routes**.
+
+An OpenVPN or OpenConnect server with no user at all is not started: the
+panel leaves it out of what it sends until a user belongs to its template.
+
+See [[protocols/openvpn]] for the options and for client apps.
+
+## Tailscale
+
+A `tailscale` endpoint joins the node to a Tailscale network with an
+**Auth key**. It can **Advertise routes (CIDR list)** or
+**Advertise as exit node**, and can use another device as its
+**Exit node**. It does not serve panel users; use it to reach a private
+network from the node, or to send traffic out through one.
+
+## App config files
+
+WireGuard, OpenVPN and OpenConnect users import a file rather than a link. The
+panel builds one per user, per endpoint and node:
+
+| Endpoint | File | What it carries |
+| --- | --- | --- |
+| WireGuard | `.conf` | The user's own private key and address, and the server's public key and address |
+| OpenVPN | `.ovpn` | The server's certificate and the user's name and password, inline |
+| OpenConnect | `.txt` | The server address and the user's name and password |
+
+Users find these files in two places:
+
+- On their [[~subscription-page|subscription page]], each with a QR code, the
+  text, and a download button.
+- You can give them out from the user's row: **QR / Links** opens
+  **Client apps**, with **Save file** and a QR code for each. A file too large
+  for a QR code is offered as text and download only.
+
+A config file names one address. It uses the node's first link address, the
+primary, so reordering a node's link addresses changes the files users
+download afterwards. Files users already saved keep the old address; send them
+a new one. See [[nodes]].
+
+## Per-node endpoints
+
+A node can carry endpoints of its own on top of its template, under
+**Per-node endpoints** in its **Config** panel. A WireGuard client to an
+upstream network that only one server should use is a typical case.
+
+## Editing and deleting
+
+Edits reach every node that carries the endpoint. **Duplicate** copies one
+under a new tag and listen port. The panel refuses to delete an endpoint that
+a routing rule or a template's final outbound still names, and lists those
+references.
+
+## Related
+
+- [[protocols/wireguard]], [[protocols/openvpn]]: protocol details.
+- [[templates]]: how endpoints reach nodes and users.
+- [[use/certificates]]: certificates for OpenVPN and OpenConnect.
+- [[use/subscriptions]]: the subscription page that offers the files.

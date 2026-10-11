@@ -1,6 +1,7 @@
 ---
 title: Глоссарий
 description: Слова, которыми пользуется Nexora, каждое в одном-двух предложениях.
+order: 1
 tags: [reference]
 ---
 

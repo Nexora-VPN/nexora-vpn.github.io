@@ -15,6 +15,8 @@ import path from 'node:path'
 import matter from 'gray-matter'
 import type MarkdownIt from 'markdown-it'
 import type { PageData } from 'vitepress'
+import type { DefaultTheme } from 'vitepress'
+import { GROUPS, SECTIONS } from './sections'
 import { TAGS, type Lang } from './tags'
 
 export const LANGS: Lang[] = ['en', 'fa', 'ru', 'zh']
@@ -33,6 +35,8 @@ export interface Page {
   title: string
   description: string
   tags: string[]
+  order: number
+  group: string
   out: Set<string>
   anchors: Set<string>
   terms: Map<string, Term>
@@ -120,6 +124,8 @@ function parsePage(srcDir: string, file: string): Page {
     title,
     description: String(data.description ?? ''),
     tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
+    order: Number(data.order ?? 999),
+    group: String(data.group ?? ''),
     out: new Set(),
     anchors,
     terms,
@@ -171,7 +177,8 @@ export interface Resolved {
 }
 
 export function resolve(index: Index, lang: Lang, inner: string): Resolved {
-  const [target, label] = inner.split('|').map((s) => s.trim())
+  // `\\|` is how a link inside a Markdown table cell spells its separator.
+  const [target, label] = inner.split(/\\?\|/).map((s) => s.trim())
   if (target.startsWith('~')) {
     const termId = target.slice(1)
     const glossary = index.get(`${lang}:${GLOSSARY}`)
@@ -186,6 +193,11 @@ export function resolve(index: Index, lang: Lang, inner: string): Resolved {
     const matches = [...index.values()].filter((p) => p.lang === lang && p.id.split('/').pop() === ref)
     if (matches.length > 1) throw new Error(`[[${inner}]] is ambiguous: ${matches.map((p) => p.id).join(', ')}`)
     page = matches[0]
+  }
+  if (!page && lang !== 'en') {
+    // Not translated yet: link the English page rather than fail the build.
+    // check-locales.mjs is what holds every language to every page.
+    return resolve(index, 'en', inner)
   }
   if (!page) throw new Error(`[[${inner}]] names no page in "${lang}"`)
   if (anchor && !page.anchors.has(anchor)) throw new Error(`[[${inner}]]: "${page.id}" has no heading #${anchor}`)
@@ -294,4 +306,73 @@ export function terminalFences(md: MarkdownIt) {
     const data = Buffer.from(token.content.replace(/\n$/, ''), 'utf8').toString('base64')
     return `<NxTerminal data="${data}" title="${md.utils.escapeHtml(title)}" />\n`
   }
+}
+
+// The sidebar of one language, built from the pages themselves: a section per
+// directory in SECTIONS order, its pages by `order`, and inside a section the
+// pages that name a `group` gathered under it (collapsed, like the panel's).
+export function sidebarFor(srcDir: string, lang: Lang): DefaultTheme.SidebarItem[] {
+  const pages = [...getIndex(srcDir).values()].filter((p) => p.lang === lang)
+  const byOrder = (a: Page, b: Page) => a.order - b.order || a.title.localeCompare(b.title)
+  const item = (p: Page): DefaultTheme.SidebarItem => ({ text: p.title, link: p.link })
+  const out: DefaultTheme.SidebarItem[] = []
+  for (const section of SECTIONS) {
+    const inside = pages.filter((p) => p.id.startsWith(`${section.dir}/`)).sort(byOrder)
+    if (!inside.length) continue
+    const items: DefaultTheme.SidebarItem[] = []
+    const seen = new Set<string>()
+    for (const p of inside) {
+      if (!p.group) {
+        items.push(item(p))
+        continue
+      }
+      if (seen.has(p.group)) continue
+      seen.add(p.group)
+      items.push({
+        text: GROUPS[p.group]?.[lang] ?? p.group,
+        collapsed: true,
+        items: inside.filter((q) => q.group === p.group).map(item),
+      })
+    }
+    if (section.dir === 'reference') {
+      const tags = pages.find((p) => p.id === 'tags')
+      if (tags) items.push(item(tags))
+    }
+    out.push({ text: section.label[lang], collapsed: section.dir !== 'start', items })
+  }
+  return out
+}
+
+// llms.txt and llms-full.txt (llmstxt.org): the English pages as plain
+// Markdown, for the assistants operators ask about Nexora. Wiki links become
+// their text, components are dropped.
+export function llmsText(srcDir: string, outDir: string) {
+  const index = getIndex(srcDir)
+  const pages = [...index.values()]
+    .filter((p) => p.lang === 'en' && p.id !== 'index' && p.id !== 'tags')
+    .sort((a, b) => a.id.localeCompare(b.id))
+  const site = 'https://docs.nexora-panel.org'
+  const plainLinks = (body: string) =>
+    body
+      .replace(/\[\[~?([^\]|]+)\|([^\]]+)\]\]/g, '$2')
+      .replace(/\[\[~([^\]#]+)\]\]/g, (_, t) => index.get(`en:reference/glossary`)?.terms.get(t)?.title ?? t)
+      .replace(/\[\[([^\]#]+)(#[^\]]*)?\]\]/g, (_, t) => {
+        try {
+          return resolve(index, 'en', t).page.title
+        } catch {
+          return t
+        }
+      })
+      .replace(/^<Nx[A-Za-z]+[^>]*\/>\s*$/gm, '')
+      .replace(/^```terminal[^\n]*/gm, '```')
+  const list = pages.map((p) => `- [${p.title}](${site}${p.link})${p.description ? `: ${p.description}` : ''}`)
+  fs.writeFileSync(
+    path.join(outDir, 'llms.txt'),
+    `# Nexora\n\n> Documentation for Nexora, a self-hosted control panel and nodes for running a VPN fleet.\n\n## Pages\n\n${list.join('\n')}\n`,
+  )
+  const full = pages.map((p) => {
+    const body = matter(fs.readFileSync(path.join(srcDir, `${p.id}.md`), 'utf8')).content
+    return `<!-- ${site}${p.link} -->\n${plainLinks(body).trim()}\n`
+  })
+  fs.writeFileSync(path.join(outDir, 'llms-full.txt'), full.join('\n---\n\n'))
 }

@@ -1,6 +1,7 @@
 ---
 title: Glossary
 description: The words Nexora uses, each in a sentence or two.
+order: 1
 tags: [reference]
 ---
 

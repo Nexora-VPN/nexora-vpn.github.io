@@ -37,13 +37,13 @@ const CLIENT = new RegExp(
     // en
     'apps?', 'applications?', 'clients?', 'subscriptions?', 'formats?', 'profiles?',
     'json', 'links?', 'users?', 'based', 'sfa', 'sfi', 'sfm', 'karing', 'nekobox',
-    'v2rayn', 'v2rayng', 'streisand', 'happ', 'hiddify', 'rule[\\s-]?sets?', 'srs',
+    'v2rayn', 'v2rayng', 'streisand', 'happ', 'hiddify', 'rule[\\s-]?sets?', 'srs', 'entr(?:y|ies)', 'mihomo', 'clash',
     // fa
-    'اپ', 'اپلیکیشن', 'برنامه', 'کلاینت', 'اشتراک', 'ساب', 'فرمت', 'پروفایل', 'لینک',
+    'اپ', 'اپلیکیشن', 'برنامه', 'کلاینت', 'اشتراک', 'ساب', 'فرمت', 'پروفایل', 'لینک', 'ورودی',
     // ru
-    'приложени\\p{L}*', 'клиент\\p{L}*', 'подписк\\p{L}*', 'формат\\p{L}*', 'профил\\p{L}*', 'ссылк\\p{L}*',
+    'приложени\\p{L}*', 'клиент\\p{L}*', 'запис\\p{L}*', 'подписк\\p{L}*', 'формат\\p{L}*', 'профил\\p{L}*', 'ссылк\\p{L}*',
     // zh
-    '客户端', '应用', '订阅', '格式', '配置',
+    '客户端', '应用', '订阅', '格式', '配置', '条目',
   ].join('|') +
     ')',
   'iu',
@@ -80,7 +80,16 @@ function isAllowed(line, index, match) {
 
 // Minified bundles carry the theme's own source; only scan what a reader sees.
 function textOf(path, raw) {
-  if (extname(path) === '.html') return raw.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '')
+  // A built page is checked as the text a reader sees: tags become breaks, so
+  // a table row is one paragraph and its words stay next to each other.
+  if (extname(path) === '.html')
+    return raw
+      .replace(/<script[\s\S]*?<\/script>/gi, '')
+      .replace(/<style[\s\S]*?<\/style>/gi, '')
+      .replace(/<\/(p|li|h[1-6]|tr|div|pre|blockquote|figcaption|summary)>/gi, '\n\n')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&nbsp;|&#160;/g, ' ')
+      .replace(/&amp;/g, '&')
   return raw
 }
 

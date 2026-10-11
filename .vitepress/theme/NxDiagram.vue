@@ -4,7 +4,7 @@
 // case the picture is the same without the packets.
 import { computed, onMounted, ref } from 'vue'
 import { useData } from 'vitepress'
-import { DIAGRAMS, LEGEND, type Arrow, type Box, type Words } from '../diagrams'
+import { DIAGRAMS, LEGEND, PICK, type Arrow, type Box, type Words } from '../diagrams'
 
 const props = defineProps<{ id: string }>()
 const { lang } = useData()
@@ -12,6 +12,9 @@ const d = computed(() => DIAGRAMS[props.id])
 const key = computed(() => (lang.value.slice(0, 2) as keyof Words) || 'en')
 const t = (w?: Words) => (w ? w[key.value] ?? w.en : '')
 const moving = ref(false)
+const chosen = ref('')
+const walkthrough = computed(() => d.value.boxes.some((b) => b.note))
+const picked = computed(() => d.value.boxes.find((b) => b.id === chosen.value))
 
 onMounted(() => {
   moving.value = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -97,7 +100,17 @@ const flows = computed(() => [...new Set(d.value.arrows.map((a) => a.flow))])
           </template>
         </g>
       </g>
-      <g v-for="b in d.boxes" :key="b.id" :class="['box', b.kind]">
+      <g
+        v-for="b in d.boxes"
+        :key="b.id"
+        :class="['box', b.kind, { pickable: !!b.note, chosen: chosen === b.id }]"
+        :tabindex="b.note ? 0 : undefined"
+        :role="b.note ? 'button' : undefined"
+        :aria-pressed="b.note ? chosen === b.id : undefined"
+        @click="b.note && (chosen = b.id)"
+        @keydown.enter.prevent="b.note && (chosen = b.id)"
+        @keydown.space.prevent="b.note && (chosen = b.id)"
+      >
         <rect :x="b.x" :y="b.y" :width="b.w" :height="b.h" rx="12" />
         <foreignObject :x="b.x" :y="b.y" :width="b.w" :height="b.h">
           <div class="inner">
@@ -110,6 +123,13 @@ const flows = computed(() => [...new Set(d.value.arrows.map((a) => a.flow))])
         </foreignObject>
       </g>
     </svg>
+    <div v-if="walkthrough" class="note" aria-live="polite">
+      <template v-if="picked">
+        <strong>{{ t(picked.label) }}<span v-if="picked.sub"> · {{ t(picked.sub) }}</span></strong>
+        <p>{{ t(picked.note) }}</p>
+      </template>
+      <p v-else class="hint"><i class="pi pi-hand-pointer" aria-hidden="true"></i> {{ t(PICK) }}</p>
+    </div>
     <figcaption>
       <span v-for="f in flows" :key="f" :class="['key', f]"><i></i>{{ t(LEGEND[f]) }}</span>
     </figcaption>

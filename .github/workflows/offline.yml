@@ -1,0 +1,52 @@
+name: offline bundle
+
+# A tag (v2026.10.11, say) publishes the whole site as a zip on the releases
+# page, for operators who need the documentation where GitHub and the site
+# cannot be reached. The bundle keeps .html in its links so any static server
+# serves it from a folder.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check:src
+      - run: NX_OFFLINE=1 npx vitepress build
+      - name: Zip
+        run: |
+          name="nexora-docs-${GITHUB_REF_NAME}"
+          cp -r .vitepress/dist "$name"
+          cat > "$name/README-OFFLINE.txt" <<'TXT'
+          Nexora documentation, offline copy.
+
+          Open a terminal in this folder and run:
+              python3 -m http.server 8080
+          then open http://localhost:8080 in a browser. Search works offline.
+          Any other static web server pointed at this folder works too.
+
+          Online: https://docs.nexora-panel.org
+          TXT
+          zip -qr "$name.zip" "$name"
+          echo "ZIP=$name.zip" >> "$GITHUB_ENV"
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "$ZIP" \
+            --title "Offline documentation $GITHUB_REF_NAME" \
+            --notes "The whole of docs.nexora-panel.org in four languages, to read without a connection. Unzip, run \`python3 -m http.server 8080\` in the folder and open http://localhost:8080."
