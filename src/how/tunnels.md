@@ -37,6 +37,8 @@ Neither half touches the node's users, inbounds or route rules. A tunnel has
 its own port and its own credentials; no account is created for it and no
 inbound is used.
 
+<NxTunnel scene="modes" />
+
 ## Credentials are derived, never stored
 
 Each origin needs a credential the relay accepts. The panel does not generate
@@ -76,6 +78,8 @@ With two or more profiles, **Load balancing** chooses how the pool is used:
 | **Spread** | every profile that is connected; a new connection takes the link with the fewest open streams |
 | **Priority** | the first profile in the list that is connected; the next one is used only when it has no links |
 
+<NxTunnel scene="pool" />
+
 ## A user sticks to one origin
 
 For every new connection, the relay picks in this order:
@@ -90,6 +94,8 @@ For every new connection, the relay picks in this order:
 Neither load balancing mode changes which origin a user reaches. Losing a
 profile costs throughput; it never moves a user to another exit. When a whole
 origin is lost, only the users who were on it move to another.
+
+<NxTunnel scene="sticky" />
 
 ## Several addresses: warm failover
 

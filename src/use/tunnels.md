@@ -63,6 +63,8 @@ origin → internet.
 Choose **Reverse** unless the relay cannot accept connections from the
 origins.
 
+<NxTunnel scene="modes" />
+
 ### Profiles: the port, security and transport
 
 A profile is one way the tunnel is carried: its own **Listen port**, its own
@@ -97,6 +99,8 @@ With two or more profiles:
 
 Each profile needs its own port, different from every inbound and every other
 tunnel on the listening node.
+
+<NxTunnel scene="pool" />
 
 ## Where the relay's traffic goes
 

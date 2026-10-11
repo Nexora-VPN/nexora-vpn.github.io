@@ -121,8 +121,13 @@ Trusted proxies, the login allowlist and address bans are on
 ## Restarting the panel
 
 **Restart panel** restarts the panel so address, path, listen and HTTPS
-changes take effect. The page reloads when the panel is back. Users'
-connections are not affected: nodes keep serving through a panel restart.
+changes take effect. When the panel is back, the page opens it at its new
+address — a changed port, domain, base path or HTTPS — on the same page. Behind
+a reverse proxy only the domain and the base path follow, since the port and
+the scheme are the proxy's. On a new domain you sign in again, and a
+self-signed certificate the browser has not seen yet shows its warning first.
+Users' connections are not affected: nodes keep serving through a panel
+restart.
 
 ## Related
 

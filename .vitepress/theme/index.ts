@@ -12,6 +12,7 @@ import NxShot from './NxShot.vue'
 import NxTagIndex from './NxTagIndex.vue'
 import NxTermCard from './NxTermCard.vue'
 import NxTerminal from './NxTerminal.vue'
+import NxTunnel from './NxTunnel.vue'
 import 'primeicons/primeicons.css'
 import './fonts.css'
 import './style.css'
@@ -30,5 +31,6 @@ export default {
     app.component('NxTerminal', NxTerminal)
     app.component('NxCommandBuilder', NxCommandBuilder)
     app.component('NxShot', NxShot)
+    app.component('NxTunnel', NxTunnel)
   },
 } satisfies Theme

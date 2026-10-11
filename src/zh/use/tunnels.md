@@ -49,6 +49,8 @@ tags: [tunnels, node]
 
 除非中继无法接受来自出口的连接，否则选择**反向**。
 
+<NxTunnel scene="modes" />
+
 ### 配置档：端口、安全与传输 {#profiles-the-port-security-and-transport}
 
 配置档是承载隧道的一种方式：它有自己的**监听端口**、自己的**安全**和自己的**传输**。每条隧道至少有一个配置档。
@@ -65,6 +67,8 @@ tags: [tunnels, node]
 - **此配置档的链路数**设置每个配置档的份额。六条链路的配置档承载的流量是两条链路的三倍。留空则使用**每个出口的链路数**。
 
 每个配置档需要自己的端口，并且不能与监听节点上的任何入站或其他隧道相同。
+
+<NxTunnel scene="pool" />
 
 ## 中继流量的去向 {#where-the-relays-traffic-goes}
 

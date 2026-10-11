@@ -37,7 +37,8 @@ page.
 1. Open **License** and press **Buy a licence**. The vendor's checkout page
    opens in a new tab, in the panel's language.
 2. Choose a plan and pay with one of the methods the page offers. There is no
-   account to create.
+   account to create; for a first licence the page asks for a Telegram
+   username or an email address, so the vendor can reach you.
 3. Come back to the panel. It says
    *Waiting for the payment — the licence installs itself once it is confirmed*.
 
@@ -115,7 +116,8 @@ outbound HTTPS to that address. **Recheck online** tries straight away.
 ## Questions and refunds
 
 There is no refund button in the panel or on the checkout page. The vendor's
-email address and phone number are at the bottom of every checkout page.
+Telegram, email address and phone number are at the bottom of every checkout
+page.
 
 ## Related pages
 

@@ -581,3 +581,268 @@ html:not(.dark) .nx-dark {
 .nx-api .responses .rdesc :deep(p), .nx-api .rdesc p { margin: 0; }
 .nx-api .code.ok { color: var(--vp-c-green-1); }
 .nx-api .code.err { color: var(--vp-c-danger-1); }
+
+/* ---- Animated tunnel scenes (NxTunnel) ---- */
+
+:root {
+  --nx-bad: #dc2626;
+}
+.dark {
+  --nx-bad: #f87171;
+}
+.nx-tunnel {
+  overflow: visible;
+}
+.nx-tunnel .canvas {
+  overflow-x: auto;
+}
+.nx-tunnel .bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-bottom: 10px;
+}
+.nx-tunnel .bar .steps {
+  display: flex;
+  gap: 4px;
+}
+.nx-tunnel .bar .play {
+  display: flex;
+  gap: 4px;
+  margin-inline-start: auto;
+}
+.nx-tunnel .bar .modes {
+  display: inline-flex;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.nx-tunnel .bar button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-2);
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.nx-tunnel .bar .modes button {
+  border: 0;
+  border-radius: 0;
+}
+.nx-tunnel .bar button:hover {
+  color: var(--vp-c-brand-1);
+}
+.nx-tunnel .bar button.on {
+  background: var(--vp-c-brand-soft);
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
+}
+.nx-tunnel .bar button:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
+.nx-tunnel .box.tall .inner {
+  align-items: center;
+}
+.nx-tunnel .box.lost rect {
+  stroke: var(--nx-bad);
+  stroke-dasharray: 6 5;
+  opacity: 0.75;
+}
+.nx-tunnel .box.lost .sub {
+  color: var(--nx-bad);
+}
+.nx-tunnel .label {
+  font-size: 17px;
+}
+.nx-tunnel .sub {
+  font-size: 13px;
+}
+.nx-tunnel .inner .pi {
+  font-size: 20px;
+}
+.nx-tunnel .user text {
+  fill: #fff;
+  font-size: 15px;
+  font-weight: 700;
+}
+.nx-tunnel .badge text {
+  font-size: 12px;
+}
+.nx-tunnel text.x {
+  fill: var(--nx-bad);
+  font-size: 30px;
+}
+.nx-svg-text {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 6px;
+  font-size: 14px;
+  line-height: 1.25;
+  color: var(--vp-c-text-1);
+  box-sizing: border-box;
+}
+.nx-svg-text.start {
+  align-items: flex-start;
+  text-align: start;
+}
+.nx-svg-text.end {
+  align-items: flex-end;
+  text-align: end;
+}
+.nx-svg-text .mono {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--vp-font-family-mono);
+  font-size: 14px;
+  font-weight: 600;
+  direction: ltr;
+}
+.nx-svg-text .cap {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--vp-c-text-2);
+}
+.nx-svg-text .cap.bad {
+  color: var(--nx-bad);
+}
+.nx-svg-text .cap.good {
+  color: var(--nx-flow-control);
+}
+.nx-svg-text .muted {
+  color: var(--vp-c-text-3);
+}
+:root[dir='rtl'] .nx-svg-text {
+  direction: rtl;
+}
+.nx-tunnel .chip rect {
+  fill: var(--vp-c-bg-soft);
+  stroke: var(--nx-box-line);
+  stroke-width: 1.2;
+  transition: stroke 0.3s, fill 0.3s;
+}
+.nx-tunnel .chip.tunnel rect {
+  stroke: var(--nx-flow-traffic);
+}
+.nx-tunnel .chip.none rect {
+  stroke-dasharray: 5 4;
+}
+.nx-tunnel .chip.none text {
+  fill: var(--vp-c-text-3);
+}
+.nx-tunnel .chip.hot rect {
+  fill: var(--vp-c-brand-soft);
+  stroke: var(--vp-c-brand-1);
+  stroke-width: 2;
+}
+.nx-tunnel .chip.cut rect {
+  stroke: var(--nx-bad);
+  stroke-dasharray: 5 4;
+}
+.nx-tunnel .line {
+  stroke-width: 1.6;
+  fill: none;
+}
+.nx-tunnel .line.dashed {
+  stroke-dasharray: 5 5;
+}
+.nx-tunnel .line.faint {
+  opacity: 0.3;
+}
+.nx-tunnel .line.cut {
+  stroke: var(--nx-bad) !important;
+  stroke-dasharray: 5 5;
+  opacity: 0.8;
+}
+.nx-tunnel .link {
+  stroke: var(--vp-c-text-3);
+  stroke-width: 3;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+.nx-tunnel .link.busy {
+  stroke: var(--nx-flow-traffic);
+  opacity: 0.9;
+}
+.nx-tunnel .link.idle {
+  opacity: 0.3;
+}
+.nx-tunnel .link.blocked {
+  stroke: var(--nx-bad);
+  stroke-dasharray: 7 6;
+}
+.nx-tunnel .key {
+  fill: var(--nx-flow-control);
+  stroke: var(--vp-c-bg);
+  stroke-width: 2;
+}
+.nx-tunnel .packet.back {
+  opacity: 0.55;
+}
+.nx-tunnel .pool {
+  fill: var(--vp-c-brand-soft);
+  stroke: var(--vp-c-brand-1);
+  stroke-dasharray: 6 6;
+  stroke-width: 1.2;
+  opacity: 0.6;
+}
+.nx-tunnel .wall rect {
+  fill: var(--nx-bad);
+}
+.nx-tunnel .meter .track {
+  fill: var(--vp-c-bg-soft);
+  stroke: var(--vp-c-divider);
+}
+.nx-tunnel .meter .fill {
+  fill: var(--nx-flow-traffic);
+  transition: width 0.4s ease;
+}
+.nx-tunnel .exit rect {
+  fill: var(--vp-c-bg-soft);
+  stroke: var(--nx-flow-control);
+}
+.nx-tunnel .exit .nx-svg-text {
+  color: var(--nx-flow-control);
+  font-weight: 600;
+  font-size: 13px;
+}
+.nx-tunnel .exit .nx-svg-text .mono {
+  margin-top: 2px;
+}
+.nx-tunnel .badge {
+  transition: opacity 0.3s;
+}
+.nx-tunnel .inner {
+  gap: 8px;
+  padding: 0 10px;
+}
+.nx-tunnel svg {
+  min-width: 560px;
+}
+.nx-tunnel .box.compact .inner {
+  justify-content: center;
+  text-align: center;
+  padding: 0 4px;
+}
+.nx-tunnel .box.compact .pi {
+  display: none;
+}
+.nx-tunnel .box.compact .label {
+  font-size: 14.5px;
+}
+.nx-tunnel .exit .nx-svg-text {
+  font-size: 12px;
+  padding: 0 4px;
+}
+.nx-tunnel .exit .nx-svg-text .mono {
+  font-size: 12px;
+}
