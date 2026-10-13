@@ -31,8 +31,9 @@ tiers further, for example an operator who may see nodes but not change them.
 See [[roles]].
 
 The list shows each account's role, a crown on the **Owner**, a **2FA** tag
-when two-factor authentication is on, a reseller's allowance and its expiry,
-and the last login with the address it came from.
+when two-factor authentication is on, how many users an admin or reseller
+owns (click the number to open those users), a reseller's allowance and its
+expiry, and the last login with the address it came from.
 
 ## The panel owner
 

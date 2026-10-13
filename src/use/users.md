@@ -14,14 +14,15 @@ see, creates new ones, and hands out each one's
 [[~subscription|subscription]] link. Bulk work on many accounts at once is on
 [[use/user-operations]].
 
-<NxShot page="users" alt="The users page: a summary strip of active, expired and depleted accounts above the list with usage bars, expiry dates and group tags" />
+<NxShot page="users" alt="The users page: a summary strip of active, expired and depleted accounts above the list with usage bars, expiry dates, group tags and each account's owner, with the My users only switch on" />
 
 ## The list
 
 Each row shows the account's **Name** (with a green dot when it is online and
 the inbound it last connected through), its **Status**, its **Usage** against
 its volume, its **Expiry**, when a client last fetched its subscription
-(**Last fetch**), and its **Group**.
+(**Last fetch**), its **Group**, and — for main admins and admins — its
+**Owner**.
 
 | Status | Meaning |
 | --- | --- |
@@ -41,6 +42,26 @@ The counters above the list are **Users**, **Online**, **Not started**,
 **Expired**, **Depleted**, **Disabled**, **Active** and **Never fetched**.
 Click one to show only those accounts.
 
+### My users only
+
+Main admins and admins see every account on the panel. The **My users only**
+switch beside the search box is on each time the page opens, and narrows the
+list and the summary strip to the accounts you own:
+
+- for an admin, the accounts it created or was handed;
+- for a main admin, the panel's own accounts: those any main admin created,
+  plus those made by programs using an API token that belongs to no account.
+
+Only a main admin can create a user for another admin or a reseller, or hand
+one over later. Everything an admin creates is its own.
+
+Switch it off to see every account. The **Owner** column says whose each
+account is; click an owner to show only that owner's accounts. Picking an
+owner in the filters panel switches **My users only** off.
+
+A reseller only ever sees its own accounts and has no such switch. See
+[[use/resellers]].
+
 ### Search, filters and sort
 
 The search box matches part of the name, group, description, remark or
@@ -53,7 +74,8 @@ their account.
 - **Status**, and **Online** for accounts with traffic in the last 90 seconds.
 - **Protocol**, **Inbound**, **Node** and **Template**: accounts that reach
   them.
-- **Group**, and **Owner** (main admin only) for a reseller's accounts.
+- **Group**, and **Owner** (main admins and admins): an admin, a reseller,
+  or **Panel (main admins)**.
 - **Expiry between** two dates, or **Never expires**.
 - **Traffic used (GB)** from and to.
 - **Auto reset** on or off, and **Subscription fetched** yes or no.
@@ -85,7 +107,7 @@ Press **Add**. The form has three tabs: **Settings**, **Customer** and
 | **Enabled** | on for a working account |
 | **Group** | a free label for finding and acting on accounts together. See [[use/user-operations]]. |
 | **Remark** | put in front of the name of every entry in the customer's app |
-| **Owner** | main admin only: the [[~reseller]] this account belongs to, or **Panel (no reseller)** |
+| **Owner** | main admins only: who the account belongs to — an admin, a [[~reseller]], or **Panel (main admins)**. Only a main admin can create a user for somebody else; an account an admin creates is always the admin's own. A reseller's accounts count against its allowance; an admin's do not. |
 | **All templates**, **Templates** | which templates, and so which nodes, the account is served on (below) |
 | **Sub ID** | the identifier in the account's subscription link. Leave it as generated. |
 | **Description** | a note for you |

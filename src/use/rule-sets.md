@@ -50,7 +50,7 @@ number of rules.
 
 ## Adding from the preset catalogue
 
-**Preset rule sets by country or service** opens a shelf of well-known lists:
+**From a preset**, the button beside **Add**, opens a shelf of well-known lists:
 
 - **By country**: Iran, China and Russia, each as **Domains** and
   **IP ranges**. A country usually wants both: a rule that matches only

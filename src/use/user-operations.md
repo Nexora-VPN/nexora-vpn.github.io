@@ -45,6 +45,7 @@ say how many accounts they will reach before you confirm.
 | Forget registered devices | **Reset devices** | |
 | Add days or traffic | **Extend and gift** | **Extend and gift the current filter…** |
 | Set limits | **Set limits** | |
+| Hand to another owner | **Change owner** | |
 | Export a CSV list | **Download CSV** | **Download CSV of the current filter** |
 | Export configs | **Download config pack** | |
 | Delete | **Delete** | **Delete expired users…** |
@@ -96,6 +97,19 @@ the fields you want to change; the rest are left exactly as they are.
 - Setting an **Expiry** makes the accounts fixed-date: a length counted from
   the first connection is replaced by the date.
 - Turning the periodic reset off also clears its cycle and its next date.
+
+### Change owner
+
+Hands the ticked accounts to an admin, a reseller, or the panel. Only the owner
+changes: the accounts keep their limits, links and nodes. Only main admins can
+do it.
+
+Handed to a reseller, the accounts count against its allowance, and the whole
+selection is refused — nothing moves — when the reseller has expired or its
+user limit has no room for all of them.
+
+Accounts made before the panel recorded who created them belong to the
+panel. This is how a main admin gives them to the admin who looks after them.
 
 ### Exports
 
@@ -160,6 +174,7 @@ selection.
 | Adding traffic to an account with unlimited traffic | there is no cap to raise |
 | Any change to an account outside the licence | it is view-only until you are back under the cap. It can still be deleted. See [[use/licence]]. |
 | **Extend and gift** and **Set limits** for a reseller that sells from plans only | its accounts' limits are the plan's, and only you can change them |
+| **Change owner** to a reseller without room for the whole selection | its user limit is checked once, for all the accounts together |
 | Every change for a reseller whose **May edit and delete users** is off | it may create accounts and export them, but not change or remove them |
 
 If a long operation is interrupted, the report says which accounts were
