@@ -63,6 +63,9 @@ shows every plan this licence can move to, already priced:
   renewing early loses nothing.
 - **Upgrading** to higher caps charges the difference for the days you have
   left, and keeps the expiry.
+- **Upgrading to higher caps on a longer period** (monthly to yearly) charges
+  that difference plus the new plan's price, and adds its period after the
+  current expiry: a yearly upgrade gives you a year.
 
 An expired licence renews the same way, and is back as soon as the payment is
 confirmed.
