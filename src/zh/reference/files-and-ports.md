@@ -55,10 +55,10 @@ tags: [reference, install]
 | `/var/opt/nexora/certs/ssl_cert.pem` | 节点自己的证书 |
 | `/var/opt/nexora/certs/ssl_key.pem` | 它的私钥 |
 | `/var/opt/nexora/certs/panel_ca.pem` | 面板的证书，节点只接受这一张 |
-| `/var/opt/nexora/cache/` | 面板推送的规则集和其他文件；可以安全删除，面板会重新发送 |
+| `/var/opt/nexora/cache/` | 面板推送的规则集和其他文件（删除后面板会重新发送），以及 Tailscale 端点的登录状态（删除后即丢失） |
 | `/etc/systemd/system/nexora-node.service` | 服务 |
 
-节点提供的一切都由面板发送并保存在内存中。重启后的节点在面板重新发送配置之前不提供任何服务，这只需几秒钟。证书是节点上唯一值得备份的文件。
+节点提供的一切都由面板发送并保存在内存中。重启后的节点在面板重新发送配置之前不提供任何服务，这只需几秒钟。证书是节点上值得备份的文件；有 Tailscale 端点的节点还应备份 `cache/tailscale`。
 
 在 Docker 中，节点把 `./certs` 和 `./cache` 放在 compose 文件旁边。
 

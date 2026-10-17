@@ -31,8 +31,8 @@ For anything you would be upset to lose, give the panel its own server.
   node can starve the panel of CPU, memory or bandwidth, and a panel that is down
   stops serving the subscriptions of every other node's users too.
 - **It mixes the disposable with the irreplaceable.** A node is meant to be
-  thrown away and installed again. The panel's database is the one thing in the
-  whole fleet worth backing up.
+  thrown away and installed again; the panel's database is what the fleet
+  cannot be rebuilt without.
 - **Uninstalling the node needs care.** Both use `/var/opt/nexora`. Removing
   that whole directory deletes the panel's database; see [[uninstall]].
 - **It still counts as a node** against your licence.

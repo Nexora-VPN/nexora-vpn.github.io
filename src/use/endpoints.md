@@ -75,16 +75,19 @@ endpoint's own certificate; the other TLS settings sit under it.
 
 On an OpenVPN server, **Address (CIDR list)** is the pool user addresses come
 from. **Push to clients** decides whether clients send all traffic through it
-and which resolvers they use, and **Control channel protection** hides the
-handshake from DPI; every user's file carries the matching key. On OpenConnect
-the pool is **Client IP pool (CIDR)**, with **Pushed DNS servers** and
-**Split-include routes**.
+and which resolvers they use, and with **Control channel protection** a probe
+without its key gets no answer; every user's file carries the matching key. On
+OpenConnect the pool is **Client IP pool (CIDR)**, with **Pushed DNS servers**
+and **Split-include routes**.
 
-Settings under **+ Add setting** start at the value the node already uses
-without them, so adding one changes nothing until you edit it.
+Settings under **+ Add setting** mostly start at the value the node already
+uses without them, so adding one changes nothing until you edit it; the
+exceptions are named on [[protocols/openvpn]].
 
-An OpenVPN or OpenConnect server with no user at all is not started: the
-panel leaves it out of what it sends until a user belongs to its template.
+An OpenVPN server in `tls` mode or an OpenConnect server with no user at all
+is not started: the panel leaves it out of what it sends until a user belongs
+to its template. A static-key OpenVPN server has no users and is started as it
+is.
 
 See [[protocols/openvpn]] for the options and for client apps.
 
@@ -106,16 +109,17 @@ text; the form names no file on the node.
 ## Tailscale
 
 A `tailscale` endpoint joins the node to a Tailscale network with an
-**Auth key**, or a Headscale server under **Control server URL**. It can
-**Advertise routes (CIDR list)**, **Advertise tags** or
+**Auth key**; for a Headscale server, also set **Control server URL
+(Headscale)**. It can **Advertise routes (CIDR list)**, **Advertise tags** or
 **Advertise as exit node**, and can use another device as its
 **Exit node**. It does not serve panel users; use it to reach a private
 network from the node, or to send traffic out through one.
 
-The node keeps the endpoint's login in its cache directory. If that is
-cleared, or the node is reinstalled, the endpoint logs in again with its auth
-key, so use a reusable or an ephemeral key; a one-off key that was already
-used needs a new one.
+The node keeps the endpoint's login in its cache directory, which a reinstall
+keeps. If the cache is cleared, the endpoint logs in again with its auth key
+as a new device, so use a reusable key (ephemeral or not); a one-off key that
+was already used needs a new one. A new tag, auth key or control server also
+starts a new login, as a new device.
 
 ## App config files
 
@@ -125,7 +129,7 @@ panel builds one per user, per endpoint and node:
 | Endpoint | File | What it carries |
 | --- | --- | --- |
 | WireGuard | `.conf` | The user's own private key and address, and the server's public key and address |
-| OpenVPN | `.ovpn` | The server's certificate, the user's name and password and, with control channel protection, the user's key, inline |
+| OpenVPN | `.ovpn` | The server's certificate, the user's name and password and, with control channel protection, its key — the server's one shared key, or with `tls_crypt_v2` the user's own — inline |
 | OpenConnect | `.txt` | The server address and the user's name and password |
 
 Users find these files in two places:

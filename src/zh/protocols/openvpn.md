@@ -29,18 +29,18 @@ tags: [protocols, certificates]
 | TLS 证书 | 默认是节点证书，或 [[use/certificates]] 中的证书。只有选择端点自带的证书时才显示证书字段 |
 | **Verify client certificate**（高级） | 默认关闭。要求客户端证书会把端点从用户订阅中移除，因为面板不签发这类证书 |
 
-**+ 添加设置**下是微调选项。每一项添加时都从节点在没有它时本就使用的值开始，因此添加后在修改之前不会改变任何东西：
+**+ 添加设置**下是微调选项。大多数添加时都从节点在没有它时本就使用的值开始，因此添加后在修改之前不会改变任何东西。例外是 **Data ciphers fallback**：节点本身没有这个值，添加它会让早于 OpenVPN 2.4 的客户端用它指定的加密算法连接。
 
 - **Data ciphers**、**Data ciphers fallback**、**Auth digest**：数据通道。fallback 用于 OpenVPN 2.4 之前的客户端。
 - **Min/Max TLS version**、**TLS 1.2 cipher suites**、**TLS key exchange groups**、**Certificate profile**：控制通道的 TLS。
-- **MTU**、**MSS fix**、**Replay window**、**Max clients**、**Topology**。
+- **MTU**、**MSS fix (bytes)**、**Replay window (packets)**、**Max clients**、**Topology**。
 - **Ping interval/restart**、**Renegotiate every/after**、**Handshake window**：服务器端的计时。
 
 ### 控制通道保护 {#control-channel-protection}
 
-开启**控制通道保护**，用密钥对每个握手包签名（`tls_auth`）或同时加密（`tls_crypt`、`tls_crypt_v2`）。这样连接在网络上不再像 OpenVPN，没有密钥的探测完全得不到响应，这在 OpenVPN 被封锁的地方很重要。
+开启**控制通道保护**，用密钥对每个控制通道数据包签名（`tls_auth`）或同时加密（`tls_crypt`、`tls_crypt_v2`）。这样没有密钥的探测完全得不到响应；使用 `tls_crypt` 或 `tls_crypt_v2` 时，网络上无法读取 TLS 握手和服务器证书。三者都不能隐藏这是 OpenVPN 流量：数据包头仍然可读，无论选哪种都能据此识别出 OpenVPN。
 
-密钥由面板生成，重新生成按钮会生成新密钥。每个用户的 `.ovpn` 文件和订阅都带有对应的客户端部分：
+密钥由面板生成，**重新生成**按钮会生成新密钥。每个用户的 `.ovpn` 文件和订阅都带有对应的客户端部分：
 
 - `tls_crypt` 和 `tls_auth`：所有人使用同一个密钥。
 - `tls_crypt_v2`：每个用户有自己的密钥，用服务器密钥封装。服务器密钥永远不会离开端点。用户每次得到的都是同一个密钥；重新生成服务器密钥会给所有用户新密钥，他们需要重新下载文件。
@@ -49,8 +49,8 @@ tags: [protocols, certificates]
 
 **推送给客户端**是服务器在每个客户端连接后告诉它的内容。关闭时使用面板默认值：全部流量走隧道，每 10 秒 ping 一次，60 秒后重启。开启时从同样的默认值开始，可以修改：
 
-- **Route all traffic through the tunnel** 及其标志，或只针对部分网络的 **Routes (split tunnel)**；
-- **DNS servers**、**Search domains**，以及面向 OpenVPN 2.6 客户端的支持 DNS over TLS 或 HTTPS 的 DNS 服务器；
+- **Route all traffic through the tunnel** 及其标志，以及经由隧道发送的网络 **Routes**（前者关闭时只发送这些）；
+- 所有客户端都读取的 **DNS servers (dhcp-option)**、**Search domains**，以及**供 OpenVPN 2.6 客户端使用的 DNS 服务器（优先级、分域 DNS、DNSSEC、DNS over TLS 或 HTTPS）**；
 - **Block DNS outside the tunnel (Windows)**、额外的 DHCP 选项和客户端 ping 计时。
 
 客户端从服务器获取所有这些内容；它们的文件不会改变。
@@ -93,7 +93,7 @@ OpenConnect 客户端使用服务器地址和登录信息，而不是文件。�
 
 ## 用户 {#users}
 
-- **在 OpenVPN 上每个用户同一时间只有一台设备。** 用同一账户登录的第二台设备会接管会话，第一台在没有任何提示的情况下被断开；它会在下一次 ping 超时时察觉，重新连接并夺回会话。因此同一用户的两台设备会不断互相挤掉，而立即重连的客户端（例如 sing-box 应用）总是获胜。请给每台设备单独的账户，或让第二台设备使用其他协议。**Allow duplicate CN** 可以取消这条规则，但这样每次连接都会得到新的隧道地址，设有地址限制的用户在重连后可能会被拒绝几分钟。
+- **在 OpenVPN 上每个用户同一时间只有一台设备。** 用同一账户登录的第二台设备会接管会话，第一台被断开。使用 TCP 时它立即察觉；使用 UDP 时它不会收到通知，要到下一次 ping 超时时才察觉。两种情况下它都会重新连接并夺回会话。因此同一用户的两台设备会不断互相挤掉，而立即重连的客户端（例如 sing-box 应用）总是获胜。请给每台设备单独的账户，或让第二台设备使用其他协议。**Allow duplicate CN** 可以取消这条规则，但这样每次连接都会得到新的隧道地址，设有地址限制的用户在重连后可能会被拒绝几分钟。
 - 用户修改密码、被删除或被停用时，会立即从 OpenVPN 断开；其他用户保持连接。
 - `tls` 模式的 OpenVPN 端点或 OpenConnect 端点，如果其模板上没有用户，就完全不提供服务：空的 OpenVPN 服务器会接受任何密码。至少有一个用户后，面板才会把它下发给节点。
 - 与任何入站一样，流量统计、额度、速度和地址限制按用户生效。

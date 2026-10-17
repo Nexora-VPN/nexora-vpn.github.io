@@ -37,7 +37,8 @@ You can leave out two large parts when you take one:
 Three things are never in an archive: the config file that names the
 database, the subscription themes on disk, and the staged node binaries. The
 mirrored rule-set files are left out too; the panel downloads them again.
-Nodes keep nothing worth backing up, so they need no backup of their own.
+A node needs no backup of its own beyond its certificates and, with a
+Tailscale endpoint, `cache/tailscale`; see [[reference/files-and-ports]].
 
 ## Taking a backup
 

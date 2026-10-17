@@ -36,24 +36,28 @@ a client address pool and the node's certificate.
 | TLS certificate | the node's certificate by default, or one from [[use/certificates]]. The certificate fields show only while it is set to the endpoint's own certificate |
 | **Verify client certificate** (advanced) | off by default. Requiring client certificates drops the endpoint from users' subscriptions, because the panel does not issue them |
 
-Under **+ Add setting** are the tuning options. Each one, when added, starts at
-the value the node already uses without it, so adding a setting changes
-nothing until you edit it:
+Under **+ Add setting** are the tuning options. Most start at the value the
+node already uses without them, so adding one changes nothing until you edit
+it. **Data ciphers fallback** is the exception: the node has none, and adding
+it lets clients older than OpenVPN 2.4 in with the cipher it names.
 
 - **Data ciphers**, **Data ciphers fallback**, **Auth digest**: the data
   channel. The fallback is for clients older than OpenVPN 2.4.
 - **Min/Max TLS version**, **TLS 1.2 cipher suites**, **TLS key exchange
   groups**, **Certificate profile**: the control channel's TLS.
-- **MTU**, **MSS fix**, **Replay window**, **Max clients**, **Topology**.
+- **MTU**, **MSS fix (bytes)**, **Replay window (packets)**, **Max clients**,
+  **Topology**.
 - **Ping interval/restart**, **Renegotiate every/after**, **Handshake window**:
   timing on the server's side.
 
 ### Control channel protection
 
 Turn on **Control channel protection** to sign (`tls_auth`) or also encrypt
-(`tls_crypt`, `tls_crypt_v2`) every handshake packet with a key. The
-connection then no longer looks like OpenVPN on the wire, and a probe without
-the key gets no answer at all, which matters where OpenVPN is blocked.
+(`tls_crypt`, `tls_crypt_v2`) every control-channel packet with a key. A probe
+without the key then gets no answer at all, and with `tls_crypt` or
+`tls_crypt_v2` the TLS handshake and the server's certificate cannot be read on
+the wire. None of the three hides that the traffic is OpenVPN: the packet
+header stays readable, and OpenVPN can be recognised by it whichever is chosen.
 
 The panel makes the key, and **Regenerate** makes a new one. Every user's
 `.ovpn` file and subscription carry the matching client side:
@@ -71,10 +75,11 @@ Off, the panel's default applies: all traffic through the tunnel, a ping every
 10 seconds, a restart after 60. On, it starts from that default and you can
 change:
 
-- **Route all traffic through the tunnel**, with its redirect flags, or
-  **Routes (split tunnel)** for only some networks;
-- **DNS servers**, **Search domains**, and for OpenVPN 2.6 clients **DNS
-  servers** with DNS over TLS or HTTPS;
+- **Route all traffic through the tunnel**, with its redirect flags, and
+  **Routes**, the networks sent through it (all that is sent when the first is
+  off);
+- **DNS servers (dhcp-option)**, which every client reads, **Search domains**,
+  and **DNS servers for OpenVPN 2.6 clients (priority, split DNS, DNSSEC, DNS over TLS or HTTPS)**;
 - **Block DNS outside the tunnel (Windows)**, extra DHCP options, and the
   client ping timing.
 
@@ -132,11 +137,12 @@ also get the endpoint in their subscription.
 ## Users
 
 - **One device at a time per user on OpenVPN.** A second device that signs
-  in with the same account takes over the session and the first is dropped
-  without notice; it notices at its next ping timeout and connects again,
-  taking the session back. Two devices of one user therefore keep pushing each
-  other off, and a client that reconnects at once, such as sing-box apps, always wins. Give
-  each device its own account, or use another protocol for the second device.
+  in with the same account takes over the session, and the first is dropped.
+  Over TCP it sees that at once; over UDP it is not told and notices at its
+  next ping timeout. Either way it connects again and takes the session back,
+  so two devices of one user keep pushing each other off, and a client that
+  reconnects at once, such as sing-box apps, always wins. Give each device its
+  own account, or use another protocol for the second device.
   **Allow duplicate CN** lifts the rule, but then every connection gets a new
   tunnel address, so a user with an address limit can be locked out for some
   minutes after reconnecting.

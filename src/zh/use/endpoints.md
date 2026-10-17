@@ -52,11 +52,11 @@ tags: [protocols]
 
 只有当 **TLS 证书**选为端点自带的证书时才显示证书字段；其他 TLS 设置位于其下方。
 
-在 OpenVPN 服务端上，**Address (CIDR list)** 是用户地址所取自的地址池。**推送给客户端**决定客户端是否把所有流量都经由它发送以及使用哪些解析器，**控制通道保护**则向 DPI 隐藏握手；每个用户的文件都带有对应的密钥。在 OpenConnect 上，地址池是 **Client IP pool (CIDR)**，另有 **Pushed DNS servers** 和 **Split-include routes**。
+在 OpenVPN 服务端上，**Address (CIDR list)** 是用户地址所取自的地址池。**推送给客户端**决定客户端是否把所有流量都经由它发送以及使用哪些解析器，开启**控制通道保护**后没有密钥的探测得不到响应；每个用户的文件都带有对应的密钥。在 OpenConnect 上，地址池是 **Client IP pool (CIDR)**，另有 **Pushed DNS servers** 和 **Split-include routes**。
 
-**+ 添加设置**下的设置从节点在没有它们时本就使用的值开始，因此添加后在修改之前不会改变任何东西。
+**+ 添加设置**下的设置大多从节点在没有它们时本就使用的值开始，因此添加后在修改之前不会改变任何东西；例外见 [[protocols/openvpn]]。
 
-完全没有用户的 OpenVPN 或 OpenConnect 服务端不会启动：在其模板有用户之前，面板不会把它包含在发送的配置中。
+完全没有用户的 `tls` 模式 OpenVPN 服务端或 OpenConnect 服务端不会启动：在其模板有用户之前，面板不会把它包含在发送的配置中。静态密钥模式的 OpenVPN 服务端没有用户，会按原样启动。
 
 选项和客户端应用见 [[protocols/openvpn]]。
 
@@ -68,9 +68,9 @@ tags: [protocols]
 
 ## Tailscale {#tailscale}
 
-`tailscale` 端点使用 **Auth key** 把节点加入 Tailscale 网络，或通过 **Control server URL** 加入 Headscale 服务器。它可以 **Advertise routes (CIDR list)**、**Advertise tags** 或 **Advertise as exit node**，也可以把另一台设备用作 **Exit node**。它不为面板用户提供服务；用它从节点访问私有网络，或经由私有网络把流量发送出去。
+`tailscale` 端点使用 **Auth key** 把节点加入 Tailscale 网络；使用 Headscale 服务器时，还需填写 **Control server URL (Headscale)**。它可以 **Advertise routes (CIDR list)**、**Advertise tags** 或 **Advertise as exit node**，也可以把另一台设备用作 **Exit node**。它不为面板用户提供服务；用它从节点访问私有网络，或经由私有网络把流量发送出去。
 
-节点把该端点的登录状态保存在自己的缓存目录中。如果缓存被清除或节点被重新安装，端点会用它的 auth key 重新登录，所以请使用可重复使用的或 ephemeral 的密钥；已经用过的一次性密钥需要换成新的。
+节点把该端点的登录状态保存在自己的缓存目录中。重新安装节点会保留缓存。如果缓存被清除，端点会用它的 auth key 作为新设备重新登录，所以请使用可重复使用的密钥（无论是否 ephemeral）；已经用过的一次性密钥需要换成新的。更换标签、auth key 或控制服务器同样会作为新设备重新登录。
 
 ## 应用配置文件 {#app-config-files}
 
@@ -79,7 +79,7 @@ WireGuard、OpenVPN 和 OpenConnect 用户导入的是文件，而不是链接�
 | 端点 | 文件 | 包含内容 |
 | --- | --- | --- |
 | WireGuard | `.conf` | 用户自己的私钥和地址，以及服务器的公钥和地址 |
-| OpenVPN | `.ovpn` | 内嵌的服务器证书、用户名和密码，以及启用控制通道保护时用户的密钥 |
+| OpenVPN | `.ovpn` | 内嵌的服务器证书、用户名和密码，以及启用控制通道保护时的密钥（服务器共用的那一个密钥；使用 `tls_crypt_v2` 时为用户自己的密钥） |
 | OpenConnect | `.txt` | 服务器地址以及用户名和密码 |
 
 用户可以在两个地方找到这些文件：

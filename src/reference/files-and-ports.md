@@ -62,12 +62,13 @@ Each panel stack keeps what must outlive the container next to its compose file:
 | `/var/opt/nexora/certs/ssl_cert.pem` | the node's own certificate |
 | `/var/opt/nexora/certs/ssl_key.pem` | its private key |
 | `/var/opt/nexora/certs/panel_ca.pem` | the panel's certificate, the only one the node accepts |
-| `/var/opt/nexora/cache/` | rule sets and other files the panel pushed; safe to delete, the panel sends them again |
+| `/var/opt/nexora/cache/` | rule sets and other files the panel pushed, which it sends again if they are deleted, and a Tailscale endpoint's login, which is lost if they are |
 | `/etc/systemd/system/nexora-node.service` | the service |
 
 Everything a node serves is sent by the panel and held in memory. A restarted
 node serves nothing until the panel sends its configuration again, which takes
-seconds. The certificates are the only files on a node worth backing up.
+seconds. The certificates are the files on a node worth backing up, and on a node with
+a Tailscale endpoint, `cache/tailscale` too.
 
 In Docker, the node keeps `./certs` and `./cache` next to its compose file.
 
