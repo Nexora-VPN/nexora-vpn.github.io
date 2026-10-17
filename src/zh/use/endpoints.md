@@ -70,6 +70,8 @@ tags: [protocols]
 
 `tailscale` 端点使用 **Auth key** 把节点加入 Tailscale 网络，或通过 **Control server URL** 加入 Headscale 服务器。它可以 **Advertise routes (CIDR list)**、**Advertise tags** 或 **Advertise as exit node**，也可以把另一台设备用作 **Exit node**。它不为面板用户提供服务；用它从节点访问私有网络，或经由私有网络把流量发送出去。
 
+节点把该端点的登录状态保存在自己的缓存目录中。如果缓存被清除或节点被重新安装，端点会用它的 auth key 重新登录，所以请使用可重复使用的或 ephemeral 的密钥；已经用过的一次性密钥需要换成新的。
+
 ## 应用配置文件 {#app-config-files}
 
 WireGuard、OpenVPN 和 OpenConnect 用户导入的是文件，而不是链接。面板为每个用户在每个端点和节点上生成一个文件：

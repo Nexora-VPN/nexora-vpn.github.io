@@ -112,6 +112,11 @@ A `tailscale` endpoint joins the node to a Tailscale network with an
 **Exit node**. It does not serve panel users; use it to reach a private
 network from the node, or to send traffic out through one.
 
+The node keeps the endpoint's login in its cache directory. If that is
+cleared, or the node is reinstalled, the endpoint logs in again with its auth
+key, so use a reusable or an ephemeral key; a one-off key that was already
+used needs a new one.
+
 ## App config files
 
 WireGuard, OpenVPN and OpenConnect users import a file rather than a link. The
