@@ -170,6 +170,9 @@ A user is served only on the nodes whose [[~template]] they belong to.
   templates. This is the default for a new user.
 - With it off, pick one or several **Templates**. An account on none reaches
   no node.
+- When the owner is a reseller limited to chosen templates, the form offers
+  only those, and the switch reads **All reseller templates** (see
+  [[use/resellers#limiting-a-reseller-to-templates]]).
 
 ### Customer details
 

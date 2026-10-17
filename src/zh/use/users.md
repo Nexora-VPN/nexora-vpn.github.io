@@ -127,6 +127,7 @@ tags: [users, subscriptions]
 
 - **全部模板**让账户出现在每个节点上，包括以后新增的模板。这是新用户的默认设置。
 - 关闭它时，选择一个或多个**模板**。不属于任何模板的账户无法访问任何节点。
+- 当所有者是被限制在所选模板上的代理商时，表单只提供这些模板，开关显示为**该分销商的全部模板**（见 [[use/resellers#limiting-a-reseller-to-templates]]）。
 
 ### 客户资料 {#customer-details}
 

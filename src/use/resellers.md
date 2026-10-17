@@ -52,6 +52,7 @@ Resellers are made on **Access → Admins**, by the main admin.
    | --- | --- |
    | **May edit and delete users** | off: it can create accounts but not change or remove them afterwards |
    | **Sell from plans only** | on: every account it creates must come from one of the **Allowed plans**, with the plan's limits (see [[use/plans#plans-for-resellers]]) |
+   | **Only chosen templates** | on: its customers are put on the **Allowed templates** only, and so reach only those templates' nodes (below) |
    | **Subscription domain** | which of your subscription domains its customers' links use (below) |
 
 5. Press **Save** and give the reseller its login.
@@ -77,6 +78,30 @@ account on it, on top of each account's own allowance:
 
 The tighter of the role's cap and the account's own value applies. See
 [[use/roles]].
+
+## Limiting a reseller to templates
+
+A node serves the users of its [[~template]], so the way to give a reseller
+some of your nodes and not others is to give it some of your templates. Turn
+on **Only chosen templates** and pick the **Allowed templates**.
+
+- The reseller sees only those templates, and its user form offers no
+  others. **All templates** on one of its customers means all of the
+  reseller's templates.
+- The panel narrows rather than refuses. A template outside the list is
+  dropped from whatever asks for it: a create, an edit, a plan that names
+  more templates, or a customer you hand to the reseller from **Owner** or
+  **Change owner**.
+- **Saving the reseller applies the list to every customer it has.** Take a
+  template away and all its customers leave that template and its nodes at
+  once, with no node restart. Add one and it reaches the customers that are
+  on all templates; customers on a hand-picked list keep their list. The
+  panel says how many customers the save moved.
+
+To keep two nodes apart that share a template, give each its own template.
+If every allowed template is deleted, the reseller stays limited to nothing:
+its customers reach no node, and the admins list marks it in red until you
+pick a template.
 
 ## A subscription domain per reseller
 
@@ -106,8 +131,8 @@ minute. Customers you or the reseller switched off by hand stay off.
 
 ## Deleting a reseller
 
-Deleting a reseller hands its customers to the panel: they keep working and
-become yours. The API tokens bound to the reseller are deleted with it.
+Deleting a reseller hands its customers to the panel: they keep working, on
+the templates they are on, and become yours. The API tokens bound to the reseller are deleted with it.
 
 ## Related pages
 
