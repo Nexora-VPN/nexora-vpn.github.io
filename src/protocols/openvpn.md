@@ -131,6 +131,15 @@ also get the endpoint in their subscription.
 
 ## Users
 
+- **One device at a time per user on OpenVPN.** A second device that signs
+  in with the same account takes over the session and the first is dropped
+  without notice; it notices at its next ping timeout and connects again,
+  taking the session back. Two devices of one user therefore keep pushing each
+  other off, and a client that reconnects at once, such as sing-box apps, always wins. Give
+  each device its own account, or use another protocol for the second device.
+  **Allow duplicate CN** lifts the rule, but then every connection gets a new
+  tunnel address, so a user with an address limit can be locked out for some
+  minutes after reconnecting.
 - A user changing their password, or being removed or disabled, is
   disconnected from OpenVPN at once; the rest stay connected.
 - An OpenVPN endpoint in `tls` mode, or an OpenConnect endpoint, with no users
