@@ -35,7 +35,8 @@ most fleets want. You add outbounds when traffic should go somewhere else:
 | `socks`, `http` | Forwards to a SOCKS or HTTP proxy. |
 | `shadowsocks`, `vmess`, `vless`, `trojan` | Forwards to another proxy server speaking that protocol, with its own transport and TLS. |
 | `hysteria`, `hysteria2`, `tuic` | Forwards over QUIC to a server speaking that protocol. |
-| `shadowtls`, `anytls`, `ssh`, `naive`, `mieru`, `snell`, `sudoku`, `trusttunnel`, `masque`, `tor` | Further upstream types, for operators who already run such a server. |
+| `shadowtls`, `anytls`, `ssh`, `naive`, `mieru`, `snell`, `sudoku`, `trusttunnel`, `tor` | Further upstream types, for operators who already run such a server. |
+| `masque` | Cloudflare WARP: traffic leaves through Cloudflare's network instead of the node's own address. See [WARP](#warp). |
 | `selector` | A group of other outbounds; one of them is used, chosen by you. |
 | `urltest` | A group of other outbounds; the one with the lowest measured delay is used. |
 
@@ -58,6 +59,24 @@ Those outbounds must be in the same template.
 
 An outbound that no template selects does nothing. The summary strip counts
 those under **Unused**.
+
+## Cloudflare WARP {#warp}
+
+A WARP outbound sends traffic out through Cloudflare's network, so the
+destination sees a Cloudflare address instead of the node's. It is useful for
+sites that refuse your server's address.
+
+1. Open **Core configs → Outbounds** and click **From a preset**.
+2. Pick **Cloudflare WARP**. The ordinary form opens with the type `masque`
+   and the tag `warp` filled in. Leave the profile fields empty.
+3. Click **Save**, select it in a template's **Outbounds**, and write the
+   routing rules that send traffic to `warp` yourself. The preset adds no
+   rules.
+
+There is no account to create. On its first start each node registers its own
+WARP device with Cloudflare and keeps it, so no two nodes share one. That first
+registration needs the node to reach Cloudflare's API. Where it cannot, set
+**Profile detour** to an outbound that can reach it.
 
 ## How routing names an outbound
 

@@ -29,7 +29,8 @@ tags: [routing]
 | `socks`、`http` | 转发到 SOCKS 或 HTTP 代理。 |
 | `shadowsocks`、`vmess`、`vless`、`trojan` | 转发到使用该协议的另一台代理服务器，带有自己的传输和 TLS。 |
 | `hysteria`、`hysteria2`、`tuic` | 通过 QUIC 转发到使用该协议的服务器。 |
-| `shadowtls`、`anytls`、`ssh`、`naive`、`mieru`、`snell`、`sudoku`、`trusttunnel`、`masque`、`tor` | 其他上游类型，供已经运行此类服务器的运营者使用。 |
+| `shadowtls`、`anytls`、`ssh`、`naive`、`mieru`、`snell`、`sudoku`、`trusttunnel`、`tor` | 其他上游类型，供已经运行此类服务器的运营者使用。 |
+| `masque` | Cloudflare WARP：流量经 Cloudflare 的网络出去，而不是从节点自己的地址。见 [WARP](#warp)。 |
 | `selector` | 一组其他出站；由你选择使用其中一个。 |
 | `urltest` | 一组其他出站；使用测得延迟最低的那个。 |
 
@@ -46,6 +47,16 @@ tags: [routing]
 5. 在某个模板的**出站**中选中它，并在路由规则中或作为**默认出站**引用它。
 
 没有被任何模板选中的出站不起作用。统计条将它们计入**未使用**。
+
+## Cloudflare WARP {#warp}
+
+WARP 出站让流量经 Cloudflare 的网络出去，目标看到的是 Cloudflare 的地址而不是节点的地址。适用于拒绝你服务器地址的网站。
+
+1. 打开**核心配置 → 出站**，点击**从预设添加**。
+2. 选择 **Cloudflare WARP**。普通表单会打开，类型 `masque`、标签 `warp` 已填好。配置文件字段留空。
+3. 点击**保存**，在某个模板的**出站**中选中它，并自己编写把流量发往 `warp` 的路由规则。预设不会添加任何规则。
+
+无需创建账号。每个节点首次启动时会自行向 Cloudflare 注册自己的 WARP 设备并保存下来，所以任何两个节点都不会共用一个账号。首次注册时节点需要能访问 Cloudflare 的 API；如果不能，把 **Profile detour** 设为一个能访问它的出站。
 
 ## 路由如何引用出站 {#how-routing-names-an-outbound}
 
