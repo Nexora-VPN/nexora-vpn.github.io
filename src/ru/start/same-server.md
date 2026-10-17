@@ -55,7 +55,7 @@ Nexora этого не запрещает, и они не мешают друг 
 
    ```bash
    curl -fsSL https://PANEL/install-node.sh | bash -s -- \
-     --panel PANEL --token TOKEN --listen 127.0.0.1:62050
+     --panel PANEL --token TOKEN --port 62050 --listen 127.0.0.1:62050
    ```
 
 Если панель ещё на своём самоподписанном сертификате, показанная ею команда несёт ключ сертификата (`--pinnedpubkey` и `--pin`); оставьте оба. Панелям v0.0.3 и более ранних версий вместо этого нужны `-k` и `--insecure`, как описано в [[start/add-node]].

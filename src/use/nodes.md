@@ -47,8 +47,9 @@ A node can have two kinds of problem, and the list keeps them apart:
 
 1. Press **Add**.
 2. Fill in **Name**, and the **Address** and **Port** the panel reaches the
-   node at. The port is the node's control port, `62050` unless you chose
-   another when installing.
+   node at. The port is the node's control port, `62050` by default. Installing
+   or updating the node from the panel binds it to the port saved here, so to
+   move it, change it here and install again.
 3. Pick the node's [[~template]]. A node serves exactly what its template
    holds, and nothing until it has one.
 4. Fill in the rest of the form (below) as needed and press **Save**, or go

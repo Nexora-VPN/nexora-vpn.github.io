@@ -34,8 +34,14 @@ tags: [install, node]
 3. در زبانهٔ **دستی**، دستور را کپی کنید. چیزی شبیه این است:
 
    ```bash
-   curl -fsSL https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN
+   curl -fsSL https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --port 62050
    ```
+
+   `--port` همان **پورت** نود است. برای پورت دیگر، آن را در پنجرهٔ نود عوض
+   کنید نه در دستور: پنل به پورتی وصل می‌شود که آنجا ذخیره شده، و هم این دستور
+   و هم نصب خودکار نود را روی همان پورت بالا می‌آورند. پشت port forward، شمارهٔ
+   پورت را در دو طرف یکی بگذارید: هر نصب و به‌روزرسانی نود را روی **پورت**
+   ذخیره‌شده بالا می‌آورد.
 
 4. آن را با root روی سرور نود اجرا کنید.
 
@@ -45,7 +51,7 @@ tags: [install, node]
 کلید گواهی‌اش بررسی می‌کند:
 
 ```bash
-curl -fsSLk --pinnedpubkey 'sha256//KEY' https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --pin 'sha256//KEY'
+curl -fsSLk --pinnedpubkey 'sha256//KEY' https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --port 62050 --pin 'sha256//KEY'
 ```
 
 اینجا `-k` بررسی را خاموش نمی‌کند: `--pinnedpubkey` هر سروری را که کلیدش کلید
@@ -59,7 +65,7 @@ curl -fsSLk --pinnedpubkey 'sha256//KEY' https://PANEL/install-node.sh | bash -s
 [نصب خودکار با SSH](#install-automatically-over-ssh) را ترجیح دهید:
 
 ```bash
-curl -fsSL http://PANEL/install-node.sh | bash -s -- --panel http://PANEL --token TOKEN
+curl -fsSL http://PANEL/install-node.sh | bash -s -- --panel http://PANEL --token TOKEN --port 62050
 ```
 :::
 
@@ -134,7 +140,8 @@ IPv4 اتصال IPv6 را پوشش نمی‌دهد.
 
 | گزینه | اثر |
 | --- | --- |
-| `--listen ADDR` | پورت کنترل را جایی غیر از `[::]:62050` باز می‌کند |
+| `--port PORT` | پورت کنترل؛ نودی که از قبل نصب است آدرسش را نگه می‌دارد و فقط پورت عوض می‌شود (پیش‌فرض: همانی که هست بماند، وگرنه `[::]:62050`) |
+| `--listen ADDR` | کل آدرس کنترل، میزبان و پورت؛ بر `--port` و بر آنچه نصب است برتری دارد |
 | `--method script\|docker` | نصب به صورت سرویس systemd یا کانتینر (پیش‌فرض: همانی که هست بماند) |
 | `--source panel\|github` | باینری را از پنل یا از یک نسخهٔ عمومی می‌گیرد |
 | `--version TAG` | نسخهٔ مشخصی از نود را نصب می‌کند (آن را از GitHub می‌گیرد) |

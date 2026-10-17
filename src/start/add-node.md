@@ -32,8 +32,14 @@ nodes it drives.
 3. On the **Manual** tab, copy the command. It looks like this:
 
    ```bash
-   curl -fsSL https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN
+   curl -fsSL https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --port 62050
    ```
+
+   `--port` is the node's **Port**. To use another port, change it in the
+   node's dialog rather than in the command: the panel dials the port saved
+   there, and the command and the automatic install both bind it. Behind a
+   port forward, use the same port number on both sides: every install and
+   update binds the node to the saved **Port**.
 
 4. Run it as root on the node's server.
 
@@ -43,7 +49,7 @@ The setup wizard starts the panel on a self-signed certificate, which plain
 then checks the panel by the key of its certificate:
 
 ```bash
-curl -fsSLk --pinnedpubkey 'sha256//KEY' https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --pin 'sha256//KEY'
+curl -fsSLk --pinnedpubkey 'sha256//KEY' https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --port 62050 --pin 'sha256//KEY'
 ```
 
 The `-k` here does not switch the check off: `--pinnedpubkey` still refuses
@@ -57,7 +63,7 @@ that connection is checked, so between servers you do not trust the network
 of, prefer [the automatic install over SSH](#install-automatically-over-ssh):
 
 ```bash
-curl -fsSL http://PANEL/install-node.sh | bash -s -- --panel http://PANEL --token TOKEN
+curl -fsSL http://PANEL/install-node.sh | bash -s -- --panel http://PANEL --token TOKEN --port 62050
 ```
 :::
 
@@ -136,7 +142,8 @@ Add these to the end of the command:
 
 | Option | Effect |
 | --- | --- |
-| `--listen ADDR` | bind the control port somewhere other than `[::]:62050` |
+| `--port PORT` | the control port; a node already installed keeps the address it binds and moves only the port (default: keep what is there, else `[::]:62050`) |
+| `--listen ADDR` | the whole control address, host and port; wins over `--port` and over what is installed |
 | `--method script\|docker` | install as a systemd service or as a container (default: keep what is there) |
 | `--source panel\|github` | take the binary from the panel or from a public release |
 | `--version TAG` | install a specific node release (takes it from GitHub) |

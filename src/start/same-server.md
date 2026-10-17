@@ -53,7 +53,7 @@ node's.
 
    ```bash
    curl -fsSL https://PANEL/install-node.sh | bash -s -- \
-     --panel PANEL --token TOKEN --listen 127.0.0.1:62050
+     --panel PANEL --token TOKEN --port 62050 --listen 127.0.0.1:62050
    ```
 
 With the panel still on its self-signed certificate, the command it shows carries the certificate's key (`--pinnedpubkey` and `--pin`); keep both. Panel v0.0.3 and earlier need `-k` and `--insecure` instead, as [[start/add-node]] explains.

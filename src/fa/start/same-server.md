@@ -51,7 +51,7 @@ tags: [install, node, panel]
 
    ```bash
    curl -fsSL https://PANEL/install-node.sh | bash -s -- \
-     --panel PANEL --token TOKEN --listen 127.0.0.1:62050
+     --panel PANEL --token TOKEN --port 62050 --listen 127.0.0.1:62050
    ```
 
 اگر پنل هنوز روی گواهی خودامضای خودش است، دستوری که نشان می‌دهد کلید گواهی را همراه دارد (`--pinnedpubkey` و `--pin`)؛ هر دو را نگه دارید. پنل v0.0.3 و قدیمی‌تر به‌جایش `-k` و `--insecure` لازم دارد؛ توضیحش در [[start/add-node]] است.

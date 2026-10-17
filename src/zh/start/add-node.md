@@ -27,8 +27,10 @@ tags: [install, node]
 3. 在 **手动** 选项卡中复制命令。它类似这样：
 
    ```bash
-   curl -fsSL https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN
+   curl -fsSL https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --port 62050
    ```
+
+   命令中的 `--port` 就是节点的 **端口**。要换端口，请在节点对话框中修改，而不是改命令：面板连接的是那里保存的端口，这条命令和自动安装都会让节点监听它。如果节点在端口转发之后，请在两端使用相同的端口号：每次安装和更新都会让节点监听已保存的 **端口**。
 
 4. 在节点服务器上以 root 身份运行它。
 
@@ -36,7 +38,7 @@ tags: [install, node]
 设置向导让面板以自签名证书启动，节点上普通的 `curl` 会拒绝它。面板知道这种情况，此时它给出的命令会按证书的密钥来校验面板：
 
 ```bash
-curl -fsSLk --pinnedpubkey 'sha256//KEY' https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --pin 'sha256//KEY'
+curl -fsSLk --pinnedpubkey 'sha256//KEY' https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --port 62050 --pin 'sha256//KEY'
 ```
 
 这里的 `-k` 并没有关闭校验：`--pinnedpubkey` 仍会拒绝任何密钥与你的面板不符的服务器，`--pin` 让安装脚本从面板的下载也同样校验。请按面板显示的原样复制命令。面板拿到 Let's Encrypt 或其他 ACME 机构签发的证书（[[use/certificates]]）后，命令会恢复为普通形式。
@@ -44,7 +46,7 @@ curl -fsSLk --pinnedpubkey 'sha256//KEY' https://PANEL/install-node.sh | bash -s
 使用纯 HTTP 的面板显示的命令会明确写出 `http://`。这种连接上没有任何校验；如果你不信任两台服务器之间的网络，请优先使用[通过 SSH 自动安装](#install-automatically-over-ssh)：
 
 ```bash
-curl -fsSL http://PANEL/install-node.sh | bash -s -- --panel http://PANEL --token TOKEN
+curl -fsSL http://PANEL/install-node.sh | bash -s -- --panel http://PANEL --token TOKEN --port 62050
 ```
 :::
 
@@ -101,7 +103,8 @@ ufw allow from 203.0.113.10 to any port 62050 proto tcp
 
 | 选项 | 作用 |
 | --- | --- |
-| `--listen ADDR` | 把控制端口绑定到 `[::]:62050` 以外的地址 |
+| `--port PORT` | 控制端口；已安装的节点保留其绑定地址，只更换端口（默认：保持现状，否则为 `[::]:62050`） |
+| `--listen ADDR` | 完整的控制地址（主机和端口）；优先于 `--port` 和已安装的设置 |
 | `--method script\|docker` | 安装为 systemd 服务或容器（默认：保持现有方式） |
 | `--source panel\|github` | 从面板或公开发布版获取程序 |
 | `--version TAG` | 安装指定的节点版本（从 GitHub 获取） |

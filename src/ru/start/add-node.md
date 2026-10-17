@@ -34,8 +34,14 @@ tags: [install, node]
 3. На вкладке **Вручную** скопируйте команду. Она выглядит так:
 
    ```bash
-   curl -fsSL https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN
+   curl -fsSL https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --port 62050
    ```
+
+   `--port` — это **Порт** узла. Чтобы взять другой порт, меняйте его в окне
+   узла, а не в команде: панель подключается к сохранённому там порту, и эта
+   команда, и автоматическая установка поднимают узел на нём. За проброшенным
+   портом используйте один номер с обеих сторон: каждая установка и
+   обновление поднимают узел на сохранённом **Порту**.
 
 4. Выполните её от root на сервере узла.
 
@@ -45,7 +51,7 @@ tags: [install, node]
 проверяет панель по ключу её сертификата:
 
 ```bash
-curl -fsSLk --pinnedpubkey 'sha256//KEY' https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --pin 'sha256//KEY'
+curl -fsSLk --pinnedpubkey 'sha256//KEY' https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN --port 62050 --pin 'sha256//KEY'
 ```
 
 `-k` здесь не отключает проверку: `--pinnedpubkey` по-прежнему отвергает любой
@@ -59,7 +65,7 @@ curl -fsSLk --pinnedpubkey 'sha256//KEY' https://PANEL/install-node.sh | bash -s
 серверами, лучше используйте [автоматическую установку по SSH](#install-automatically-over-ssh):
 
 ```bash
-curl -fsSL http://PANEL/install-node.sh | bash -s -- --panel http://PANEL --token TOKEN
+curl -fsSL http://PANEL/install-node.sh | bash -s -- --panel http://PANEL --token TOKEN --port 62050
 ```
 :::
 
@@ -139,7 +145,8 @@ ufw allow from 203.0.113.10 to any port 62050 proto tcp
 
 | Параметр | Действие |
 | --- | --- |
-| `--listen ADDR` | слушать управляющий порт не на `[::]:62050`, а на другом адресе |
+| `--port PORT` | управляющий порт; уже установленный узел сохраняет свой адрес и меняет только порт (по умолчанию — оставить как есть, иначе `[::]:62050`) |
+| `--listen ADDR` | весь управляющий адрес, хост и порт; важнее `--port` и того, что установлено |
 | `--method script\|docker` | установить как службу systemd или как контейнер (по умолчанию — оставить как есть) |
 | `--source panel\|github` | брать бинарный файл с панели или из публичного выпуска |
 | `--version TAG` | установить конкретный выпуск узла (берётся с GitHub) |
