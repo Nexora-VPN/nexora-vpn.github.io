@@ -24,19 +24,76 @@ Neither can be put behind a CDN.
 ## OpenVPN
 
 **Endpoints → Add**, type `openvpn-server`. The general form is on
-[[use/endpoints]]. The form starts with a random port, the `tls` mode, a
-client address pool and the node's certificate.
+[[use/endpoints]]. The form starts with a random port, the `tls` mode, `udp`,
+a client address pool and the node's certificate.
 
 | Field | |
 | --- | --- |
 | **Listen port** | the port users connect to |
-| **Mode** | `tls` (the default) is the one for customers: the server proves itself with a certificate and each user signs in with their name and password. `static_key` is one shared key for everyone, with no per-user sign-in |
-| **Network** | `udp` (also when empty) or `tcp` |
+| **Mode** | `tls` (the default) is the one for customers: the server proves itself with a certificate and each user signs in with their name and password. `static_key` is one point-to-point tunnel for a single client, see below |
+| **Network** | `udp` (the default) or `tcp`. One endpoint listens on one of them; for both, add a second endpoint |
 | **Address (CIDR list)** | the pool users' tunnel addresses come from, for example `10.9.0.1/24` |
-| TLS certificate | the node's certificate by default, or one from [[use/certificates]] |
-| **Push: redirect gateway**, **Push: DNS servers** (advanced) | send all of the device's traffic through the VPN, and the resolvers it should use |
-| **Advertised remote host**, **Advertised remote port** (advanced) | what the `.ovpn` file names as the server, when it differs from the node's address, behind a port forward for example |
+| TLS certificate | the node's certificate by default, or one from [[use/certificates]]. The certificate fields show only while it is set to the endpoint's own certificate |
 | **Verify client certificate** (advanced) | off by default. Requiring client certificates drops the endpoint from users' subscriptions, because the panel does not issue them |
+
+Under **+ Add setting** are the tuning options. Each one, when added, starts at
+the value the node already uses without it, so adding a setting changes
+nothing until you edit it:
+
+- **Data ciphers**, **Data ciphers fallback**, **Auth digest**: the data
+  channel. The fallback is for clients older than OpenVPN 2.4.
+- **Min/Max TLS version**, **TLS 1.2 cipher suites**, **TLS key exchange
+  groups**, **Certificate profile**: the control channel's TLS.
+- **MTU**, **MSS fix**, **Replay window**, **Max clients**, **Topology**.
+- **Ping interval/restart**, **Renegotiate every/after**, **Handshake window**:
+  timing on the server's side.
+
+### Control channel protection
+
+Turn on **Control channel protection** to sign (`tls_auth`) or also encrypt
+(`tls_crypt`, `tls_crypt_v2`) every handshake packet with a key. The
+connection then no longer looks like OpenVPN on the wire, and a probe without
+the key gets no answer at all, which matters where OpenVPN is blocked.
+
+The panel makes the key, and **Regenerate** makes a new one. Every user's
+`.ovpn` file and subscription carry the matching client side:
+
+- `tls_crypt` and `tls_auth`: the same key for everyone.
+- `tls_crypt_v2`: a key of each user's own, wrapped with the server's key. The
+  server key never leaves the endpoint. A user always gets the same key; a
+  regenerated server key gives every user a new one, so they must download
+  their file again.
+
+### Push to clients
+
+**Push to clients** is what the server tells every client once it connects.
+Off, the panel's default applies: all traffic through the tunnel, a ping every
+10 seconds, a restart after 60. On, it starts from that default and you can
+change:
+
+- **Route all traffic through the tunnel**, with its redirect flags, or
+  **Routes (split tunnel)** for only some networks;
+- **DNS servers**, **Search domains**, and for OpenVPN 2.6 clients **DNS
+  servers** with DNS over TLS or HTTPS;
+- **Block DNS outside the tunnel (Windows)**, extra DHCP options, and the
+  client ping timing.
+
+Clients take all of it from the server; their files do not change.
+
+### Static key mode
+
+`static_key` mode is one tunnel between this endpoint and a single client that
+holds the same key, with no sign-in. It needs:
+
+- **Static key**: made for you, with a button to make a new one;
+- **Cipher**;
+- **Client tunnel address**, the client's address inside the tunnel (and the
+  IPv6 one when the pool has IPv6);
+- over UDP, **Client address** and **Client port**: the server answers that
+  address only.
+
+Such an endpoint has no users: it carries no TLS, pushes nothing, and gets no
+`.ovpn` files or subscription entries. You set up its one client yourself.
 
 ### The .ovpn file
 

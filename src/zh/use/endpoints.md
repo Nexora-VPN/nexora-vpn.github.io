@@ -50,15 +50,25 @@ tags: [protocols]
 
 `openvpn-server` 或 `openconnect-server` 端点通过账户名和密码验证每个用户。两者都提供 TLS，因此像 TLS 入站一样需要证书：在 **TLS 证书**中选择节点证书、[[use/certificates]] 中已存储的证书，或端点自带的证书。
 
-在 OpenVPN 服务端上，**Address (CIDR list)** 是用户地址所取自的地址池；**Push: redirect gateway** 和 **Push: DNS servers** 决定客户端是否把所有流量都经由它发送，以及使用哪些解析器。在 OpenConnect 上，地址池是 **Client IP pool (CIDR)**，另有 **Pushed DNS servers** 和 **Split-include routes**。
+只有当 **TLS 证书**选为端点自带的证书时才显示证书字段；其他 TLS 设置位于其下方。
+
+在 OpenVPN 服务端上，**Address (CIDR list)** 是用户地址所取自的地址池。**推送给客户端**决定客户端是否把所有流量都经由它发送以及使用哪些解析器，**控制通道保护**则向 DPI 隐藏握手；每个用户的文件都带有对应的密钥。在 OpenConnect 上，地址池是 **Client IP pool (CIDR)**，另有 **Pushed DNS servers** 和 **Split-include routes**。
+
+**+ 添加设置**下的设置从节点在没有它们时本就使用的值开始，因此添加后在修改之前不会改变任何东西。
 
 完全没有用户的 OpenVPN 或 OpenConnect 服务端不会启动：在其模板有用户之前，面板不会把它包含在发送的配置中。
 
 选项和客户端应用见 [[protocols/openvpn]]。
 
+## 向外连接 {#connecting-out}
+
+`openvpn-client` 端点列出它的**服务器**，按顺序（或随机）尝试，直到有一个响应；每个都有自己的端口和网络。在 `tls` 模式下，它需要用户名和密码、服务器的 CA 证书，以及在**控制通道保护**中填写服务器运营者提供的密钥。在 `static_key` 模式下，它需要静态密钥、加密算法和隧道地址。压缩只为不开启就无法连接的旧服务器提供，并带有警告：在加密隧道上它会泄露所传输的内容。
+
+`openconnect` 端点可以用**一次性密码**（TOTP 或 RSA SecurID）回应第二因素认证，用**登录表单答案**回应额外的登录字段，因为节点上没有人可以输入它们。证书以文本粘贴；表单不引用节点上的任何文件。
+
 ## Tailscale {#tailscale}
 
-`tailscale` 端点使用 **Auth key** 把节点加入 Tailscale 网络。它可以 **Advertise routes (CIDR list)** 或 **Advertise as exit node**，也可以把另一台设备用作 **Exit node**。它不为面板用户提供服务；用它从节点访问私有网络，或经由私有网络把流量发送出去。
+`tailscale` 端点使用 **Auth key** 把节点加入 Tailscale 网络，或通过 **Control server URL** 加入 Headscale 服务器。它可以 **Advertise routes (CIDR list)**、**Advertise tags** 或 **Advertise as exit node**，也可以把另一台设备用作 **Exit node**。它不为面板用户提供服务；用它从节点访问私有网络，或经由私有网络把流量发送出去。
 
 ## 应用配置文件 {#app-config-files}
 
@@ -67,7 +77,7 @@ WireGuard、OpenVPN 和 OpenConnect 用户导入的是文件，而不是链接�
 | 端点 | 文件 | 包含内容 |
 | --- | --- | --- |
 | WireGuard | `.conf` | 用户自己的私钥和地址，以及服务器的公钥和地址 |
-| OpenVPN | `.ovpn` | 内嵌的服务器证书以及用户名和密码 |
+| OpenVPN | `.ovpn` | 内嵌的服务器证书、用户名和密码，以及启用控制通道保护时用户的密钥 |
 | OpenConnect | `.txt` | 服务器地址以及用户名和密码 |
 
 用户可以在两个地方找到这些文件：

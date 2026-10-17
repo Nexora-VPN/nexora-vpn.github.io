@@ -70,21 +70,44 @@ certificate like a TLS inbound: under **TLS certificate**, pick the node's
 certificate, a stored certificate from [[use/certificates]], or the endpoint's
 own.
 
+The certificate fields show only while **TLS certificate** is set to the
+endpoint's own certificate; the other TLS settings sit under it.
+
 On an OpenVPN server, **Address (CIDR list)** is the pool user addresses come
-from; **Push: redirect gateway** and **Push: DNS servers** decide whether
-clients send all traffic through it and which resolvers they use. On
-OpenConnect the pool is **Client IP pool (CIDR)**, with **Pushed DNS servers**
-and **Split-include routes**.
+from. **Push to clients** decides whether clients send all traffic through it
+and which resolvers they use, and **Control channel protection** hides the
+handshake from DPI; every user's file carries the matching key. On OpenConnect
+the pool is **Client IP pool (CIDR)**, with **Pushed DNS servers** and
+**Split-include routes**.
+
+Settings under **+ Add setting** start at the value the node already uses
+without them, so adding one changes nothing until you edit it.
 
 An OpenVPN or OpenConnect server with no user at all is not started: the
 panel leaves it out of what it sends until a user belongs to its template.
 
 See [[protocols/openvpn]] for the options and for client apps.
 
+## Connecting out
+
+An `openvpn-client` endpoint lists its **Servers**, tried in order until one
+answers (or at random); each has its own port and network. In `tls` mode it
+takes a username and password, the server's CA certificate and, under
+**Control channel protection**, the key the server's operator gives you. In
+`static_key` mode it takes the static key, the cipher and its tunnel
+addresses. Compression is offered for old servers that refuse to connect
+without it, with a warning: on an encrypted tunnel it leaks what it carries.
+
+An `openconnect` endpoint can answer a second factor with a **One-time
+password** (TOTP or RSA SecurID), and extra login fields with **Login form
+answers**, since nobody is at the node to type them. Certificates are pasted as
+text; the form names no file on the node.
+
 ## Tailscale
 
 A `tailscale` endpoint joins the node to a Tailscale network with an
-**Auth key**. It can **Advertise routes (CIDR list)** or
+**Auth key**, or a Headscale server under **Control server URL**. It can
+**Advertise routes (CIDR list)**, **Advertise tags** or
 **Advertise as exit node**, and can use another device as its
 **Exit node**. It does not serve panel users; use it to reach a private
 network from the node, or to send traffic out through one.
@@ -97,7 +120,7 @@ panel builds one per user, per endpoint and node:
 | Endpoint | File | What it carries |
 | --- | --- | --- |
 | WireGuard | `.conf` | The user's own private key and address, and the server's public key and address |
-| OpenVPN | `.ovpn` | The server's certificate and the user's name and password, inline |
+| OpenVPN | `.ovpn` | The server's certificate, the user's name and password and, with control channel protection, the user's key, inline |
 | OpenConnect | `.txt` | The server address and the user's name and password |
 
 Users find these files in two places:

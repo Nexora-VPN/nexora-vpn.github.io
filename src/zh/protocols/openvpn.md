@@ -18,18 +18,53 @@ tags: [protocols, certificates]
 
 ## OpenVPN {#openvpn}
 
-**端点 → 添加**，类型选 `openvpn-server`。通用表单见 [[use/endpoints]]。表单初始包含一个随机端口、`tls` 模式、一个客户端地址池和节点证书。
+**端点 → 添加**，类型选 `openvpn-server`。通用表单见 [[use/endpoints]]。表单初始包含一个随机端口、`tls` 模式、`udp`、一个客户端地址池和节点证书。
 
 | 字段 | |
 | --- | --- |
 | **Listen port** | 用户连接的端口 |
-| **Mode** | `tls`（默认）适合客户使用：服务器用证书证明身份，每个用户用名称和密码登录。`static_key` 是所有人共用的一个密钥，没有按用户的登录 |
-| **Network** | `udp`（留空时也是）或 `tcp` |
+| **Mode** | `tls`（默认）是面向客户的模式：服务器用证书证明身份，每个用户用自己的名称和密码登录。`static_key` 是面向单个客户端的点对点隧道，见下文 |
+| **Network** | `udp`（默认）或 `tcp`。一个端点只监听其中一种；需要两种时再添加一个端点 |
 | **Address (CIDR list)** | 用户隧道地址所取自的地址池，例如 `10.9.0.1/24` |
-| TLS 证书 | 默认为节点证书，也可使用 [[use/certificates]] 中的证书 |
-| **Push: redirect gateway**、**Push: DNS servers**（高级） | 让设备的所有流量走 VPN，以及设备应使用的解析服务器 |
-| **Advertised remote host**、**Advertised remote port**（高级） | `.ovpn` 文件中写明的服务器，用于它与节点地址不同的情况，例如经过端口转发时 |
-| **Verify client certificate**（高级） | 默认关闭。要求客户端证书会使该端点从用户订阅中消失，因为面板不签发客户端证书 |
+| TLS 证书 | 默认是节点证书，或 [[use/certificates]] 中的证书。只有选择端点自带的证书时才显示证书字段 |
+| **Verify client certificate**（高级） | 默认关闭。要求客户端证书会把端点从用户订阅中移除，因为面板不签发这类证书 |
+
+**+ 添加设置**下是微调选项。每一项添加时都从节点在没有它时本就使用的值开始，因此添加后在修改之前不会改变任何东西：
+
+- **Data ciphers**、**Data ciphers fallback**、**Auth digest**：数据通道。fallback 用于 OpenVPN 2.4 之前的客户端。
+- **Min/Max TLS version**、**TLS 1.2 cipher suites**、**TLS key exchange groups**、**Certificate profile**：控制通道的 TLS。
+- **MTU**、**MSS fix**、**Replay window**、**Max clients**、**Topology**。
+- **Ping interval/restart**、**Renegotiate every/after**、**Handshake window**：服务器端的计时。
+
+### 控制通道保护 {#control-channel-protection}
+
+开启**控制通道保护**，用密钥对每个握手包签名（`tls_auth`）或同时加密（`tls_crypt`、`tls_crypt_v2`）。这样连接在网络上不再像 OpenVPN，没有密钥的探测完全得不到响应，这在 OpenVPN 被封锁的地方很重要。
+
+密钥由面板生成，重新生成按钮会生成新密钥。每个用户的 `.ovpn` 文件和订阅都带有对应的客户端部分：
+
+- `tls_crypt` 和 `tls_auth`：所有人使用同一个密钥。
+- `tls_crypt_v2`：每个用户有自己的密钥，用服务器密钥封装。服务器密钥永远不会离开端点。用户每次得到的都是同一个密钥；重新生成服务器密钥会给所有用户新密钥，他们需要重新下载文件。
+
+### 推送给客户端 {#push-to-clients}
+
+**推送给客户端**是服务器在每个客户端连接后告诉它的内容。关闭时使用面板默认值：全部流量走隧道，每 10 秒 ping 一次，60 秒后重启。开启时从同样的默认值开始，可以修改：
+
+- **Route all traffic through the tunnel** 及其标志，或只针对部分网络的 **Routes (split tunnel)**；
+- **DNS servers**、**Search domains**，以及面向 OpenVPN 2.6 客户端的支持 DNS over TLS 或 HTTPS 的 DNS 服务器；
+- **Block DNS outside the tunnel (Windows)**、额外的 DHCP 选项和客户端 ping 计时。
+
+客户端从服务器获取所有这些内容；它们的文件不会改变。
+
+### 静态密钥模式 {#static-key-mode}
+
+`static_key` 模式是本端点与持有相同密钥的单个客户端之间的一条隧道，无需登录。它需要：
+
+- **Static key**：自动生成，并带有生成新密钥的按钮；
+- **Cipher**；
+- **Client tunnel address**，客户端在隧道内的地址（地址池包含 IPv6 时还需要 IPv6 地址）；
+- 使用 UDP 时，**Client address** 和 **Client port**：服务器只回应该地址。
+
+这样的端点没有用户：没有 TLS，不推送任何内容，也不会生成 `.ovpn` 文件或订阅条目。它唯一的客户端需要您自己配置。
 
 ### .ovpn 文件 {#the-ovpn-file}
 
