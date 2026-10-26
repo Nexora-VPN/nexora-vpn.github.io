@@ -16,7 +16,7 @@ tags: [subscriptions]
 
 ## 链接指向哪里 {#subscription-domains}
 
-**设置 → 常规 → 订阅与集成。**
+**设置 → 常规 → 订阅与集成。** 这些字段描述的是一个订阅地址。使用独立端口的订阅、位于绑定到代理商的主机之后的订阅，或拥有自己外观的订阅，都在 [[use/ingress]] 中设置：添加一个 **订阅** 路由，并打开 **在此发布链接**。
 
 ### 订阅域名 {#subscription-domains-1}
 
@@ -42,7 +42,7 @@ tags: [subscriptions]
 - 面板自己的证书会自动覆盖该通配符。
 - 只支持一级：`abc.sub.example.com` 可以，`a.b.sub.example.com` 不行。
 
-主管理员还可以从列表中为每个[[~reseller|代理商]]分配一个订阅域名，使其客户的链接使用该域名。参见 [[resellers]]。
+主管理员还可以从列表中为每个[[~reseller|代理商]]分配一个订阅域名，使其客户的链接使用该域名。参见 [[resellers]]。只允许某一个代理商的客户使用的域名，是在 [[use/ingress#accounts-bound-to-hosts]] 中绑定到该代理商的 **订阅** 路由。
 
 ### 基础路径与公开地址 {#base-path-and-public-address}
 

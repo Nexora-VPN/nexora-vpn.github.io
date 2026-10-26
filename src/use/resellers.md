@@ -54,6 +54,7 @@ Resellers are made on **Access → Admins**, by the main admin.
    | **Sell from plans only** | on: every account it creates must come from one of the **Allowed plans**, with the plan's limits (see [[use/plans#plans-for-resellers]]) |
    | **Only chosen templates** | on: its customers are put on the **Allowed templates** only, and so reach only those templates' nodes (below) |
    | **Subscription domain** | which of your subscription domains its customers' links use (below) |
+   | **Branding** | the look of its customers' subscription page, and of the panel on its own hosts (below) |
 
 5. Press **Save** and give the reseller its login.
 
@@ -113,6 +114,20 @@ Only the main admin sets this. A domain is what gets blocked as a unit, so
 choosing one is choosing whose customers go down together. If you remove a
 domain a reseller was on, its customers move to the first configured domain.
 See [[use/subscriptions]].
+
+## Its own addresses and look
+
+On [[use/ingress]] the main admin can give a reseller addresses of its own:
+
+- A **Panel** route **Bound to an account** to the reseller. It then signs in
+  only there, and nobody else signs in there.
+- A **Subscriptions** route bound to it, with **Publish links here**. Its
+  customers' links are built on that host, and with
+  **Its own customers only** no other customer is answered there.
+
+**Branding** on the reseller's account picks a branding made on
+[[use/ingress#brandings]]. Its customers see it on their subscription page,
+and the panel shows it on the reseller's own hosts.
 
 ## When a reseller runs out
 

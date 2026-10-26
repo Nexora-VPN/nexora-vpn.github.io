@@ -29,7 +29,8 @@ tags: [reference]
 
 - **忘记密码：** `nexora-panel admin reset-password`。它也会关闭该账户的两步验证。
 - **登录失败后被封禁：** 把你的地址加入 `login_allowlist`；如果面板位于代理或 CDN 之后，还要设置 `trusted_proxies`。
-- **地址、域名或路径无法访问：** 运行 `nexora-panel config set …` 后重启。
+- **地址、域名或路径无法访问：** 运行 `nexora-panel config set …` 后重启；如果是在 **设置 → 地址** 中做了修改，则运行 `nexora-panel ingress reset` 后重启。
+- **正确的密码只在某一个主机名上被拒绝：** 该主机可能在 **设置 → 地址** 中绑定到了另一个账户，或者你的账户绑定到了其他主机。只有被绑定的账户能在那里登录，而被拒绝时看起来与密码错误完全相同。参见 [[use/ingress#accounts-bound-to-hosts]]。
 
 这三种情况都在 [[reference/cli#locked-out]] 中。
 

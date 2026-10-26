@@ -170,6 +170,12 @@ For Grafana, import `monitoring/grafana/dashboards/nexora-fleet.json` from the
 [panel's repository](https://github.com/nexora-vpn/panel). It expects a
 Prometheus datasource with the uid `nexora-prometheus`.
 
+::: tip A port for Prometheus alone
+On [[use/ingress]], a **Metrics** route on a listener bound to a private
+address keeps `/metrics` off the panel's public address. Switch **/metrics**
+off on the panel route.
+:::
+
 ### The token
 
 Make it on the [[use/tokens|API tokens]] page with the `stats:read` scope and
@@ -196,6 +202,7 @@ stops the scrape at once.
 | `nexora_node_rejected_connections_total{outbound}` | connections refused by a block outbound |
 | `nexora_node_disk_bytes`, `nexora_node_disk_used_bytes`, `nexora_node_memory_bytes`, `nexora_node_memory_used_bytes`, `nexora_node_load1` | the node's host |
 | `nexora_event_deliveries{status}`, `nexora_event_subscribers` | event deliveries by status (pending, delivered, dead) and enabled subscribers |
+| `nexora_ingress_requests_total{route,outcome}` | requests since the panel started, by the [[use/ingress\|route]] that decided (empty when none matched) and what it did: `served`, `redirect` or `refused` |
 
 Every node metric carries the labels `node` (its name) and `id`.
 

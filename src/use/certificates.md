@@ -60,7 +60,8 @@ Who answers depends on the type:
 
 - **Obtained by the panel**: the panel's server answers. HTTP-01 and
   TLS-ALPN-01 work only for a domain pointing at the panel, and the panel
-  cannot answer them for an IP address.
+  cannot answer them for an IP address. When the panel itself listens on port
+  80 or 443 ([[use/ingress]]), it answers there.
 - **Obtained by a node**: pick the node under **Obtained by**. DNS-01 works
   from any node; HTTP-01 and TLS-ALPN-01 need the domain pointing at that node.
 

@@ -26,6 +26,8 @@ configuration file, so every command works from any directory. In Docker, put
 | `config list` | Show the panel-wide settings |
 | `config get KEY` | Read one setting |
 | `config set KEY VALUE` | Write one setting. `""` clears it. Most take effect when the panel restarts |
+| `ingress list` | Show the panel's listeners and routes ([[use/ingress]]) |
+| `ingress reset [-listen IP:PORT] [-yes]` | Replace them with one plain listener serving the panel on every host |
 | `setup-token [-rotate]` | Print the setup wizard's one-time token, or replace it with a new one |
 | `admin list` | List the administrator accounts, marking the panel's owner |
 | `admin reset-password [-user U] [-pass P]` | Set an administrator's password |
@@ -47,6 +49,9 @@ more. `config list` shows them all.
 
 A secret, such as the backup passphrase, is shown only as `(set)`. `config set`
 refuses a key that is not a panel setting and a value the panel would refuse.
+Once **Settings → Addresses** holds more than one address, such as a second
+port, `config set` refuses to change the address settings; use `ingress reset`
+below.
 The backup settings are picked up within the hour without a restart; for the
 others, restart the panel (`systemctl restart nexora-panel`).
 
@@ -73,7 +78,33 @@ replaced at once, underneath it.
 ## Locked out
 
 Every setting that can make the panel unreachable can be changed from the
-command line, without the panel running:
+command line, without the panel running.
+
+### The panel's addresses
+
+If you changed the panel's addresses on **Settings → Addresses**, look at them
+and put back one you can reach:
+
+```bash
+nexora-panel ingress list                        # every listener and route
+nexora-panel ingress reset                       # one plain listener, the panel on every host
+nexora-panel ingress reset -listen 0.0.0.0:2095  # the same, on this address
+systemctl restart nexora-panel
+```
+
+`ingress reset` replaces every listener, route and fallback with one listener
+on the primary listener's address (or `-listen`), in plain HTTP, and the panel
+at the root of every host name. It prints what it will write and asks you to
+type `reset`; in a script, pass `-yes`. Certificates, brandings and accounts
+are not touched, and the change shows in the page's **History**. Once you are
+back in, rebuild the rest on the page.
+
+A change on the page that nobody confirms is put back by itself after two
+minutes, so a reset is needed only for one that was confirmed.
+
+### The address settings
+
+While the panel has one address, its settings can be changed one by one:
 
 ```bash
 nexora-panel config list                       # what is set
@@ -91,7 +122,8 @@ those names never show it. If those are the only names you use, the panel is
 unreachable everywhere. A base path removes the trap: the panel stays reachable
 under it on every name.
 
-In Docker, the port is set in the compose file, not with `config set`.
+In Docker, the port is set in the compose file, not with `config set` or
+`-listen`.
 
 ### Forgotten password
 

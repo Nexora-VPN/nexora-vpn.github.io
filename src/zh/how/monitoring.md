@@ -117,6 +117,10 @@ scrape_configs:
 
 对于 Grafana，从[面板的仓库](https://github.com/nexora-vpn/panel)导入 `monitoring/grafana/dashboards/nexora-fleet.json`。它需要一个 uid 为 `nexora-prometheus` 的 Prometheus 数据源。
 
+::: tip 只给 Prometheus 用的端口
+在 [[use/ingress]] 中，把一个 **指标** 路由放在绑定到私有地址的监听器上，可以让 `/metrics` 不出现在面板的公开地址上。同时在面板路由上关闭 **/metrics**。
+:::
+
 ### 令牌 {#the-token}
 
 在 [[use/tokens|API 令牌]] 页面上创建它，只授予 `stats:read` 权限范围，并把它保存在单独的文件中，而不是写在常被粘贴到聊天里的 `prometheus.yml` 中。吊销令牌会立即停止抓取。
@@ -140,6 +144,7 @@ scrape_configs:
 | `nexora_node_rejected_connections_total{outbound}` | 被拦截出站拒绝的连接 |
 | `nexora_node_disk_bytes`、`nexora_node_disk_used_bytes`、`nexora_node_memory_bytes`、`nexora_node_memory_used_bytes`、`nexora_node_load1` | 节点的主机 |
 | `nexora_event_deliveries{status}`、`nexora_event_subscribers` | 按状态（pending、delivered、dead）统计的事件投递，以及已启用的订阅者 |
+| `nexora_ingress_requests_total{route,outcome}` | 面板启动以来的请求数，按作出决定的 [[use/ingress\|路由]]（没有路由匹配时为空）和它的处理方式统计：`served`、`redirect` 或 `refused` |
 
 每个节点指标都带有 `node`（其名称）和 `id` 两个标签。
 

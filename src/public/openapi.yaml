@@ -538,7 +538,12 @@ paths:
       description: >
         A built-in role answers 400. A rename carries the accounts holding the
         role with it, and any change ends every session on it: a session carries
-        the scope set it was issued with.
+        the scope set it was issued with. A `base` moving onto or off `resale`
+        switches the template restriction of every holder with `templatesOnly`:
+        each one's users are fitted to it in the same transaction, as saving
+        that account would fit them (one `user.bulk`, `op` `templates`, per
+        account whose users moved, and the templated nodes pushed once). A move
+        onto `sudo` is a promotion: the users keep the templates they are on.
       requestBody:
         required: true
         content:
@@ -595,6 +600,8 @@ paths:
                 periodDay: { type: integer }
                 expiry: { type: integer, format: int64 }
                 userLimit: { type: integer }
+                templatesOnly: { type: boolean }
+                templateIds: { type: array, items: { type: integer } }
       responses:
         "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Admin" } } } }
         "400": { $ref: "#/components/responses/Error" }
@@ -606,7 +613,7 @@ paths:
         - { $ref: "#/components/parameters/IdempotencyKey" }
       tags: [admins]
       summary: Update an admin's username/role (sudo only)
-      description: The last sudo admin cannot be demoted. A role change revokes the admin's sessions, and needs the caller to hold every scope of both the new role and the one the account leaves; any edit of an account on the caller's own tier or above needs the caller to hold every scope of its role (403 otherwise).
+      description: The last sudo admin cannot be demoted. A role change revokes the admin's sessions, and needs the caller to hold every scope of both the new role and the one the account leaves; any edit of an account on the caller's own tier or above needs the caller to hold every scope of its role (403 otherwise). Every save fits the users the account owns to the template grant it leaves it with (`templatesOnly`, `templateIds`, or a role moving it on or off the resale tier) in the same transaction, which also repairs users that drifted outside it; when any user moved it pushes every templated node live and raises one `user.bulk` with `op` `templates`. `narrowed` in the answer counts the users it changed.
       requestBody:
         required: true
         content:
@@ -622,8 +629,19 @@ paths:
                 periodDay: { type: integer }
                 expiry: { type: integer, format: int64 }
                 userLimit: { type: integer }
+                templatesOnly: { type: boolean }
+                templateIds: { type: array, items: { type: integer } }
       responses:
-        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Admin" } } } }
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { $ref: "#/components/schemas/Admin" }
+                  - type: object
+                    properties:
+                      narrowed: { type: integer, description: "Users this save moved onto the reseller's template grant" }
         "400": { $ref: "#/components/responses/Error" }
         "403": { $ref: "#/components/responses/Error" }
     delete:
@@ -703,7 +721,7 @@ paths:
         - { name: status, in: query, schema: { type: string }, description: "Comma-separated subset of `active`, `disabled`, `pending`, `expired`, `limited` (any of them). A user has exactly one status, decided in that order: disabled beats pending (a plan measured from the first connection that has not had one) beats expired beats limited (volume used up)." }
         - { name: online, in: query, schema: { type: boolean }, description: "`true`: traffic within the last 90 s; `false`: none" }
         - { name: group, in: query, schema: { type: string }, description: "Exact group label" }
-        - { name: admin_id, in: query, schema: { type: integer, minimum: 0 }, description: "Owner: a reseller's admin id, or 0 for users owned by the panel. Ignored for a reseller session, which only ever sees its own." }
+        - { name: admin_id, in: query, schema: { type: string, pattern: "^(me|[0-9]+)$" }, description: "Owner: an operator's or reseller's admin id, `0` for users owned by the panel (the main admins' and unbound tokens'), or `me` for the caller's own — its id, or `0` for a main admin. Ignored for a reseller session, which only ever sees its own." }
         - { name: template_id, in: query, schema: { type: integer, minimum: 1 }, description: "Users the template provisions: its explicit members plus every all-templates user" }
         - { name: node_id, in: query, schema: { type: integer, minimum: 1 }, description: "Users the node serves, through its template; 404 for an unknown node" }
         - { name: inbound_id, in: query, schema: { type: integer, minimum: 1 }, description: "Users reaching the inbound through any template that carries it" }
@@ -746,13 +764,24 @@ paths:
         expired.
 
 
-        An operator or a token naming `adminId` hands the new account to that
-        reseller, and the account is held to the reseller's own rules exactly as
-        if it had made it: `adminId` must name a reseller (`400` for an operator
-        or nobody; `0` is the panel's own), the reseller's user cap and expiry
-        apply (`403`, or `402` when its role's cap is the one that binds), and a
-        `plansOnly` reseller's `planId` rule below. The same holds when an edit
-        moves an existing account to another reseller.
+        Without `adminId` the new account is the caller's own: an operator's
+        (or a token bound to one) goes to that operator, a main admin's — and an
+        unbound token's — to the panel (`0`). Every operator still sees every
+        user; the owner is what the users page's "my users" filter reads.
+
+
+        Only a main admin, or a token bound to nobody, may create for somebody
+        else: an operator's `adminId` is replaced by its own id, as a
+        reseller's is. When one of those names `adminId`, it hands the new
+        account to that account: an operator
+        takes it as it is, `0` is the panel's own, and a main admin or nobody
+        is `400`. Handed to a reseller, the account is held to the reseller's
+        own rules exactly as if it had made it: the reseller's user cap and
+        expiry apply (`403`, or `402` when its role's cap is the one that
+        binds), and a `plansOnly` reseller's `planId` rule below. The same holds
+        when an edit moves an existing account to another owner; an edit that
+        leaves `adminId` out — a `PUT` included — keeps the owner it had, and an
+        operator's edit keeps it whatever it sends.
 
 
         Sending `planId` applies that plan: every limit it carries (volume, the
@@ -791,7 +820,11 @@ paths:
         how many are online (traffic within 90 s), one counter per status —
         the same test each `status` filter applies, so the two agree — and the
         distinct non-empty group labels, sorted. A reseller's numbers cover
-        only its own users.
+        only its own users. `admin_id` narrows the counters (not the group
+        labels) the way it narrows the list, so the strip agrees with a table
+        filtered to one owner — the users page's default is `me`.
+      parameters:
+        - { name: admin_id, in: query, schema: { type: string, pattern: "^(me|[0-9]+)$" }, description: "As on `GET /api/users`: an id, `0`, or `me`. Ignored for a reseller." }
       responses:
         "200":
           description: OK
@@ -810,17 +843,45 @@ paths:
                   neverFetched: { type: integer, format: int64, description: "Accounts whose subscription body has never been handed over; a counter, not a status" }
                   unlicensed: { type: integer, format: int64, description: "Rows past the licence cutoff, within what the caller may see: listed and deletable, served on no node, refusing every other write with 402. 0 on a licensed install." }
                   groups: { type: array, items: { type: string } }
+  /api/users/owners:
+    get:
+      tags: [users]
+      summary: List the accounts a user can be owned by
+      description: >
+        Every operator and reseller — the accounts that own users — with the
+        tier their role resolves to and how many users each owns, sorted by
+        username. Main admins are left out: what they create belongs to the
+        panel (`adminId` 0). This is what the owner picker and the owner
+        filter read, and it exists beside `GET /api/admins` because an
+        operator sees every user but may not list admins. Operators only.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: integer }
+                    username: { type: string }
+                    base: { type: string, enum: [admin, resale] }
+                    users: { type: integer, format: int64 }
+                    templatesOnly: { type: boolean, description: "A reseller limited to chosen templates: the user form offers only templateIds for its users" }
+                    templateIds: { type: array, items: { type: integer }, description: "The templates this owner's users may be on; empty when unrestricted" }
+        "403": { $ref: "#/components/responses/Error" }
   /api/users/bulk/{op}:
     post:
       parameters:
-        - { name: op, in: path, required: true, schema: { type: string, enum: [enable, disable, reset-traffic, reset-devices, delete, add-days, add-months, add-traffic, limits] } }
+        - { name: op, in: path, required: true, schema: { type: string, enum: [enable, disable, reset-traffic, reset-devices, delete, add-days, add-months, add-traffic, limits, owner] } }
         - { $ref: "#/components/parameters/IdempotencyKey" }
         - { name: all, in: query, schema: { type: string, enum: ["true"] }, description: "Run on every user the caller owns. Required when no `ids` and no filter are sent, so an omitted parameter can never mean *everything*." }
         - { $ref: "#/components/parameters/Q" }
         - { name: status, in: query, schema: { type: string } }
         - { name: online, in: query, schema: { type: boolean } }
         - { name: group, in: query, schema: { type: string } }
-        - { name: admin_id, in: query, schema: { type: integer, minimum: 0 } }
+        - { name: admin_id, in: query, schema: { type: string, pattern: "^(me|[0-9]+)$" }, description: "As on `GET /api/users`: an id, `0`, or `me`." }
         - { name: template_id, in: query, schema: { type: integer, minimum: 1 } }
         - { name: node_id, in: query, schema: { type: integer, minimum: 1 } }
         - { name: inbound_id, in: query, schema: { type: integer, minimum: 1 } }
@@ -883,6 +944,14 @@ paths:
         stay open to it.
 
 
+        `owner` hands the selection to `adminId` — an operator, a reseller, or
+        `0` for the panel; a main admin is `400`. Only a main admin, or a token
+        bound to nobody, may run it; an operator and a reseller are `403`. Handing it to a reseller is held to that reseller's rules for
+        the whole selection at once: an expired account is `403`, and one
+        whose user cap cannot take every row not already its own is `402`,
+        with nothing moved.
+
+
         Bulk operations emit no per-user events: one `user.bulk` event
         carries the summary (op, matched, affected, blocked, failed).
       requestBody:
@@ -909,6 +978,7 @@ paths:
                 resetStartDay: { type: integer, minimum: 0, maximum: 31, description: "`limits`: the calendar cycle's anchor — weekly 0-6 (Sunday..Saturday), monthly and yearly the day of the month. Only beside `resetPeriod` (400 alone): the period is set as a whole, and an anchor or calendar left out beside it takes the fresh-row value (day 1, month 1, Gregorian) rather than keeping what each row stored." }
                 resetStartMonth: { type: integer, minimum: 1, maximum: 12, description: "`limits`: the anchor month, read for the yearly cycle only. Only beside `resetPeriod` (400 alone)." }
                 resetCalendar: { type: string, enum: ["", "jalali"], description: "`limits`: the calendar a monthly or yearly boundary is counted in. Empty = Gregorian. Only beside `resetPeriod` (400 alone)." }
+                adminId: { type: integer, minimum: 0, description: "`owner`: the account to hand the selection to, 0 for the panel. Required." }
       responses:
         "200":
           description: OK
@@ -925,6 +995,7 @@ paths:
                   appliedThrough: { type: integer, description: "Present only when the run stopped early: the highest user id it got past. The selection is always in ascending id order, so every row at or below this id has been dealt with and a retry should carry only the remainder — which is what makes a half-applied, non-idempotent operation such as `add-days` recoverable. Resuming means re-sending the operation with the remainder in `ids`: the filter selectors have no id-range parameter, so a filter-selected run has to be narrowed to ids before it can be resumed." }
                   error: { type: string, description: "Why the operation stopped early. Accompanied by `failed`, which counts the rows the run never reached. A response carrying this is not stored for `Idempotency-Key` replay, so the same key retries rather than replaying a partial outcome." }
         "400": { $ref: "#/components/responses/Error" }
+        "402": { $ref: "#/components/responses/Error" }
         "403": { $ref: "#/components/responses/Error" }
         "404": { $ref: "#/components/responses/Error" }
         "500": { $ref: "#/components/responses/Error" }
@@ -1068,7 +1139,7 @@ paths:
         - { name: status, in: query, schema: { type: string } }
         - { name: online, in: query, schema: { type: boolean } }
         - { name: group, in: query, schema: { type: string } }
-        - { name: admin_id, in: query, schema: { type: integer, minimum: 0 } }
+        - { name: admin_id, in: query, schema: { type: string, pattern: "^(me|[0-9]+)$" }, description: "As on `GET /api/users`: an id, `0`, or `me`." }
         - { name: template_id, in: query, schema: { type: integer, minimum: 1 } }
         - { name: node_id, in: query, schema: { type: integer, minimum: 1 } }
         - { name: inbound_id, in: query, schema: { type: integer, minimum: 1 } }
@@ -1202,6 +1273,11 @@ paths:
         expiry, duration, speed, address limit, the periodic reset, the
         template membership and the group — is replaced with the value already
         on the row, so an edit can never change what was sold.
+
+
+        `adminId` is the one field a `PUT` reads as "unchanged" when it is
+        absent: an owner silently reset to the panel by a client that never
+        sent it would drop the account out of its operator's "my users".
       requestBody: { $ref: "#/components/requestBodies/User" }
       responses:
         "200": { $ref: "#/components/responses/User" }
@@ -1301,8 +1377,18 @@ paths:
         - { $ref: "#/components/parameters/IdempotencyKey" }
       tags: [pools]
       summary: Create a pool endpoint
+      description: >
+        Refused with 400 for an item only a client runs, and for an OpenVPN
+        endpoint the node would refuse: a static key that is missing or is not
+        one in static_key mode; control-channel protection (tls.control_wrap)
+        with no or an unknown type, no key, a key and a key_path both, a key
+        of the wrong kind or length, or a direction or force_cookie its type
+        does not take; and a server with tls_auth, auth NONE and a data cipher
+        that is not AEAD, whose users' profiles could not match it.
       requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/Endpoint" } } } }
-      responses: { "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Endpoint" } } } } }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Endpoint" } } } }
+        "400": { $ref: "#/components/responses/Error" }
 
   /api/presets:
     get:
@@ -1508,8 +1594,13 @@ paths:
         - { $ref: "#/components/parameters/IdempotencyKey" }
       tags: [nodes]
       summary: Create a node
+      description: >-
+        `name` and `address` (a host name or an IP address, without scheme or
+        port) are required; an omitted `port` is 62050.
       requestBody: { $ref: "#/components/requestBodies/Node" }
-      responses: { "200": { $ref: "#/components/responses/Node" } }
+      responses:
+        "200": { $ref: "#/components/responses/Node" }
+        "400": { description: "A field is missing or malformed; the message names it (`name:`, `address:`, `port:`, `link addresses:`).", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
   /api/nodes/{id}:
     parameters: [ { $ref: "#/components/parameters/Id" } ]
     put:
@@ -1517,9 +1608,14 @@ paths:
         - { $ref: "#/components/parameters/IdempotencyKey" }
       tags: [nodes]
       summary: Update a node
+      description: >-
+        Replaces every editable field, so the body is the whole row: `name`,
+        `address` and a `port` from 1 to 65535 are required, and an omitted
+        optional field is cleared.
       requestBody: { $ref: "#/components/requestBodies/Node" }
       responses:
         "200": { $ref: "#/components/responses/Node" }
+        "400": { description: "A field is missing or malformed; the message names it.", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
         "402": { description: "The node is outside the licence cap (`licensed: false`): only the first N nodes by id are served. The same answer comes from `/enabled`, `/routing` and the per-node outbound and endpoint creates; delete is never refused for this reason.", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
     delete:
       parameters:
@@ -2591,10 +2687,20 @@ paths:
         - { $ref: "#/components/parameters/IdempotencyKey" }
       tags: [node-mappings]
       summary: Add an endpoint to a node (live, no restart)
+      description: >
+        Refused with 400 for an item only a client runs, and for an OpenVPN
+        endpoint the node would refuse: a static key that is missing or is not
+        one in static_key mode; control-channel protection (tls.control_wrap)
+        with no or an unknown type, no key, a key and a key_path both, a key
+        of the wrong kind or length, or a direction or force_cookie its type
+        does not take; and a server with tls_auth, auth NONE and a data cipher
+        that is not AEAD, whose users' profiles could not match it.
       requestBody:
         required: true
         content: { application/json: { schema: { $ref: "#/components/schemas/Endpoint" } } }
-      responses: { "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Endpoint" } } } } }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Endpoint" } } } }
+        "400": { $ref: "#/components/responses/Error" }
   /api/endpoints/{id}:
     parameters: [ { $ref: "#/components/parameters/Id" } ]
     put:
@@ -2602,8 +2708,18 @@ paths:
         - { $ref: "#/components/parameters/IdempotencyKey" }
       tags: [pools]
       summary: Update a pool endpoint
+      description: >
+        Refused with 400 for an item only a client runs, and for an OpenVPN
+        endpoint the node would refuse: a static key that is missing or is not
+        one in static_key mode; control-channel protection (tls.control_wrap)
+        with no or an unknown type, no key, a key and a key_path both, a key
+        of the wrong kind or length, or a direction or force_cookie its type
+        does not take; and a server with tls_auth, auth NONE and a data cipher
+        that is not AEAD, whose users' profiles could not match it.
       requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/Endpoint" } } } }
-      responses: { "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Endpoint" } } } } }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Endpoint" } } } }
+        "400": { $ref: "#/components/responses/Error" }
     delete:
       parameters:
         - { $ref: "#/components/parameters/IdempotencyKey" }
@@ -2630,6 +2746,12 @@ paths:
       tags: [settings]
       summary: Create/update a setting
       description: >
+        Under /api/v1 the thirteen address keys the ingress replaced
+        (web_domain, web_basepath, sub_domain, sub_basepath, the four TLS keys,
+        the two listen keys, web_masquerade_dir, public_address,
+        trusted_proxies) answer 409 with `moved: ingress`: they are written
+        with PUT /api/v1/ingress. Under /api they are still a view of the
+        ingress while it is one they describe.
         Panel-wide keys (web_domain, web_basepath, web_cert_file, web_key_file,
         web_listen_ip, web_listen_port, web_tls_mode, web_cert_id,
         acme_directory, web_masquerade_dir, preset_dir, sub_domain, sub_basepath, timezone,
@@ -2680,6 +2802,13 @@ paths:
         8760, or empty for the daily default), backup_keep (a number of
         archives, 0 = keep everything) and backup_enabled /
         backup_include_history / backup_include_audit (true or false).
+        The panel's address keys (web_domain, web_basepath, sub_domain,
+        sub_basepath, the four TLS keys, the two listen keys,
+        web_masquerade_dir, public_address and trusted_proxies) have no rows of
+        their own: they read and write the ingress (GET /api/ingress) in its
+        one-listener shape, and answer 409 for a change once the ingress holds
+        more than they can describe. Writing back the value a key already has
+        succeeds. Their entries in GET /api/settings carry no id.
 
 
         The TLS keys are also checked against each other, because a mode with
@@ -2987,9 +3116,24 @@ paths:
       description: >
         Gracefully shuts the panel down right after responding; the process
         manager (systemd/compose) starts it again with the new web settings.
-        Admin sessions are in-memory and do not survive the restart.
+        Sessions survive the restart. The answer says where this process
+        answers (`current`) and where the next one will (`next`), from the saved
+        web settings: a pinned listen address keeps its port, and a certificate
+        that does not load means plain HTTP. A host that refuses the new listen
+        address is the one case it cannot foresee; the panel then falls back to
+        its configured address.
       responses:
-        "200": { description: Restarting }
+        "200":
+          description: Restarting
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, current, next]
+                properties:
+                  status: { type: string, enum: [restarting] }
+                  current: { $ref: "#/components/schemas/PanelAddress" }
+                  next: { $ref: "#/components/schemas/PanelAddress" }
         "403": { $ref: "#/components/responses/Error" }
         "501": { $ref: "#/components/responses/Error" }
 
@@ -3066,6 +3210,298 @@ paths:
         "413": { description: Larger than 1 GiB (code `too_large`), content: { application/json: { schema: { $ref: "#/components/schemas/BackupError" } } } }
         "500": { $ref: "#/components/responses/Error" }
         "501": { description: This database or runtime cannot be restored in place (code `unsupported`), content: { application/json: { schema: { $ref: "#/components/schemas/BackupError" } } } }
+
+  /api/ingress:
+    get:
+      tags: [settings]
+      summary: The panel's listeners, routes and fallbacks (sudo)
+      description: >
+        Every address the panel listens on and what each host and path serves.
+        A request is matched on the listener it arrived on: routes are tried in
+        order, and the first whose hosts and prefix match and whose service
+        takes the path (`sub`: /sub only; `panel`: everything else, and /sub,
+        /api/v1, /metrics and the node installer's two paths by its `panel`
+        options; `api`: /api/v1 only; `metrics`: /metrics; `node_install`:
+        the installer's paths; `static`, `redirect`, `canned`, `upstream`:
+        every path)
+        answers, with its prefix stripped. A route with `allowIps` answers only
+        those client addresses, every other one getting its fallback. A request
+        no route takes is answered by the matched route's fallback, then the
+        listener's, then a 404. An `api` route takes API tokens only: a cookie
+        never counts there, a login presented as a bearer token is refused
+        (401), only routes that authenticate answer (the login and setup
+        routes are 404 there), and a token its `api` options do not name is
+        refused (403). An `upstream` route is a reverse proxy (WebSocket
+        included) to a URL or a registered addon: the panel's session and
+        sign-on cookies are cut out of every request and every Set-Cookie
+        naming them is dropped, X-Forwarded-For / -Host / -Proto are the
+        panel's own, a suspended addon's route answers its fallback, and an
+        instance-metadata address is refused at every dial. A listener's
+        `passthrough` rows hand a TLS connection whose handshake names their
+        `sni` to `target` untouched, before anything else runs; the target
+        sees the panel's address as the client. A panel or api route with
+        `adminId` is that account's: only it signs in there (password, second
+        factor, single sign-on) or uses its tokens there, and an account with
+        such a route signs in and uses its tokens nowhere else — the panel
+        owner excepted from the second rule, never the first. A refused sign-in
+        is answered as a wrong password and not counted against the address;
+        a refused session is 401 and a refused token 403, on every request. A
+        panel route's `panel.tiers` keeps the other tiers from signing in (the
+        owner never). A canonical sub route with `adminId` is where that
+        account's customers' links are published, and with `sub.ownedOnly` it
+        answers only their subscriptions, every other token (and an unknown
+        one) getting its fallback. Rows refer to each other by name. `shaped` says whether the old
+        address settings (PUT /api/settings/web_domain and the rest) can still
+        describe and edit the table. Each listener carries `state`, how the
+        running process brought it up.
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Ingress" } } } }
+    put:
+      parameters:
+        - { $ref: "#/components/parameters/IdempotencyKey" }
+      tags: [settings]
+      summary: Replace the panel's listeners, routes and fallbacks (sudo)
+      description: >
+        The whole table, in the GET shape (`shaped`, `state` and `pending` are
+        ignored). A row keeps its id when it carries the id, or else the name
+        it had; a renamed row without its id is a new one. Refused with 400
+        when a rule fails (exactly one primary listener, on and carrying a
+        panel route; names that tell the rows of a kind apart; no two
+        listeners on one socket; a TLS mode with what it needs; certificates,
+        decoy directories, API tokens, addons, accounts and brandings that
+        exist; hosts with no port; a service's options only on that service)
+        and when, afterwards, the request making the change would no longer
+        reach the panel on the listener, host and prefix it came in on, or its
+        own account could no longer sign in there. Binding a route to an
+        account the caller does not cover is 403.
+
+        A change is applied at once and live — no restart: listeners are
+        bound and let go, certificates and routes swapped, open connections
+        kept — and is pending: unless POST /api/ingress/confirm receives the
+        `pending.token` of the answer before `pending.confirmBy` (120 s), the
+        ingress before it is put back by itself, and a panel that stops with a
+        change pending puts it back as it starts. While one waits another is
+        409. A write through the old address settings, an account's
+        subscription domain or `nexora-panel ingress reset` supersedes a
+        pending change rather than being undone by it. For an account with
+        two-factor authentication on it answers 428 until the second factor
+        is presented again.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Ingress" }
+      responses:
+        "200": { description: The table as saved, content: { application/json: { schema: { $ref: "#/components/schemas/Ingress" } } } }
+        "400": { description: A rule failed, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "409": { description: Another change waits for its confirmation, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /api/ingress/confirm:
+    post:
+      tags: [settings]
+      summary: Confirm a change to the ingress (public, by its token)
+      description: >
+        Sent from wherever the change left the panel — the same address
+        unless the change moved it — with the token the change was answered
+        with. Public, since the new address may be a host the caller has no
+        session on yet: the token (256 random bits, good once, for one
+        change, until its window closes) is the authority. 404 for a token
+        that confirms nothing, a change already put back among them.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, required: [token], properties: { token: { type: string } } }
+      responses:
+        "200": { description: Confirmed, content: { application/json: { schema: { type: object, properties: { revision: { type: integer }, state: { type: string } } } } } }
+        "404": { description: Nothing is waiting for that token, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /api/ingress/test:
+    post:
+      tags: [settings]
+      summary: What a request would get from the ingress, and why (sudo)
+      description: >
+        The route test: the same walk that serves a request, answered with
+        what it did — a passthrough and its target, the route that answers and
+        the path its service sees, a prefix redirect, or a refusal and the
+        fallback answering it — and every route it looked at with what it made
+        of it (other-listener, other-host, excluded-host, other-prefix,
+        not-taken, refused-ip, redirect, taken). With `ingress` it tries that
+        document instead of the saved one: the page tests a draft before
+        saving it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [listener, host, path]
+              properties:
+                listener: { type: string, description: "The listener's name" }
+                host: { type: string }
+                path: { type: string }
+                sni: { type: string }
+                tls: { type: boolean }
+                ip: { type: string, description: "The client's address, as the listener's trusted proxies resolve it" }
+                ingress: { $ref: "#/components/schemas/Ingress" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  outcome: { type: string, enum: [passthrough, route, redirect, refused] }
+                  route: { type: string }
+                  service: { type: string }
+                  path: { type: string }
+                  redirect: { type: string }
+                  fallback: { type: string }
+                  target: { type: string }
+                  strictSni: { type: boolean }
+                  steps:
+                    type: array
+                    items: { type: object, properties: { route: { type: string }, outcome: { type: string } } }
+        "400": { $ref: "#/components/responses/Error" }
+
+  /api/ingress/revisions:
+    get:
+      tags: [settings]
+      summary: The ingress's history (sudo)
+      description: >
+        Every revision, newest first, the last fifty: who made it (`actor`),
+        how (`source`: api, restore-revision, settings, account, reset,
+        restore, migration, replace) and what became of it (`state`: applied,
+        pending — with `confirmBy` — reverted, superseded).
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/IngressRevision" } } } } }
+
+  /api/ingress/revisions/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: integer } }
+    get:
+      tags: [settings]
+      summary: One revision and the ingress it left (sudo)
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/IngressRevision" } } } }
+        "404": { $ref: "#/components/responses/Error" }
+
+  /api/ingress/revisions/{id}/restore:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: integer } }
+    post:
+      parameters:
+        - { $ref: "#/components/parameters/IdempotencyKey" }
+      tags: [settings]
+      summary: Put an earlier ingress back (sudo)
+      description: >
+        The revision's table, proposed as a change like PUT /api/ingress: the
+        same rules, applied live and pending, put back unless confirmed with
+        the answer's `pending.token`.
+      responses:
+        "200": { description: The ingress as saved, pending, content: { application/json: { schema: { $ref: "#/components/schemas/Ingress" } } } }
+        "400": { $ref: "#/components/responses/Error" }
+        "404": { $ref: "#/components/responses/Error" }
+        "409": { $ref: "#/components/responses/Error" }
+
+  /api/brandings:
+    get:
+      tags: [settings]
+      summary: Every branding (sudo)
+      description: >
+        A branding is a look for the admin panel (`panel`: product name, logo,
+        favicon, default palette and density, a login message) and for the
+        subscription page and its headers (`sub`: theme, title, support link,
+        announcement, the page pointer). A route carries one (`brandingId` on
+        GET /api/ingress) and so does an account (`brandingId` on
+        /api/admins). The admin panel takes its route's, else its bound
+        account's, else the built-in look; a subscription takes, field by
+        field, the user's owner's, then its route's, then the sub_* settings.
+        Each row lists the routes and accounts carrying it.
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/Branding" } } } } }
+    post:
+      parameters:
+        - { $ref: "#/components/parameters/IdempotencyKey" }
+      tags: [settings]
+      summary: Create a branding (sudo)
+      description: >
+        400 when a rule fails: a name of at most 64 characters, the logo and
+        favicon base64 data URIs of an image (png, jpeg, webp, gif, svg, ico),
+        at most 256 KB together, a palette and density the panel has, a theme
+        name and a support link the sub_* settings would accept. 409 for a
+        name another branding has.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Branding" }
+      responses:
+        "200": { description: The branding as saved, content: { application/json: { schema: { $ref: "#/components/schemas/Branding" } } } }
+        "400": { $ref: "#/components/responses/Error" }
+        "409": { $ref: "#/components/responses/Error" }
+
+  /api/brandings/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: integer } }
+    put:
+      parameters:
+        - { $ref: "#/components/parameters/IdempotencyKey" }
+      tags: [settings]
+      summary: Replace a branding (sudo)
+      description: The whole branding, by the POST rules.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Branding" }
+      responses:
+        "200": { description: The branding as saved, content: { application/json: { schema: { $ref: "#/components/schemas/Branding" } } } }
+        "400": { $ref: "#/components/responses/Error" }
+        "404": { $ref: "#/components/responses/Error" }
+        "409": { $ref: "#/components/responses/Error" }
+    delete:
+      parameters:
+        - { $ref: "#/components/parameters/IdempotencyKey" }
+      tags: [settings]
+      summary: Delete a branding (sudo)
+      description: The routes and accounts carrying it fall back to what comes next.
+      responses:
+        "200": { description: Deleted }
+
+  /api/branding:
+    get:
+      tags: [auth]
+      summary: The admin panel's look on this address (public)
+      description: >
+        The panel half of the branding the route this request came in on
+        carries, or its bound account's, with the images as paths under the
+        panel's prefix; every field empty is the built-in look. Public, so the
+        login page is drawn in it. index.html carries the same object in its
+        `nx-brand` meta.
+      security: []
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/BrandingView" } } } }
+
+  /api/branding/logo:
+    get:
+      tags: [auth]
+      summary: The logo of the address's branding (public)
+      security: []
+      responses:
+        "200": { description: The image, content: { image/*: { schema: { type: string, format: binary } } } }
+        "404": { description: The address's branding has none }
+
+  /api/branding/favicon:
+    get:
+      tags: [auth]
+      summary: The favicon of the address's branding (public)
+      security: []
+      responses:
+        "200": { description: The image, content: { image/*: { schema: { type: string, format: binary } } } }
+        "404": { description: The address's branding has none }
 
   /api/bans:
     get:
@@ -5088,9 +5524,17 @@ paths:
         - { $ref: "#/components/parameters/IdempotencyKey" }
       tags: [install]
       summary: Create a single-use node-install token (sudo only)
+      description: >
+        Also answers `pin` when a node could not verify the panel's HTTPS
+        certificate on its own — the request came over the panel's own TLS,
+        not through a trusted proxy, and the certificate it serves does not
+        chain to the system roots for that host (the setup wizard's
+        self-signed one). The command the panel shows then accepts the panel
+        by that key: `curl -k --pinnedpubkey <pin>` and the installer's
+        `--pin <pin>`.
       requestBody:
         content: { application/json: { schema: { type: object, properties: { desc: { type: string }, expiry: { type: integer, format: int64 } } } } }
-      responses: { "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Token" } } } } }
+      responses: { "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/InstallToken" } } } } }
 
   /install-node.sh:
     get:
@@ -6018,9 +6462,13 @@ components:
         usersReadOnly: { type: boolean, description: "Reseller: refuse PUT and DELETE on its users. Creating is unaffected. Phrased as a restriction so an absent field restricts nothing." }
         plansOnly: { type: boolean, description: "Reseller: creating a user requires a planId from planIds and the plan's limits are applied server-side; an edit cannot change a limit at all. Requires at least one entry in planIds (400 otherwise)." }
         planIds: { type: array, items: { type: integer }, description: "Plans this reseller may sell (only meaningful with plansOnly). Absent on update leaves the selection alone." }
-        subDomain: { type: string, description: "Reseller: which of the configured sub_domain entries this reseller's customers are published under (empty = the first). Answers 400 for a domain that is not configured. Every admin route is main-admin-only, which is what keeps a reseller from moving its own customers onto another reseller's domain. An assignment naming a domain later removed from the setting falls back to the first." }
+        templatesOnly: { type: boolean, description: "Reseller: its users are on the templates in templateIds and no other, so they reach only those templates' nodes. Membership is narrowed rather than refused wherever it is written — create, batch, edit, a change of owner — and `allTemplates` on such a user means every template of this reseller (stored as those templates, with `ownerTemplates`). Saving the reseller fits every user it owns: templates that left are removed at once, templates that joined reach its `ownerTemplates` users only. Requires at least one entry in templateIds (400 otherwise). Phrased as a restriction so an absent field restricts nothing." }
+        templateIds: { type: array, items: { type: integer }, description: "Templates this reseller's users may be on (only meaningful with templatesOnly). Absent on update leaves the selection alone, and an empty list clears it; an id naming no template is 400." }
+        subDomain: { type: string, description: "Reseller: which of the configured sub_domain entries this reseller's customers are published under (empty = the first). Answers 400 for a domain that is not configured. Every admin route is main-admin-only, which is what keeps a reseller from moving its own customers onto another reseller's domain. An assignment naming a domain later removed from the setting falls back to the first. Kept in the ingress as a canonical sub route bound to the account (GET /api/ingress); once the ingress holds more than the old address settings describe, a change answers 409 and is made there, while the value the account already has is accepted." }
+        brandingId: { type: integer, description: "The branding this account's customers' subscription page and headers carry, and its own bound routes' admin panel when they name none (GET /api/brandings); absent on a write keeps the stored one, 0 clears it. 400 for one that does not exist" }
         used: { type: integer, format: int64, readOnly: true, description: "Reseller: traffic its users burned in the current period" }
-        users: { type: integer, readOnly: true, description: "Reseller: how many users it owns" }
+        users: { type: integer, readOnly: true, description: "Operator or reseller: how many users it owns. 0 for a main admin, whose accounts are the panel's." }
+        base: { type: string, readOnly: true, enum: [sudo, admin, resale], description: "The tier `role` resolves to, so a custom role based on `resale` reads as a reseller without the roles list." }
         lastLogin: { type: integer, format: int64, readOnly: true }
         lastLoginIp: { type: string, readOnly: true, description: "Address of the most recent successful login; the next login from elsewhere is recorded as admin.login_new_ip" }
         totpEnabledAt: { type: integer, format: int64, readOnly: true, description: "Unix seconds two-factor authentication was turned on; 0 = off. The seed itself is never exposed." }
@@ -6256,7 +6704,7 @@ components:
         `remark`, `volume`, `expiry`, `duration`, `activatedAt`, `nextReset`,
         `speedLimit`, `ipLimit`, `deviceLimit`, `autoReset`, `resetDays`,
         `resetPeriod`, `resetStartDay`, `resetStartMonth`, `resetCalendar`,
-        `allTemplates`, `templateIds` — plus `version`. `config` and `contact`
+        `allTemplates`, `ownerTemplates`, `templateIds` — plus `version`. `config` and `contact`
         are replaced as a whole when sent.
       properties:
         version: { type: integer, format: int64, description: "The `updatedAt` the caller read; the edit is refused with 409 when the account has moved on." }
@@ -6284,6 +6732,7 @@ components:
         resetStartMonth: { type: integer }
         resetCalendar: { type: string }
         allTemplates: { type: boolean }
+        ownerTemplates: { type: boolean }
         templateIds: { type: array, items: { type: integer } }
       additionalProperties: false
     User:
@@ -6348,9 +6797,11 @@ components:
         totalUp: { type: integer, format: int64 }
         totalDown: { type: integer, format: int64 }
         group: { type: string, description: "Free text label for bulk operations" }
-        adminId: { type: integer, description: "Reseller (role resale) that owns this user; 0 = owned by the panel. Resellers may only see and manage their own users, and always create users for themselves." }
-        allTemplates: { type: boolean, description: "Provision the user on every template (ignores templateIds)" }
-        templateIds: { type: array, items: { type: integer }, description: "Explicit template membership (used when allTemplates is false); absent on create keeps legacy all-templates behaviour" }
+        adminId: { type: integer, description: "The operator or reseller that owns this user; 0 = owned by the panel (the main admins). Absent on create = the caller's own; absent on an edit = unchanged. Only a main admin (or a token bound to nobody) may set it to another account: operators and resellers always create for themselves and cannot move an owner. Resellers see only their own users; operators see every user." }
+        ownerName: { type: string, readOnly: true, description: "The username behind `adminId`, for the owner column. Computed per response; omitted for the panel's own accounts and in a reseller's responses." }
+        allTemplates: { type: boolean, description: "Provision the user on every template (ignores templateIds). Under an owner limited to chosen templates (Admin.templatesOnly) it is stored as false with ownerTemplates set. On an edit that hands a user with ownerTemplates to an owner with no grant, it is read as that mark echoed back and the user keeps its templates; only a PATCH naming allTemplates alone widens it." }
+        ownerTemplates: { type: boolean, description: "Every template the owner may use, on a user of a reseller limited to chosen templates: stored as those templates (templateIds), and a template added to the reseller's grant later is added here too. Sending it, or allTemplates, asks for the same thing; the panel sets whichever fits the owner. Absent on an edit (a PUT included) it keeps the stored value while the edit's templateIds are absent or the templates the user is on; a different templateIds is a choice of templates and clears it. A user handed with it to an owner with no grant — the panel, an operator — keeps the templates it is on rather than widening to every template." }
+        templateIds: { type: array, items: { type: integer }, description: "Explicit template membership (used when allTemplates is false); absent on create keeps legacy all-templates behaviour. Narrowed to the owner's template grant when the owner is a restricted reseller." }
         subUrl: { type: string, readOnly: true, description: "This account's absolute subscription URL, computed per response and never stored. It is returned because a wildcard sub_domain mints a hostname per subscriber, derived from the account, which no client of this API can compute — build links from this rather than from the sub_domain setting. Omitted where a response does not carry it." }
         licensed: { type: boolean, readOnly: true, description: "Whether the row is inside the licence cap: one of the first N users by id, N being the licensed count. A row outside it is listed and can be deleted, is served on no node, and answers 402 to every other write. Computed per response; the cap moves whenever a row is deleted or a licence installed." }
         planId: { type: integer, writeOnly: true, description: "Create only: apply this plan's limits over the rest of the body. Ignored on update — see PUT /api/users/{id}. Nothing links the user to the plan afterwards." }
@@ -7085,6 +7536,188 @@ components:
         down: { type: array, items: { type: integer, format: int64 }, description: "Bytes to the client, per bucket" }
         totalUp: { type: integer, format: int64 }
         totalDown: { type: integer, format: int64 }
+    Ingress:
+      type: object
+      properties:
+        shaped: { type: boolean, readOnly: true, description: "The old address settings can still describe and edit this table" }
+        restart: { type: boolean, readOnly: true, description: "Set on a change's answer only by a process that cannot apply it live; it applies at the next start" }
+        warnings:
+          type: array
+          readOnly: true
+          description: "What saves and serves but probably not as meant: shadowed (an earlier route answers this one's host and path; other names it), never-answers, install-elsewhere (the installer only on a route the install command does not use), certificate (a host on a TLS listener none of its certificates carry; other is the route, detail the host), container-port (a listener inside a container, which may not publish its port)"
+          items:
+            type: object
+            properties:
+              kind: { type: string, enum: [listener, route] }
+              name: { type: string }
+              code: { type: string }
+              other: { type: string }
+              detail: { type: string }
+        pending:
+          type: object
+          readOnly: true
+          description: "The change waiting for its confirmation; on a change's answer, that change with the token that confirms it"
+          properties:
+            revision: { type: integer }
+            confirmBy: { type: integer, format: int64, description: "Unix seconds; put back after it" }
+            token: { type: string, description: "Only on the answer to the change itself" }
+        listeners: { type: array, items: { $ref: "#/components/schemas/IngressListener" } }
+        routes: { type: array, items: { $ref: "#/components/schemas/IngressRoute" } }
+        fallbacks: { type: array, items: { $ref: "#/components/schemas/IngressFallback" } }
+    IngressListener:
+      type: object
+      required: [name]
+      properties:
+        id: { type: integer, description: "Keeps the row across a save; absent matches by name, or makes a new row" }
+        name: { type: string }
+        primary: { type: boolean, description: "The listener the -listen / NEXORA_WEB_LISTEN pin overrides; exactly one" }
+        enabled: { type: boolean, description: "Absent is on; the primary listener is always on" }
+        listenIp: { type: string, description: "An IP literal; empty listens everywhere (the primary listener: the address it was started with)" }
+        listenPort: { type: string, description: "1-65535; the primary listener may leave it empty to keep the port it was started with" }
+        tlsMode: { type: string, enum: ["", none, self_signed, files], description: "self_signed serves certId from the certificate store; files serves certFile/keyFile, which win when both are set" }
+        certId: { type: integer }
+        certFile: { type: string }
+        keyFile: { type: string }
+        certIds: { type: array, items: { type: integer }, description: "More store certificates, each answering the names it carries; the listener's own is the default" }
+        unknownSni: { type: string, enum: ["", reject], description: "reject fails a handshake naming none of the listener's certificates" }
+        strictSni: { type: boolean, description: "Refuse a request whose Host is not the name its TLS handshake asked for" }
+        trustedProxies: { type: string, description: "Addresses and CIDRs whose X-Forwarded-For this listener believes" }
+        fallback: { type: string, description: "The fallback's name; empty is a 404" }
+        passthrough:
+          type: array
+          description: "Handshakes handed on untouched, tried in order, before the listener terminates anything"
+          items:
+            type: object
+            required: [sni, target]
+            properties:
+              sni: { type: string, description: "A host, or *.name for one label under it" }
+              target: { type: string, description: "host:port" }
+        state: { $ref: "#/components/schemas/IngressListenerState" }
+    IngressRevision:
+      type: object
+      properties:
+        id: { type: integer }
+        createdAt: { type: integer, format: int64 }
+        actor: { type: string }
+        source: { type: string }
+        state: { type: string, enum: [applied, pending, reverted, superseded] }
+        confirmBy: { type: integer, format: int64 }
+        ingress: { $ref: "#/components/schemas/Ingress" }
+    IngressListenerState:
+      type: object
+      readOnly: true
+      properties:
+        name: { type: string }
+        address: { type: string }
+        tls: { type: boolean }
+        error: { type: string, description: "Why the listener is not bound, or serves plain HTTP" }
+    IngressRoute:
+      type: object
+      required: [name, service, listeners]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        listeners: { type: array, items: { type: string }, description: "Listener names" }
+        hosts: { type: array, items: { type: string }, description: "Empty matches every host; *.name matches one label" }
+        excludeHosts: { type: array, items: { type: string } }
+        prefix: { type: string, description: "Empty, or /name; stripped before the service sees the path" }
+        service: { type: string, enum: [panel, sub, api, metrics, node_install, static, redirect, canned, upstream] }
+        panel:
+          type: object
+          description: "A panel route's parts beyond the SPA and /api; absent is all four"
+          properties:
+            sub: { type: boolean }
+            apiV1: { type: boolean }
+            metrics: { type: boolean }
+            nodeInstall: { type: boolean }
+            tiers: { type: array, items: { type: string, enum: [sudo, admin, resale] }, description: "The tiers that may sign in on the route; empty is every tier. Never keeps the panel owner out" }
+        api:
+          type: object
+          description: "What an api route admits; both empty (or absent) is every API token"
+          properties:
+            tokens: { type: array, items: { type: integer }, description: "API token ids" }
+            addons: { type: array, items: { type: string }, description: "Addon slugs: the tokens that belong to them" }
+        reply: { $ref: "#/components/schemas/IngressReply" }
+        adminId: { type: integer, description: "The account the route is bound to; 0 is nobody. Panel, api and sub routes only" }
+        brandingId: { type: integer, description: "The branding the route's pages carry; 0 is its bound account's, else none. Panel and sub routes only" }
+        sub:
+          type: object
+          description: "A sub route's options"
+          properties:
+            ownedOnly: { type: boolean, description: "On a bound route: answer only the bound account's own customers; any other token gets the route's fallback. With `sub` absent, a new bound route gets it on and an existing route keeps what it had" }
+        upstream:
+          type: object
+          description: "Where an upstream route proxies to: target or addon, one of the two"
+          properties:
+            target: { type: string, description: "An http(s) URL with no query" }
+            addon: { type: string, description: "A registered addon's slug: its own address and certificate trust are used" }
+            preserveHost: { type: boolean, description: "Send the request's own Host instead of the target's" }
+            stripPrefix: { type: boolean, description: "Send the path under the route's prefix (X-Forwarded-Prefix names it); off sends the whole path" }
+            tls: { type: string, enum: ["", pin, skip], description: "How an https target is verified: the system roots, pinSha256, or not at all" }
+            pinSha256: { type: string, description: "The target leaf certificate's SHA-256, hex" }
+            timeoutSeconds: { type: integer, description: "The wait for the target's response headers, 0-3600; 0 is a minute" }
+        allowIps: { type: array, items: { type: string }, description: "The only client addresses or CIDRs the route answers, as the listener's trusted proxies resolve them; empty is every address" }
+        headers: { type: object, additionalProperties: { type: string }, description: "Set on every answer the route gives; a header the service sets itself wins" }
+        hstsMaxAge: { type: integer, description: "Strict-Transport-Security max-age in seconds, sent over TLS only; 0 is off" }
+        hstsSubdomains: { type: boolean, description: "Adds includeSubDomains" }
+        canonical: { type: boolean, description: "Links to the service are published on this route" }
+        publicUrl: { type: string, description: "The origin links are built on, when something in front of the panel is what people reach" }
+        fallback: { type: string }
+    Branding:
+      type: object
+      required: [name]
+      properties:
+        id: { type: integer, readOnly: true }
+        name: { type: string }
+        panel:
+          type: object
+          properties:
+            productName: { type: string }
+            logo: { type: string, description: "A base64 data URI of an image" }
+            favicon: { type: string, description: "A base64 data URI of an image" }
+            palette: { type: string, enum: ["", violet, ocean, forest, sunset, rose] }
+            density: { type: string, enum: ["", cosy, compact] }
+            loginMessage: { type: string }
+        sub:
+          type: object
+          properties:
+            theme: { type: string, description: "A sub_theme value" }
+            title: { type: string }
+            supportUrl: { type: string }
+            announce: { type: string }
+            profileWebPage: { type: boolean, description: "Absent is the sub_profile_web_page setting's" }
+        routes: { type: array, readOnly: true, items: { type: string }, description: "The routes carrying it" }
+        accounts: { type: array, readOnly: true, items: { type: string }, description: "The accounts carrying it" }
+        updatedAt: { type: integer, format: int64, readOnly: true }
+    BrandingView:
+      type: object
+      properties:
+        productName: { type: string }
+        palette: { type: string }
+        density: { type: string }
+        loginMessage: { type: string }
+        logo: { type: string, description: "A path under the panel's prefix" }
+        favicon: { type: string, description: "A path under the panel's prefix" }
+    IngressReply:
+      type: object
+      description: "An answer the ingress gives itself: a static, redirect or canned route's, or a fallback's. Only the fields of its kind count."
+      properties:
+        dir: { type: string, description: "static: an absolute directory, served with listings and dotfiles hidden and its own 404.html" }
+        to: { type: string, description: "redirect: an http(s) URL, or `https` for the same URL over https" }
+        code: { type: integer, enum: [0, 301, 302, 303, 307, 308], description: "redirect: 0 is 302" }
+        keepPath: { type: boolean, description: "redirect: append the path under the route's prefix and the query to `to`" }
+        status: { type: integer, description: "canned: 200-599; 0 is 200" }
+        headers: { type: object, additionalProperties: { type: string }, description: "canned: response headers" }
+        body: { type: string, description: "canned: at most 64 KiB" }
+    IngressFallback:
+      required: [name, kind]
+      allOf:
+        - type: object
+          properties:
+            id: { type: integer }
+            name: { type: string }
+            kind: { type: string, enum: [static, redirect, canned] }
+        - $ref: "#/components/schemas/IngressReply"
     Setting:
       type: object
       properties:
@@ -7580,6 +8213,12 @@ components:
         createdBy: { type: string, readOnly: true, description: "The admin, or `system` for an automatic ban" }
         createdAt: { type: integer, format: int64, readOnly: true }
         expiresAt: { type: integer, format: int64, readOnly: true, description: "Unix seconds; 0 = permanent" }
+    InstallToken:
+      allOf:
+        - $ref: "#/components/schemas/Token"
+        - type: object
+          properties:
+            pin: { type: string, description: "curl's --pinnedpubkey form, sha256//<base64 SPKI digest>; absent when curl can verify the panel without it" }
     Token:
       type: object
       description: Node-install token (see ApiToken for third-party API tokens).
@@ -7861,6 +8500,18 @@ components:
         disk_total: { type: integer, format: int64, description: "Size of the node's root filesystem in bytes; 0 when unknown" }
         disk_used: { type: integer, format: int64, description: "Used bytes of the root filesystem, counting root-reserved blocks (as df does)" }
         host_uptime: { type: integer, format: int64, description: "Seconds since the host booted — the machine's uptime, where `uptime` is the engine's" }
+    PanelAddress:
+      type: object
+      description: >
+        Where a panel process answers, in the parts a browser needs to rebuild
+        its own URL. `port` is the one bound, which a reverse proxy in front
+        may hide; `domain` is empty when no panel domain restricts the host.
+      required: [scheme, port, domain, basepath]
+      properties:
+        scheme: { type: string, enum: [http, https] }
+        port: { type: string }
+        domain: { type: string }
+        basepath: { type: string, description: "`/prefix`, or empty at the root" }
     PanelInfo:
       type: object
       description: The panel's own health readout, for the dashboard's Panel tiles.

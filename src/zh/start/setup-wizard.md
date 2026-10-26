@@ -68,6 +68,8 @@ tags: [install, panel, security]
 
 如果之后无法访问该地址，所有这些设置都可以在服务器的命令行中修改；见 [[reference/cli#locked-out]]。
 
+这是面板的第一个地址。之后你可以在 [[use/ingress]] 中把它换到带域名的 443 端口、添加更多端口和主机名，或者把其他程序放在它后面。
+
 ## 改为还原备份 {#restore-a-backup-instead}
 
 要把现有的 Nexora 面板搬到这台服务器，请在向导底部选择 **从另一台服务器迁移？从备份还原**，而不是填写表单。

@@ -100,7 +100,8 @@ request from one of them counts as coming from the client named in its
 any header says, which is right when nothing sits in front of the panel.
 
 Set this before you rely on bans, and put your own network in the allowlist
-first.
+first. This list is the panel's primary listener's. Every other port the panel
+listens on has its own, on [[use/ingress]].
 
 ### Login allowlist
 

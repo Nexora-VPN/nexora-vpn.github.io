@@ -42,14 +42,15 @@ you disappears. The main admin sees this menu:
 | **Plans** | Presets a new user is created from |
 | **Certificates** | TLS certificates for inbounds and for the panel itself |
 | **Core configs** | **Templates**, **Inbounds**, **Outbounds**, **Endpoints**, **Rule sets**, **Domain fronting** |
-| **Settings** | **General**, **Subscriptions**, **Backup**, **Security**, **Panel update**, **Audit log** |
+| **Settings** | **General**, **Subscriptions**, **Addresses**, **Backup**, **Security**, **Panel update**, **Audit log** |
 | **Services** | **Webhooks**, **Telegram**, **Email**, **Backup destinations**, **Single sign-on**, **Addons** |
 | **Access** | **Admins**, **Roles**, **API tokens** |
 | **License** | The licence and what it allows |
 
 An admin on the built-in operator role sees the same menu without
 **Services**, **Access**, **License** and the main-admin pages under
-**Settings** (**Backup**, **Security**, **Panel update**, **Audit log**). A
+**Settings** (**Addresses**, **Backup**, **Security**, **Panel update**,
+**Audit log**). A
 custom role can remove more. A [[~reseller]] sees only **Dashboard** and
 **Users**. See [[use/roles]] for what each permission opens.
 

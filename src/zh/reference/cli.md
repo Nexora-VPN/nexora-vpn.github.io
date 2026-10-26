@@ -20,6 +20,8 @@ tags: [reference, panel]
 | `config list` | 显示面板全局设置 |
 | `config get KEY` | 读取一项设置 |
 | `config set KEY VALUE` | 写入一项设置。`""` 表示清空。大多数设置在面板重启后生效 |
+| `ingress list` | 显示面板的监听器和路由（[[use/ingress]]） |
+| `ingress reset [-listen IP:PORT] [-yes]` | 把它们替换为一个普通监听器，在每个主机上提供面板 |
 | `setup-token [-rotate]` | 打印设置向导的一次性令牌，或换成新令牌 |
 | `admin list` | 列出管理员账户，并标出面板的所有者 |
 | `admin reset-password [-user U] [-pass P]` | 设置管理员的密码 |
@@ -34,7 +36,7 @@ tags: [reference, panel]
 
 `config` 读写只有主管理员才能修改的设置：面板的地址、域名、路径和证书，订阅域名和路径，备份，受信任代理和登录白名单，以及其他几项。`config list` 会全部列出。
 
-机密信息（例如备份口令）只显示为 `(set)`。`config set` 会拒绝不是面板设置的键，也会拒绝面板不接受的值。备份设置无需重启，一小时内生效；其他设置请重启面板（`systemctl restart nexora-panel`）。
+机密信息（例如备份口令）只显示为 `(set)`。`config set` 会拒绝不是面板设置的键，也会拒绝面板不接受的值。一旦 **设置 → 地址** 中有不止一个地址，例如第二个端口，`config set` 就会拒绝修改地址设置；请改用下面的 `ingress reset`。备份设置无需重启，一小时内生效；其他设置请重启面板（`systemctl restart nexora-panel`）。
 
 ### restore {#restore}
 
@@ -52,7 +54,26 @@ systemctl start nexora-panel
 
 ## 被锁在外面 {#locked-out}
 
-所有可能让面板无法访问的设置，都可以在面板不运行的情况下从命令行修改：
+所有可能让面板无法访问的设置，都可以在面板不运行的情况下从命令行修改。
+
+### 面板的地址 {#the-panel-s-addresses}
+
+如果你在 **设置 → 地址** 中修改过面板的地址，请先查看它们，再恢复一个你能访问的地址：
+
+```bash
+nexora-panel ingress list                        # every listener and route
+nexora-panel ingress reset                       # one plain listener, the panel on every host
+nexora-panel ingress reset -listen 0.0.0.0:2095  # the same, on this address
+systemctl restart nexora-panel
+```
+
+`ingress reset` 会把所有监听器、路由和兜底回答替换为一个监听器：它使用主监听器的地址（或 `-listen` 指定的地址），采用普通 HTTP，并在每个主机名的根路径提供面板。它会打印将要写入的内容，并要求你输入 `reset`；在脚本中请传入 `-yes`。证书、品牌外观和账户不受影响，这次更改会显示在页面的 **历史** 中。重新进入后，请在页面上重建其余部分。
+
+在页面上所做、无人确认的更改会在两分钟后自动撤回，所以只有已被确认的更改才需要重置。
+
+### 地址设置 {#the-address-settings}
+
+当面板只有一个地址时，可以逐项修改它的设置：
 
 ```bash
 nexora-panel config list                       # what is set
@@ -66,7 +87,7 @@ systemctl restart nexora-panel
 
 当面板 **没有基础路径** 时，最后一项最容易让人中招。`sub_domain` 中的域名只提供订阅，不提供其他任何内容，所以当面板位于根路径时，这些域名永远不会显示面板。如果你只使用这些域名，面板在任何地方都无法访问。设置基础路径就能避开这个陷阱：面板在每个域名下的该路径都能访问。
 
-在 Docker 中，端口在 compose 文件中设置，而不是用 `config set`。
+在 Docker 中，端口在 compose 文件中设置，而不是用 `config set` 或 `-listen`。
 
 ### 忘记密码 {#forgotten-password}
 

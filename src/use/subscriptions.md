@@ -23,7 +23,10 @@ sent to nodes.
 
 ## Where links point {#subscription-domains}
 
-**Settings → General → Subscriptions & integrations.**
+**Settings → General → Subscriptions & integrations.** These fields describe
+one subscription address. Subscriptions on a port of their own, behind a host
+bound to a reseller, or with a look of their own are set on [[use/ingress]],
+as a **Subscriptions** route with **Publish links here**.
 
 ### Subscription domains
 
@@ -69,7 +72,9 @@ that stops working then affects one customer, not your whole book.
   `a.b.sub.example.com`.
 
 The main admin can also give each [[~reseller]] its own subscription domain
-from the list, so its customers' links use that domain. See [[resellers]].
+from the list, so its customers' links use that domain. See [[resellers]]. A
+domain that only one reseller's customers may use is a **Subscriptions** route
+bound to that reseller on [[use/ingress#accounts-bound-to-hosts]].
 
 ### Base path and public address
 

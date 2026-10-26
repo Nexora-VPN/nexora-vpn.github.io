@@ -145,7 +145,7 @@ offer:
 | `acme` | The addon gets its own certificate for its domain, answering the authority on its port, which must be 443. |
 | `acme-http` | The same on any port, the authority asking on port 80. |
 | `self-signed` | The addon makes its own, for an address by IP. The approval screen shows its SHA-256 fingerprint: compare it with the one on the addon's **Set-up** page. Approving trusts exactly that certificate. |
-| `off` | Plain HTTP, for a reverse proxy of your own. |
+| `off` | Plain HTTP, for a reverse proxy of your own, or for the panel itself as that proxy ([[use/ingress#another-program]]). |
 
 With HTTPS on, the addon serves it on its install port alone, and the public
 address must name that port (443 when it names none), for example

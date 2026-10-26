@@ -178,6 +178,12 @@ scrape_configs:
 [репозитория панели](https://github.com/nexora-vpn/panel). Он ожидает
 источник данных Prometheus с uid `nexora-prometheus`.
 
+::: tip Порт только для Prometheus
+На [[use/ingress]] маршрут **Метрики** на слушателе, привязанном к частному
+адресу, убирает `/metrics` с публичного адреса панели. Выключите
+**/metrics** на маршруте панели.
+:::
+
 ### Токен {#the-token}
 
 Создайте его на странице [[use/tokens|токенов API]] с областью `stats:read`
@@ -203,6 +209,7 @@ scrape_configs:
 | `nexora_node_rejected_connections_total{outbound}` | соединения, отклонённые блокирующим аутбаундом |
 | `nexora_node_disk_bytes`, `nexora_node_disk_used_bytes`, `nexora_node_memory_bytes`, `nexora_node_memory_used_bytes`, `nexora_node_load1` | хост узла |
 | `nexora_event_deliveries{status}`, `nexora_event_subscribers` | доставки событий по состоянию (pending, delivered, dead) и включённые подписчики |
+| `nexora_ingress_requests_total{route,outcome}` | запросы с момента запуска панели — по [[use/ingress\|маршруту]], который их решил (пусто, если ни один не совпал), и по тому, что он сделал: `served`, `redirect` или `refused` |
 
 Каждая метрика узла несёт метки `node` (его имя) и `id`.
 

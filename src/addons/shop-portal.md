@@ -57,7 +57,7 @@ The panel reaches Shop at that address too.
 | `acme` | The domain of the public address points at Shop's server and port 443 is free there. Shop gets and renews its own certificate on 443, and nothing listens on 80. |
 | `acme-http` | The same on any port, for a server whose 443 is taken. The authority checks on port 80. |
 | `self-signed` | An address by IP, such as `https://203.0.113.9:8443`. Browsers warn once; the traffic is encrypted. **Set-up** shows the fingerprint to compare with the browser's and with the one the panel showed when you approved Shop. |
-| `off` | Plain HTTP on the port, for your own reverse proxy. |
+| `off` | Plain HTTP on the port, for your own reverse proxy or the panel (below). |
 
 ::: warning No mini-app on a self-signed address
 Telegram opens no mini-app on a self-signed address, so the bot offers none.
@@ -114,3 +114,10 @@ When Shop runs behind a reverse proxy that terminates TLS, set
 addresses or ranges, for example `127.0.0.1, 10.0.0.0/8`. Shop then reads
 the client from the proxy's `X-Forwarded-For`. Left empty, the default, no
 forwarded header is believed.
+
+The panel can be that proxy. On **Settings → Addresses**, add an
+**Another program** route on Shop's host name with **Proxy to** set to Shop
+([[use/ingress#another-program]]). Customers then reach Shop on the panel's
+port, and Shop's own port need not be open to the internet. The panel sends
+the client's address in `X-Forwarded-For`, so list the panel's address as
+Shop sees it, such as `127.0.0.1` on the same server.

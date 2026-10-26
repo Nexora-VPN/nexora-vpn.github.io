@@ -49,7 +49,12 @@ path.
 - **Banned after failed logins:** add your address to `login_allowlist`, and set
   `trusted_proxies` if the panel sits behind a proxy or a CDN.
 - **Unreachable address, domain or path:** `nexora-panel config set …` and a
-  restart.
+  restart, or `nexora-panel ingress reset` and a restart after changes on
+  **Settings → Addresses**.
+- **A correct password is refused on one host name only:** that host may be
+  bound to another account on **Settings → Addresses**, or your account bound
+  to other hosts. Only the bound account signs in there, and a refusal reads
+  exactly like a wrong password. See [[use/ingress#accounts-bound-to-hosts]].
 
 All three are in [[reference/cli#locked-out]].
 

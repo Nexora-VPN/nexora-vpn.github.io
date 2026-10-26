@@ -82,6 +82,7 @@ the node's. See [[same-server]].
 | --- | --- | --- |
 | a random high TCP port | panel (script install) | the panel's web interface, API and subscriptions. The installer picks a free one and prints it |
 | 2095 TCP | panel (Docker) | the same, pinned in the compose file |
+| any port you add | panel | further listeners from **Settings → Addresses** ([[use/ingress]]); in Docker, publish each one in the compose file |
 | 62050 TCP | node | the control port. Only the panel can use it; allow it from the panel's address alone |
 | the inbounds' ports | node | what your users connect to, chosen in the panel |
 | 5432 TCP, local only | PostgreSQL (with `--postgres`) | the database, reached by the panel on `127.0.0.1` |

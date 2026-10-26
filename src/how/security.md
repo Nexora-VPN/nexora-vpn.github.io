@@ -111,6 +111,13 @@ An [[~api-token|API token]] lets a program use the API:
   panel sees every visitor as the proxy's address and one ban would lock
   everyone out. The **Login allowlist** names addresses that are never locked
   out or banned: your own network, your way back in.
+- **An account can be bound to its own host names** ([[use/ingress]]). Only
+  that account signs in there, and it signs in nowhere else; its API tokens
+  follow the same rule. A refused sign-in reads exactly like a wrong password
+  and is not counted towards a ban.
+- **Another program behind the panel never sees an admin's session.** The
+  panel removes its own cookies from what it forwards, and refuses a route
+  that would put the program on the panel's host name.
 
 ## The setup gate
 

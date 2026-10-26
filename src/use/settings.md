@@ -10,7 +10,9 @@ tags: [panel]
 
 **Settings → General** holds how the panel itself is reached and a few
 panel-wide choices. Most of what changes the panel's address applies after a
-restart, and only the main admin can change it.
+restart, and only the main admin can change it. Several ports, more hosts and
+paths, and anything else the panel can answer with are on [[use/ingress]],
+where a change applies at once.
 
 <NxShot page="settings" alt="The General settings page: cards for the web server, subscriptions and integrations, the rule set mirror, the preset catalogue, timezone, usage graphs and the audit log" />
 
@@ -22,7 +24,10 @@ without the panel running. See [[reference/cli]].
 
 ## The panel's address
 
-The **Web server** card decides where the panel answers.
+The **Web server** card decides where the panel answers. It shows the panel's
+one address. Once [[use/ingress]] holds more than these fields can describe,
+such as a second port, a changed value here is refused with a message that
+points there.
 
 | Setting | What it does |
 | --- | --- |
@@ -61,7 +66,9 @@ see [[use/subscriptions#subscription-domains]].
 
 ## A web site for other addresses
 
-**Masquerade directory** takes an absolute path on the panel's server.
+**Masquerade directory** takes an absolute path on the panel's server. On
+[[use/ingress]] it is a **Static site** fallback, which any listener or route
+can use.
 Requests on the panel's port that are not for the panel or a subscription
 are then answered from that directory as an ordinary web site
 you provide: a landing page, a company site, whatever suits the address.
@@ -121,7 +128,8 @@ Trusted proxies, the login allowlist and address bans are on
 ## Restarting the panel
 
 **Restart panel** restarts the panel so address, path, listen and HTTPS
-changes take effect. When the panel is back, the page opens it at its new
+changes made on this page take effect. Changes on [[use/ingress]] need no
+restart. When the panel is back, the page opens it at its new
 address — a changed port, domain, base path or HTTPS — on the same page. Behind
 a reverse proxy only the domain and the base path follow, since the port and
 the scheme are the proxy's. On a new domain you sign in again, and a
@@ -131,6 +139,7 @@ restart.
 
 ## Related
 
+- [[use/ingress]]: every port, host and path the panel answers on.
 - [[use/subscriptions]]: subscription domains, the subscription page and link
   names.
 - [[use/certificates]]: certificates for the panel.

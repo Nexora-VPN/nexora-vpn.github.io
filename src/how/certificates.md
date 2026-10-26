@@ -32,7 +32,7 @@ name. The panel picks who answers it:
 | Challenge | Answered by | Works when |
 | --- | --- | --- |
 | **dns-01** | the panel, through your DNS provider's API (Cloudflare, Alibaba Cloud DNS or acme-dns) | always, for any name, including wildcards and names that point at no server of yours |
-| **http-01**, **tls-alpn-01** by the panel | the panel's server | the name resolves to the panel's server, and port 80 or 443 is free there |
+| **http-01**, **tls-alpn-01** by the panel | the panel's server | the name resolves to the panel's server, and port 80 or 443 is free there or one of the panel's own listeners |
 | **any of the three** by a node | the node chosen under **Obtained by** | for http-01 and tls-alpn-01, the name points at that node |
 
 A node only answers the challenge. The certificate it obtains is handed to

@@ -99,6 +99,10 @@ opens the new address.
 If you cannot reach that address afterwards, every one of these settings can be
 changed from the server's command line; see [[reference/cli#locked-out]].
 
+This is the panel's first address. Later you can move it to port 443 with a
+domain, add more ports and host names, or put other programs behind it on
+[[use/ingress]].
+
 ## Restore a backup instead
 
 To move an existing Nexora panel to this server, choose **Moving from another

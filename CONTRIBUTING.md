@@ -62,7 +62,7 @@ One or two sentences: what this page covers and who needs it.
 - `<NxShot page="NAME" alt="what the picture shows" />` shows a panel screen in
   the reader's theme (and Persian for Persian pages). Available names:
   `dashboard nodes tunnels users plans certificates templates inbounds
-  outbounds endpoints rule-sets fronting settings subscriptions backup security
+  outbounds endpoints rule-sets fronting settings subscriptions ingress backup security
   update webhooks telegram email backup-destinations sso addons admins roles
   tokens audit license`, plus `setup-wizard node-install user-new inbound-new`.
 - `<NxDiagram id="ID" />` draws a diagram from `.vitepress/diagrams.ts`. A new

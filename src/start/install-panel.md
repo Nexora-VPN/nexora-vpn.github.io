@@ -84,7 +84,9 @@ before the first start.
 
 The Docker panel listens on port 2095. The port is pinned in the compose file
 (`NEXORA_WEB_LISTEN`) together with the published port mapping, so the wizard
-cannot move it: change both in the compose file if you want another port.
+cannot move it: change both in the compose file if you want another port. A
+further port added on [[use/ingress]] must be published in the compose file
+too.
 
 Docker publishes ports on IPv4 only by default. On an IPv6-only host, enable
 IPv6 in the Docker daemon (`"ipv6": true` and `"ip6tables": true` in
@@ -104,7 +106,8 @@ To run a node on the same server in Docker, see [[same-server]].
   x86 and ARM, and 32-bit x86 and ARM, are supported. Without systemd, use
   Docker.
 - Root access, and `curl` and `tar` on the server.
-- One open TCP port for the panel.
+- One open TCP port for the panel. More can be added later on
+  [[use/ingress]].
 
 ## What the installer does
 

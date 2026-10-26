@@ -165,6 +165,12 @@ scrape_configs:
 [مخزن پنل](https://github.com/nexora-vpn/panel) وارد کنید. یک datasource از نوع
 Prometheus با uid `nexora-prometheus` انتظار دارد.
 
+::: tip پورتی فقط برای Prometheus
+در [[use/ingress]]، یک مسیر **متریک‌ها** روی شنونده‌ای که به یک آدرس خصوصی بسته
+است، `/metrics` را از آدرس عمومی پنل دور نگه می‌دارد. **/metrics** را روی مسیر
+پنل خاموش کنید.
+:::
+
 ### توکن {#the-token}
 
 آن را در صفحه‌ی [[use/tokens|توکن‌های API]] فقط با scope `stats:read` و نه هیچ چیز
@@ -190,6 +196,7 @@ Prometheus با uid `nexora-prometheus` انتظار دارد.
 | `nexora_node_rejected_connections_total{outbound}` | اتصال‌هایی که یک اوتباند block رد کرده |
 | `nexora_node_disk_bytes`، `nexora_node_disk_used_bytes`، `nexora_node_memory_bytes`، `nexora_node_memory_used_bytes`، `nexora_node_load1` | میزبان نود |
 | `nexora_event_deliveries{status}`، `nexora_event_subscribers` | تحویل‌های رویداد بر اساس وضعیت (pending، delivered، dead) و مشترک‌های فعال |
+| `nexora_ingress_requests_total{route,outcome}` | درخواست‌ها از زمان شروع پنل، بر اساس [[use/ingress\|مسیری]] که تصمیم گرفته (وقتی هیچ مسیری مطابقت نداشته خالی است) و کاری که کرده: `served`، `redirect` یا `refused` |
 
 هر معیار نود برچسب‌های `node` (نامش) و `id` را دارد.
 

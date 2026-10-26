@@ -74,7 +74,7 @@ docker compose logs panel | grep setup
 
 使用 PostgreSQL 部署时，首次启动前把 `.env.example` 复制为 `.env` 并设置密码。
 
-Docker 中的面板监听 2095 端口。该端口与发布的端口映射一起固定在 compose 文件中（`NEXORA_WEB_LISTEN`），因此向导无法修改它：如需其他端口，请在 compose 文件中同时修改两处。
+Docker 中的面板监听 2095 端口。该端口与发布的端口映射一起固定在 compose 文件中（`NEXORA_WEB_LISTEN`），因此向导无法修改它：如需其他端口，请在 compose 文件中同时修改两处。在 [[use/ingress]] 中添加的其他端口也必须在 compose 文件中发布。
 
 Docker 默认只在 IPv4 上发布端口。在仅有 IPv6 的主机上，请在 Docker 守护进程中启用 IPv6（在 `/etc/docker/daemon.json` 中设置 `"ipv6": true` 和 `"ip6tables": true`），并在两种地址族上发布：
 
@@ -90,7 +90,7 @@ Docker 默认只在 IPv4 上发布端口。在仅有 IPv6 的主机上，请在 
 
 - 带 systemd 的 Linux：Debian 11+、Ubuntu 20.04+、RHEL 9+ 或类似系统。支持 64 位 x86 和 ARM，以及 32 位 x86 和 ARM。没有 systemd 时请使用 Docker。
 - root 权限，服务器上要有 `curl` 和 `tar`。
-- 面板需要一个开放的 TCP 端口。
+- 面板需要一个开放的 TCP 端口。之后可以在 [[use/ingress]] 中添加更多端口。
 
 ## 安装程序做了什么 {#what-the-installer-does}
 
