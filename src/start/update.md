@@ -40,6 +40,22 @@ backup taken in step 1 is the way back: restore it under **Settings → Backup**
 (see [[use/backup]]).
 :::
 
+::: danger Going back to an older version
+From the release that brings **Settings → Addresses** ([[use/ingress]]), the
+panel keeps its ports, domains, paths and HTTPS in a new form, and the old
+settings are removed from the database. An older version started on that
+database finds none of them: it comes up on port 2095, in plain HTTP, with no
+domain or path.
+
+- **Take a backup before you update, and keep it.** **Update now** takes one in
+  step 1; the installer copies a SQLite database to `nexora.db.bak`.
+- **Do not go back** by installing an older version over the new one.
+- If an update from this page fails and the previous version is put back by
+  itself, the same happens. Run the update again, from the server if needed,
+  or restore the backup taken before the update with
+  `nexora-panel restore FILE -keep-web-settings=false` and restart the panel.
+:::
+
 **Check for releases daily** turns the daily check off. It is one request a day
 to the public panel repository, which tells it your server's address. The button
 still works with the check off.

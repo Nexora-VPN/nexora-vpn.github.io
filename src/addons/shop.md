@@ -118,8 +118,9 @@ does is operated from it.
 
 ::: warning Subscription links and the admin path
 The dashboard warns when the panel hands customers subscription links on
-the panel's admin path. Set **Subscription base path** in the panel's
-settings so customers never see it ([[use/subscriptions]]).
+the panel's admin path. Publish them on a **Subscriptions** route with a
+**Path prefix** of their own, on **Settings → Addresses**, so customers never
+see it ([[use/subscriptions]]).
 :::
 
 ### Bot texts

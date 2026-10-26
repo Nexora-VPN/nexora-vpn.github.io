@@ -16,49 +16,43 @@ shape both. How the entries are put together is in [[how/subscriptions]].
 
 <NxShot page="subscriptions" alt="The Subscriptions settings page: cards for client detection, the subscription page and its theme, link names with a preview, and the base configuration for each format" />
 
-The settings are split between two pages: where links point is on
-**Settings → General**, and everything else is on
+Where links point is set on [[use/ingress]], and everything else here, on
 **Settings → Subscriptions**. Changes apply on users' next fetch; nothing is
 sent to nodes.
 
 ## Where links point {#subscription-domains}
 
-**Settings → General → Subscriptions & integrations.** These fields describe
-one subscription address. Subscriptions on a port of their own, behind a host
-bound to a reseller, or with a look of their own are set on [[use/ingress]],
-as a **Subscriptions** route with **Publish links here**.
+Links are built on a **Subscriptions** route of **Settings → Addresses** with
+**Publish links here** on. Until one does, links are built on the address the
+request came in on, or on the panel route's **Public address**. The panel's
+first address always serves subscriptions too, whatever else you add.
 
 ### Subscription domains
 
-**Subscription domains (optional)** is a list of host names users' links are
-built on, such as `sub.example.com`. Up to eight.
+A **Subscriptions** route's **Hosts** are the host names users' links are built
+on, such as `sub.example.com`.
 
-- **New links use the first domain.** Every domain in the list keeps serving
-  the links already handed out.
+- **New links use the first host.** Every host on the route keeps serving the
+  links already handed out.
 - To replace a domain that stopped working, add the new one, move it to the
-  top, and keep the old one in the list while users' apps refresh onto the new
-  links. Removing a domain from the list is what cuts its links off.
+  top, and keep the old one on the route while users' apps refresh onto the
+  new links. Removing a host from the route is what cuts its links off.
 - Write each one as a host alone, with no port and no path. Links use the
-  panel's port, or none when a **Public address** is set.
+  port of the route's listener, or none when the route has a
+  **Public address**.
 - Each domain needs a DNS record pointing at the panel, and a place on the
-  panel's certificate. Saving the list reissues the panel's own certificate to
-  cover every domain; a certificate you manage yourself needs them added by
-  you.
+  certificate of the route's listener. The panel's own certificate is reissued
+  to cover every host on a listener that serves it; a certificate you manage
+  yourself needs them added by you.
+- **Path prefix** is the path links are built under, such as `/s`.
 
-On a subscription domain, the panel answers subscriptions, and the panel
-itself only at its base path. With no base path set, those names serve
-subscriptions and nothing else.
-
-::: danger
-With no panel base path and no panel domain, listing the address you manage
-the panel from as a subscription domain locks you out of the panel. Set a base
-path first. To recover, clear the list from the server's command line; see
-[[reference/cli]].
-:::
+A **Subscriptions** route takes only `/sub`, so the panel route after it still
+answers the panel on the same host at its own path. The page refuses a change
+that would leave the address you are working from without the panel.
 
 ### A hostname per subscriber
 
-Write a domain with a wildcard, `*.sub.example.com`, and every subscriber gets
+Write a host with a wildcard, `*.sub.example.com`, and every subscriber gets
 their own host name under it, such as `k4m2xr8qvp.sub.example.com`. One name
 that stops working then affects one customer, not your whole book.
 
@@ -71,20 +65,16 @@ that stops working then affects one customer, not your whole book.
 - Exactly one level is served: `abc.sub.example.com`, not
   `a.b.sub.example.com`.
 
-The main admin can also give each [[~reseller]] its own subscription domain
-from the list, so its customers' links use that domain. See [[resellers]]. A
-domain that only one reseller's customers may use is a **Subscriptions** route
-bound to that reseller on [[use/ingress#accounts-bound-to-hosts]].
+The main admin can also give each [[~reseller]] its own subscription domain,
+so its customers' links use that domain: a **Subscriptions** route bound to
+that reseller ([[use/ingress#accounts-bound-to-hosts]]), or the
+**Subscription domain** on its account ([[resellers]]).
 
-### Base path and public address
+### Behind a CDN or a proxy
 
-- **Subscription base path (optional)**: the path subscription links are built
-  under. It must differ from the panel's base path.
-- **Public address**: the panel's public origin, such as
-  `https://vpn.example.com`. With no subscription domain, links are built on
-  it instead of on whatever address the request came in on. Set it when
-  addons or scripts call the panel by a private name, so the links they hand
-  out work for users. A subscription domain still wins over it.
+When people reach the subscriptions through a CDN or a proxy in front of the
+panel, set the route's **Public address**, such as `https://sub.example.com`.
+Links are then built on it, with no port. See [[use/ingress#behind-a-cdn]].
 
 ## Formats for each app
 

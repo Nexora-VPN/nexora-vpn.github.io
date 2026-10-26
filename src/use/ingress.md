@@ -16,17 +16,22 @@ within two minutes.
 
 <NxShot page="ingress" alt="The Addresses page: tabs for listeners, routes, fallbacks, brandings, a request test and the change history, above the list of listeners" />
 
-## This page or General settings
+## The first address {#the-first-address}
 
-A new panel has one address: one port, the panel on it, and maybe a domain, a
-base path and subscription domains. **Settings → General** and
-[[use/subscriptions]] edit that address field by field, and those changes
-apply after **Restart panel**. This page edits the same thing in full.
+The **primary** listener is the address the panel was installed on, and it
+always stays:
 
-Once you add something those fields cannot describe, such as a second port or
-a route for something other than the panel and subscriptions, change the
-address here only. Saving a different value on General is then refused with a
-message that points here; the rest of that page saves as before.
+- It can be edited, its port, address and TLS included, but not removed,
+  switched off or replaced by another listener.
+- It always carries a **Panel** route and serves subscriptions, on a
+  **Subscriptions** route or with **Subscriptions** on the panel route.
+- The setup wizard writes it. While the panel has this one address,
+  `nexora-panel config get` and `config set` read and write it on the server,
+  and `nexora-panel ingress reset` rebuilds it ([[reference/cli]]).
+- In Docker its port is fixed by the compose file.
+
+A change on this page applies at once. A change from the server's command line
+applies at the panel's next start.
 
 ## How a request is answered
 
@@ -218,7 +223,7 @@ Edit as much as you like, then click **Save and apply**:
 To move the panel somewhere else, add the new address first, save, open it,
 and remove the old one from there.
 
-**History** lists every change: from this page, from General settings, an
+**History** lists every change: from this page, from the command line, an
 upgrade, a restore or `ingress reset`. **Restore** applies an older one, and it
 needs confirming like any other change.
 
@@ -270,6 +275,55 @@ Add an **Another program** route on `shop.example.com` with **Proxy to** set to
 the addon. If a panel route on the same listener matches every host, add
 `shop.example.com` to its **Except hosts**.
 
+## Behind a CDN {#behind-a-cdn}
+
+One host name can go behind Cloudflare or another CDN while the others stay
+direct, even on the same listener. The CDN connects to the panel like any
+other client, so it needs a listener, a certificate, and the panel's trust for
+the address it forwards.
+
+### Cloudflare
+
+1. **A port Cloudflare forwards.** It forwards HTTPS on `443`, `2053`, `2083`,
+   `2087`, `2096` and `8443`, and HTTP on `80`, `8080`, `8880`, `2052`,
+   `2082`, `2086` and `2095`. Add a listener on one of them, or have
+   Cloudflare send the traffic on to the listener's port with an origin rule.
+2. **TLS between Cloudflare and the panel.** Cloudflare's **Full** mode works
+   with the panel's own self-signed certificate. For **Full (strict)**, create
+   a Cloudflare origin certificate, upload it on [[use/certificates]], and pick
+   it for the listener. Avoid **Flexible**: the traffic from Cloudflare to the
+   panel would be plain HTTP.
+3. **The visitor's address.** Put the IPv4 and IPv6 ranges Cloudflare
+   publishes under the listener's **Trusted proxies**. The panel then takes the
+   visitor's address from `X-Forwarded-For` for login protection, bans and
+   **Allowed addresses**. Visitors who reach the same listener directly are
+   not affected, because their address is not one of Cloudflare's.
+4. **The DNS record.** Turn the proxy on for that host name only.
+5. **The links.** When Cloudflare's port differs from the listener's, set the
+   route's **Public address**, such as `https://sub.example.com`, so links are
+   built on it with no port.
+6. **Cloudflare's own settings for the host.**
+   - Do not turn on "Cache Everything" or any rule that caches every path:
+     subscriptions and the panel's API must reach the panel every time.
+   - Keep bot challenges off on a subscription host: an app cannot answer one,
+     and its fetch fails.
+   - WebSockets must stay on, as they are by default; the panel's live views
+     use them.
+
+On Cloudflare's free plan, an upload over 100 MB is refused and a request that
+takes longer than 100 seconds is cut. Restore a large backup from the panel's
+direct address.
+
+### Other CDNs
+
+Any CDN works that:
+
+- forwards HTTP or HTTPS to a port the panel has a listener on;
+- sends the original host name, and over TLS the same name in the handshake;
+- writes the visitor's address into `X-Forwarded-For`;
+- publishes the addresses it connects from, for **Trusted proxies**;
+- can be told not to cache subscriptions and the API.
+
 ## Locked out
 
 If a change leaves the panel unreachable and was confirmed anyway, put the
@@ -279,7 +333,6 @@ reset`, which leaves one plain listener with the panel on every host. See
 
 ## Related
 
-- [[use/settings]]: the address as General settings show it.
 - [[use/subscriptions]]: where subscription links point.
 - [[use/certificates]]: certificates for the listeners.
 - [[use/security]]: trusted proxies and login protection.

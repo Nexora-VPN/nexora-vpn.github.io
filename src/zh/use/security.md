@@ -79,5 +79,5 @@ tags: [security, access]
 
 - [[admins]]：账户、所有者，以及其他管理员的会话。
 - [[roles]]：每个账户可以做什么。
-- [[settings]]：面板的地址和 HTTPS。
+- [[use/ingress]]：面板的地址和 HTTPS。
 - [[how/security]]：面板如何保护登录、会话和节点。

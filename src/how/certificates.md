@@ -97,9 +97,9 @@ nothing for apps. See [[how/subscriptions]].
 The [[~setup-wizard]] creates the panel's own HTTPS certificate, self-signed by
 default, covering the addresses you listed.
 
-- **It follows your addresses.** Setting a panel domain or subscription
-  domains reissues it so it names every one, including a wildcard
-  subscription domain.
+- **It follows your addresses.** A host name added to a route on a listener
+  that serves it reissues it so it names every one, a wildcard subscription
+  domain included.
 - **It reloads without a restart.** The panel's web server checks its
   certificate every 10 seconds and switches to a new one when it changes. A
   broken update is ignored and the last good certificate keeps serving.

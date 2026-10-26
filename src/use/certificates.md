@@ -103,9 +103,9 @@ Two other sources sit beside the store:
 
 ### On the panel itself
 
-**Settings → General → Panel HTTPS → A certificate from the panel** serves the
-panel's web interface with a certificate from the store. Renewals reach it on
-their own. See [[settings#https]].
+A listener on [[use/ingress#listeners]] with **A certificate from the store**
+serves the panel with a certificate from here, and **More certificates** adds
+others chosen by the name a client asks for. Renewals reach them on their own.
 
 The setup wizard gives the panel a self-signed certificate for the addresses
 you entered. Adding subscription domains reissues it to cover them; a
@@ -154,7 +154,7 @@ back to their own or the node's certificate.
 ## Related
 
 - [[inbounds]]: choosing a certificate for an inbound.
-- [[settings]]: HTTPS for the panel.
+- [[use/ingress]]: HTTPS for the panel's listeners.
 - [[use/addons]]: certificates for addons.
 - [[how/certificates]]: how certificates are issued, stored and sent to
   nodes.

@@ -119,5 +119,5 @@ address setting that made the panel unreachable. See [[reference/cli]].
 
 - [[admins]]: accounts, the owner, and other admins' sessions.
 - [[roles]]: what each account may do.
-- [[settings]]: the panel's address and HTTPS.
+- [[use/ingress]]: the panel's addresses and HTTPS.
 - [[how/security]]: how the panel protects logins, sessions and nodes.
