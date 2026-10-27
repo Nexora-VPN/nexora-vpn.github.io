@@ -36,8 +36,9 @@ automatically within about ten seconds, and the page shows **Rolled back**.
 
 ::: warning The database is not rolled back
 Database changes only go forward. If something looks wrong after an update, the
-backup taken in step 1 is the way back: restore it under **Settings → Backup**
-(see [[use/backup]]).
+backup taken in step 1 is the way back. It restores only into the version that
+took it: install the previous version again (`install.sh --version vX.Y.Z`),
+then restore it under **Settings → Backup** (see [[use/backup]]).
 :::
 
 ::: danger Going back to an older version

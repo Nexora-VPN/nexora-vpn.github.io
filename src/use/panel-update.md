@@ -54,8 +54,9 @@ itself within about ten seconds, and the page shows **Rolled back**.
 
 The database is **not** rolled back: updates only ever move it forward. If
 something looks wrong after an update, the backup taken in the first step is
-the way back. The page names it; restore it under **Settings → Backup** (see
-[[backup]]).
+the way back. The page names it. It restores only into the version that took
+it: install the previous version again (`install.sh --version vX.Y.Z`), then
+restore it under **Settings → Backup** (see [[backup]]).
 
 ## Docker installs
 

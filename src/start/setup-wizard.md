@@ -115,6 +115,10 @@ server? Restore a backup** at the bottom of the wizard instead of filling it in.
    unusual.
 3. **Restore and restart** replaces this empty database with the archive.
 
+The archive must come from the same panel version as this install; one from
+an older or a newer version is refused. Install the old server's version
+here (`--version`, see [[install-panel]]), restore, then update.
+
 The panel comes back as the old server: its accounts, nodes, users and
 certificates, and also its address settings. Those may not suit this server. If
 the old address cannot be used here, the panel falls back to the address it was

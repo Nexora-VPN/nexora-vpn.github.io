@@ -25,6 +25,9 @@ always stays:
   switched off or replaced by another listener.
 - It always carries a **Panel** route and serves subscriptions, on a
   **Subscriptions** route or with **Subscriptions** on the panel route.
+- Those two routes are marked **Main**. Their hosts, path prefix and options
+  can be edited, but they cannot be deleted, given another service, bound to
+  an account or taken off the primary listener.
 - The setup wizard writes it. While the panel has this one address,
   `nexora-panel config get` and `config set` read and write it on the server,
   and `nexora-panel ingress reset` rebuilds it ([[reference/cli]]).
@@ -122,7 +125,8 @@ resellers. Empty lets every account in, and the panel's owner always gets in.
 An **API** route accepts API tokens only. A browser's session is ignored
 there, the login and setup pages are not there, and a login used as a token
 is refused. **Tokens** and **Addons** limit it to the tokens you pick; with
-neither, every token gets in.
+neither, every token gets in. A token or an addon picked here cannot be
+deleted, nor the account a token belongs to, until you take it off the route.
 
 To keep `/api/v1` off the panel's public address, switch **/api/v1** off on the
 panel route and give an API route a listener of its own, such as one on
@@ -211,7 +215,8 @@ falls through to the next one.
 Edit as much as you like, then click **Save and apply**:
 
 1. The panel checks the change. One that would leave the address you are on
-   without the panel is refused.
+   without the panel is refused, and so is one that puts a listener on a port
+   another program on the server already uses.
 2. It applies the change at once. Open connections stay up; a listener is
    restarted only when its address changes or TLS is switched on or off.
 3. The page confirms the change from the address it is on. If that address no

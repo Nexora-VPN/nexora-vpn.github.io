@@ -107,7 +107,8 @@ restore, for example:
 
 - the archive holds no admin accounts;
 - it was taken on another machine, so its licence will not be valid here;
-- it was written by a newer panel version;
+- it was written by another panel version, older or newer, so it cannot be
+  restored here (below);
 - traffic history or the audit log was left out;
 - it holds a different panel client certificate, so every node would refuse
   this panel until reinstalled;
@@ -117,6 +118,14 @@ restore, for example:
 
 After a check, **Restore from this backup** replaces every row in the
 database with the archive and restarts the panel.
+
+::: warning Only into the version that took it
+A backup is restored only into the panel version that wrote it. An archive
+from an older or a newer version is refused before anything changes, and
+the restore button stays off. To use one, install that version
+(`install.sh --version vX.Y.Z`, see [[start/install-panel]]), restore it,
+then update.
+:::
 
 1. Check the archive and read the warnings.
 2. Choose what to **Keep from this installation**:
@@ -141,8 +150,9 @@ instead; see [[reference/cli]].
 ## Moving to another server
 
 1. On the old panel, take a backup and download it.
-2. Install the panel on the new server and open the setup link. See
-   [[start/install-panel]].
+2. Install the **same panel version** on the new server, with
+   `--version vX.Y.Z`, and open the setup link. See [[start/install-panel]].
+   A backup restores only into the version that took it.
 3. On the setup wizard's first screen, follow
    **Moving from another server? Restore a backup** instead of filling in the
    form, and choose **Restore and restart**.
