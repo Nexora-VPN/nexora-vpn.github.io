@@ -145,18 +145,19 @@ primary, so reordering a node's link addresses changes the files users
 download afterwards. Files users already saved keep the old address; send them
 a new one. See [[nodes]].
 
-## Per-node endpoints
+## An endpoint for one node only {#per-node-endpoints}
 
-A node can carry endpoints of its own on top of its template, under
-**Per-node endpoints** in its **Config** panel. A WireGuard client to an
-upstream network that only one server should use is a typical case.
+An endpoint reaches the nodes whose template selects it. For a WireGuard
+client to an upstream network that only one server should use, give that node
+a template of its own that selects it. See
+[[templates#a-template-of-its-own]].
 
 ## Editing and deleting
 
 Edits reach every node that carries the endpoint. **Duplicate** copies one
 under a new tag and listen port. The panel refuses to delete an endpoint that
-a routing rule or a template's final outbound still names, and lists those
-references.
+a routing rule or the final outbound of a template selecting it still names,
+and lists those references.
 
 ## Related
 

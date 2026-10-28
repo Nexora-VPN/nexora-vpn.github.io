@@ -152,8 +152,9 @@ to every ticked row.
 ## Deleting an inbound
 
 Deleting removes the inbound from every template and node that served it. The
-panel refuses the delete while something else still names the inbound by
-tag, such as an ingress route or a routing rule, and lists those references.
+panel refuses the delete while something else in a template that selects it
+still names the inbound by tag, such as an ingress route or a routing rule,
+and lists those references.
 Remove or repoint them first, then delete.
 
 ## Related

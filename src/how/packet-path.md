@@ -117,9 +117,10 @@ protocol, inbound, user and more. The first rule that matches picks the
   current and pushes it to the node over the control link. The node never
   fetches a list itself, so a list's source being unreachable from a node
   changes nothing.
-- **A node can add to the template's route.** A node's own routing is applied
-  after the template's, which is how one relay sends only some traffic down a
-  tunnel.
+- **The route is the template's.** A node adds no rules of its own. A server
+  that must route differently runs a template of its own, which is also how
+  one relay sends only some traffic down a tunnel. See
+  [[use/templates#a-template-of-its-own]].
 - **Route test** on a node shows which rule an address would match and where it
   would go, without sending anything. See [[use/routing]].
 

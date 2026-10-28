@@ -101,23 +101,23 @@ took. Through a proxy upstream the answer can be "not refused, unconfirmed",
 because a proxy does not always say whether its far end connected. See
 [[nodes]].
 
-Outbounds added to one node only, in the node's **Config** panel, each have a
-**Test** button that measures the delay through it from that node.
+## An outbound for one node only {#per-node-outbounds}
 
-## Per-node outbounds
-
-A node can carry outbounds of its own on top of its template, under
-**Per-node extra outbounds** in its **Config** panel. Use this when one server
-needs an upstream the others do not, such as a different exit for one region.
+An outbound reaches the nodes whose template selects it. When one server needs
+an upstream the others do not, such as a different exit for one region, give
+that node a template of its own that selects it. See
+[[templates#a-template-of-its-own]].
 
 ## Editing and deleting
 
 Editing an outbound sends the change to every node that carries it. The
 **Duplicate** action copies one under a new tag.
 
-The panel refuses to delete an outbound that something still names by tag: a
-routing rule, a template's final outbound, a detour, or a group. It lists
-those references. Repoint them, then delete. A node also refuses to drop an
+The panel refuses to delete an outbound that something still names by tag in
+a template that selects it: a routing rule, the template's final outbound, a
+detour, or a group. It lists those references. Repoint them, then delete. An
+outbound tagged `direct` always deletes, because every node has a built-in
+`direct` of its own. A node also refuses to drop an
 outbound its running routing still needs, so a change that removes an
 outbound and the rule naming it should be saved together.
 

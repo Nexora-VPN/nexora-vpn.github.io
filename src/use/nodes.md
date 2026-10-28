@@ -64,7 +64,7 @@ A node can have two kinds of problem, and the list keeps them apart:
 | --- | --- |
 | **Name** | how the node is shown in the panel and, unless you rename entries, in users' links |
 | **Address**, **Port** | where the panel reaches the node's control port. To move the node to another machine, use **Move to another server** instead of editing this. |
-| **Template (inbounds + outbounds + endpoints + routing)** | what the node serves |
+| **Template (inbounds + outbounds + endpoints + routing)** | what the node serves, all of it: a node has no configuration of its own. See [[use/templates#a-template-of-its-own]]. |
 | **Link addresses** | the public addresses users' links name, when they differ from **Address**. See below. |
 | **Remark** | a note shown under the name |
 | **Fallback certificate** | used by this node's TLS inbounds that end up with no certificate of their own. See [[use/certificates]]. |
@@ -145,14 +145,13 @@ authorised key is skipped: update it from its own **Install** dialog, or the
 
 ## A node's menu
 
-Each row has three buttons, **Sync**, **Config** and **Edit**, and a **⋮**
-menu for the rest. Between them they offer:
+Each row has two buttons, **Sync** and **Edit**, and a **⋮** menu for the
+rest. Between them they offer:
 
 | Entry | What it does |
 | --- | --- |
 | **Sync** | sends the node its configuration again |
 | **Edit** | the node's form (above) |
-| **Config** | the template, server details, extra outbounds and endpoints for this node only, and its own routing. See [[use/routing]]. |
 | **Stats** | the node's health history and per-user usage (below) |
 | **Live connections** | who is connected right now (below) |
 | **Usage graph** | the node's traffic over time |

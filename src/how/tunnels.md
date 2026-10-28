@@ -22,7 +22,9 @@ A tunnel is two halves on two kinds of node, and each is configured on its own:
 - **The relay half** is an [[~outbound]] on the relay. Whatever the relay's
   [[~routing]] sends to it goes into the tunnel. When the relay carries exactly
   one tunnel, the panel makes it the relay's final outbound by itself, so all
-  traffic the template's rules do not handle goes down the tunnel.
+  traffic the template's rules do not handle goes down the tunnel. When the
+  relay's template has a rule sending traffic to the tunnel itself, the
+  template's own final stays the default instead.
 - **The origin half** is a way in on each origin. It accepts the streams the
   relay opens and hands them to the origin's own routing, which sends them on
   like any other traffic arriving there.

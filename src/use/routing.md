@@ -83,9 +83,10 @@ on to the next rule unmatched.
 ### The final outbound
 
 **Final outbound** takes every connection no rule matched. It is the default
-for the nodes on the template. Two things override it on a single node: a
-node's own routing (below), and a node that relays exactly one
-[[~tunnel]], which takes that tunnel as its final.
+for the nodes on the template. A node that relays exactly one [[~tunnel]]
+takes that tunnel as its final instead, unless the template's own rules send
+some traffic to the tunnel: then the template's final stands for the rest. See
+[[use/tunnels]].
 
 ### When the form is not enough
 
@@ -193,13 +194,13 @@ to re-point one list of a built-in country, repeat that country's other lists
 in your entry too. Rule-set services merge by `tag`; inbound, routing and DNS
 presets merge by `key`.
 
-## A node's own routing {#node-override}
+## One node that routes differently {#node-override}
 
-A node can replace its template's routing with its own. Open the node's
-**Config** panel from its row and fill in
-**Routing (per-node override)**. This beats the template on that node only,
-including its final outbound. Use it for the one server that must route
-differently, and keep everything else in the template.
+A node has no routing of its own: it routes exactly as its template does. When
+one server must route differently, give it a template of its own: duplicate
+its template, change the copy's **Routing** tab, and put the node on the copy.
+See [[templates#a-template-of-its-own]]. A panel upgraded from a version that
+had a per-node routing override made these copies by itself.
 
 ## Checking a route
 

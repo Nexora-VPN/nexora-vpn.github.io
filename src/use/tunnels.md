@@ -111,15 +111,26 @@ first, so traffic a rule sends direct or blocks is not tunnelled. A tunnel's
 **Default exit** line (in its row's details) says whether this is the case.
 
 The panel does not pick an exit, and says why, when the relay carries more
-than one tunnel or has its own default outbound. Then, and whenever only some
-traffic should use the tunnel, write rules naming the tunnel's tag in the
-relay's own routing: **Nodes → Config → Routing (per-node override)**. See
-[[use/routing]].
+than one tunnel. Then write rules naming each tunnel's tag in the relay's
+template.
+
+To send only some traffic through the tunnel, give the relay a template of its
+own (see [[use/templates#a-template-of-its-own]]). On its **Routing** tab,
+write rules that send that traffic to the tunnel's tag (`tunnel-…`), and set
+**Final outbound** to where the rest should go, such as `direct`. When the
+relay's template has a rule naming the tunnel, the panel keeps the template's
+final, and the tunnel's row shows a filter icon: "The relay's template sends
+some traffic to this tunnel and keeps its own final for the rest."
+
+On a panel upgraded from a version where a relay could set its own final
+outbound, that final is now the final of the relay's template copy. It beats
+the tunnel only when the template also has a rule naming the tunnel, so check
+the **Default exit** line of each such relay's tunnel after the upgrade.
 
 ::: warning
-Never write a tunnel's tag into a template's routing. Only the relay has that
-tag. Every other node on the template would be told to use an outbound it does
-not have, and would refuse its whole configuration.
+Write a tunnel's tag only into a template the relay runs alone. Only the relay
+has that tag. Every other node on a shared template would be told to use an
+outbound it does not have, and would refuse its whole configuration.
 :::
 
 ## Health
@@ -189,5 +200,7 @@ tunnel.
 
 - [[how/tunnels]]: how the two sides find each other, and why a user keeps
   the same exit.
-- [[use/nodes]]: link addresses and the per-node routing.
-- [[use/routing]]: sending only some traffic through a tunnel.
+- [[use/nodes]]: link addresses.
+- [[use/templates]]: a template of the relay's own, for sending only some
+  traffic through a tunnel.
+- [[use/routing]]: the rules that name a tunnel's tag.

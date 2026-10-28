@@ -118,7 +118,7 @@ directory is safe: the panel downloads whatever is missing on its next start.
 ## Deleting a rule set
 
 The panel refuses to delete a rule set that a routing rule still matches on,
-and lists those rules. Remove or change them first. Deleting takes the rule
+in a template that selects it, and lists those rules. Remove or change them first. Deleting takes the rule
 set off every template that selected it.
 
 ## Related

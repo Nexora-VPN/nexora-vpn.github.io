@@ -71,10 +71,33 @@ A node with no template serves nothing. Several nodes can share one template,
 which is the usual way to run a fleet: one template per kind of server, and
 every server of that kind on it.
 
-A node can also carry a few things of its own on top of its template: extra
-outbounds, extra endpoints, and a routing override that replaces the
-template's routing on that node only. See [[nodes]] and
-[[routing#node-override]].
+## A node that needs something different {#a-template-of-its-own}
+
+A node has no configuration of its own: its template is all of it. When one
+server needs something the others on its template must not get, such as its
+own WARP or WireGuard egress, its own SOCKS upstream or different routing,
+give that node a template of its own:
+
+1. On **Templates**, **Duplicate** the node's template from its row's menu.
+2. On the copy, change what differs: the outbounds and endpoints it picks on
+   **General** (add a new one on its pool page first), the rules on
+   **Routing**, the servers on **DNS**.
+3. Edit the node and pick the copy under **Template**.
+
+The copy selects the same inbounds, so the node's links stay the same. It
+starts with no users of its own, though. Users on **All templates** reach it
+at once; add the copy to every user who belongs to the original by name, and
+to the **Allowed templates** of a reseller limited to the original, before you
+move the node, or they lose that server.
+
+A panel upgraded from a version in which a node could carry its own
+outbounds, endpoints or routing made these templates by itself. Each such node
+is now on a copy of its template named *template* · *node*, for example
+`Germany · de-2` (just the node's name if it had no template). The copy holds
+the template's selections plus the node's own outbounds and endpoints, now in
+the pools; the template's routing with the node's rules after it, and the
+node's final outbound if it set one; and the same users and reseller grants.
+The node serves what it served before.
 
 ## Which users reach a template
 
@@ -152,5 +175,5 @@ template selected stay in their pools.
 - [[inbounds]], [[outbounds]], [[endpoints]], [[rule-sets]]: the pools a
   template selects from.
 - [[routing]]: rules, DNS and the preset catalogue in detail.
-- [[nodes]]: assigning a template and a node's own additions.
+- [[nodes]]: assigning a template to a node.
 - [[config-sync]]: how changes reach nodes.
