@@ -145,8 +145,8 @@ authorised key is skipped: update it from its own **Install** dialog, or the
 
 ## A node's menu
 
-Each row has two buttons, **Sync** and **Edit**, and a **⋮** menu for the
-rest. Between them they offer:
+Each row has three buttons, **Sync**, **Usage graph** and **Edit**, and a
+**⋮** menu for the rest. Between them they offer:
 
 | Entry | What it does |
 | --- | --- |
