@@ -72,8 +72,10 @@ their account.
 **Filters** opens a side panel:
 
 - **Status**, and **Online** for accounts with traffic in the last 90 seconds.
-- **Protocol**, **Inbound**, **Node** and **Template**: accounts that reach
-  them.
+- **Protocol**, **Inbound**, **Endpoint**, **Node** and **Template**: accounts
+  that reach them. For a protocol, an inbound or an endpoint that means served
+  on it, so an account whose configs are limited (below) is left out where
+  its limit does not allow it.
 - **Group**, and **Owner** (main admins and admins): an admin, a reseller,
   or **Panel (main admins)**.
 - **Expiry between** two dates, or **Never expires**.
@@ -173,6 +175,37 @@ A user is served only on the nodes whose [[~template]] they belong to.
 - When the owner is a reseller limited to chosen templates, the form offers
   only those, and the switch reads **All reseller templates** (see
   [[use/resellers#limiting-a-reseller-to-templates]]).
+
+### Limiting configs
+
+Templates decide which nodes an account is on. **Limit configs** decides
+which of those nodes' inbounds and endpoints it is served on. With it on, the
+form shows rules for **Inbounds** and for **Endpoints**:
+
+1. Pick a **field**: **Protocol** or **Tag**, and for inbounds also **TLS**
+   (`none`, `tls` or `reality`) and **Transport** (`ws`, `grpc`, `xhttp`…, or
+   `none`).
+2. Pick an **operator**: **equals**, **not equals**, **is one of**, **is none
+   of**, **starts with**, **ends with** or **contains**. TLS takes the first
+   four only.
+3. Pick or type the **value**: one value, several, or text for the last three
+   operators, which ignore case.
+
+A config is allowed when it matches every rule of its section. A section with
+no rules allows everything. A rule may name a tag that is on none of the account's templates; it
+simply matches nothing there. Drag a rule by its handle to reorder it.
+
+**Show result**, beside the switch, lists the inbounds and endpoints of the
+account's templates under the rules and marks each allowed or not, as the panel judges them for the
+node. The account's nodes, links and app configs then carry only the allowed
+ones, and a change applies without restarting a node. The list marks a limited
+account with a filter icon beside its name; hover it for the rules.
+
+Plans carry no limit. A batch of new users can have one (see
+[[use/user-operations#creating-many-users-from-a-name-pattern]]), and
+**Allowed configs** sets or removes it on a selection (see
+[[use/user-operations#allowed-configs]]). A reseller that sells plans only
+cannot change it.
 
 ### Customer details
 

@@ -98,6 +98,14 @@ the fields you want to change; the rest are left exactly as they are.
   the first connection is replaced by the date.
 - Turning the periodic reset off also clears its cycle and its next date.
 
+### Allowed configs
+
+Sets the same config limit on every ticked account, replacing its own, or
+removes the limit from all of them (**Remove the limit**). The rules are the
+ones the user form has (see [[use/users#limiting-configs]]). Only accounts
+whose limit changed are counted. A reseller that sells plans only cannot run
+it.
+
 ### Change owner
 
 Hands the ticked accounts to an admin, a reseller, or the panel. Only the owner
@@ -153,6 +161,7 @@ a time, each with its own credentials.
    value.
 2. Give the batch a **Group**, so you can find it again.
 3. Pick a plan or set the limits, and the templates, as for a single user.
+   **Limit configs** gives every account of the batch the same config limit.
 4. Press **Create**.
 
 A name already taken is skipped, so running the same batch twice fills the
