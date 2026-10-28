@@ -36,7 +36,9 @@ On the template's **Routing** tab:
 5. Save the rule, then save the template.
 
 The list numbers the rules in the order the node checks them. A new rule is
-added at the end; to change the order, move it on the **JSON** tab.
+added at the end; to change the order, drag the rule by the handle at the
+start of its row. On a keyboard, focus the handle and press the up or down
+arrow.
 
 ### What a rule can match
 
@@ -105,6 +107,14 @@ Add servers with **Add server** and pick a type: plain UDP or TCP, encrypted
 hosts file (`hosts`), `dhcp`, or `fakeip`. A server can send its queries
 through an outbound with **Detour (outbound)**. DNS rules, below the servers,
 send chosen names to chosen servers.
+
+Servers and DNS rules are dragged into order the same way as routing rules.
+DNS rules are checked from top to bottom. Without a **Final server**, the
+first server answers every query no rule takes. A rule that matches the
+answer (`match_response`) needs an `evaluate` rule above it; one moved above
+its `evaluate` rule is marked **out of order**, and the template does not
+save until it is moved back, because a node refuses the whole configuration
+for it.
 
 When a template defines more than one DNS server, set a
 **Default domain resolver** on the **Routing** tab. Without one, a node cannot

@@ -92,7 +92,8 @@ With two or more profiles:
 
 - **Load balancing**: **Spread** uses every connected profile and sends each
   new stream to the least busy one. **Priority** uses the first connected
-  profile in the list and keeps the others as a fallback.
+  profile in the list and keeps the others as a fallback. Drag a profile's chip
+  to change the order.
 - **Links for this profile** sets each profile's share. A profile with six
   links takes three times the traffic of one with two. Empty uses
   **Links per origin**.

@@ -78,7 +78,8 @@ An address must be `https`, or `http` only on the panel's own server.
 
 Each provider shows how many accounts are **Linked** through it, its **Last
 run** with the last error if any, and **On the login page**, which takes the
-button off without deleting the provider.
+button off without deleting the provider. Drag a provider's row by its handle to set
+the order of the buttons on the login page.
 
 Deleting a provider removes the identities linked through it. So does an edit
 that changes who the provider says people are: its Client ID, its issuer or
