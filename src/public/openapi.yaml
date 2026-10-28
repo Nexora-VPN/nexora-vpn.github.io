@@ -85,7 +85,6 @@ tags:
   - name: certificates
   - name: templates
   - name: nodes
-  - name: node-mappings
   - name: tunnels
   - name: settings
   - name: webhooks
@@ -584,6 +583,7 @@ paths:
         - { $ref: "#/components/parameters/IdempotencyKey" }
       tags: [admins]
       summary: Create an admin (sudo only)
+      description: A `subDomain` is written into the ingress in the same transaction; on an ingress the old settings cannot describe it is a route of the Ingress page's, and naming one answers 409. 500 when the ingress cannot be read.
       requestBody:
         required: true
         content:
@@ -606,6 +606,8 @@ paths:
         "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Admin" } } } }
         "400": { $ref: "#/components/responses/Error" }
         "403": { $ref: "#/components/responses/Error" }
+        "409": { $ref: "#/components/responses/Error" }
+        "500": { $ref: "#/components/responses/Error" }
   /api/admins/{id}:
     parameters: [ { $ref: "#/components/parameters/Id" } ]
     put:
@@ -613,7 +615,7 @@ paths:
         - { $ref: "#/components/parameters/IdempotencyKey" }
       tags: [admins]
       summary: Update an admin's username/role (sudo only)
-      description: The last sudo admin cannot be demoted. A role change revokes the admin's sessions, and needs the caller to hold every scope of both the new role and the one the account leaves; any edit of an account on the caller's own tier or above needs the caller to hold every scope of its role (403 otherwise). Every save fits the users the account owns to the template grant it leaves it with (`templatesOnly`, `templateIds`, or a role moving it on or off the resale tier) in the same transaction, which also repairs users that drifted outside it; when any user moved it pushes every templated node live and raises one `user.bulk` with `op` `templates`. `narrowed` in the answer counts the users it changed.
+      description: The last sudo admin cannot be demoted. A role change revokes the admin's sessions, and needs the caller to hold every scope of both the new role and the one the account leaves; any edit of an account on the caller's own tier or above needs the caller to hold every scope of its role (403 otherwise). Every save fits the users the account owns to the template grant it leaves it with (`templatesOnly`, `templateIds`, or a role moving it on or off the resale tier) in the same transaction, which also repairs users that drifted outside it; when any user moved it pushes every templated node live and raises one `user.bulk` with `op` `templates`. `narrowed` in the answer counts the users it changed. Changing `subDomain` on an ingress the old settings cannot describe answers 409 (the domain is then a route of the Ingress page's); 500 when the ingress cannot be read.
       requestBody:
         required: true
         content:
@@ -644,16 +646,20 @@ paths:
                       narrowed: { type: integer, description: "Users this save moved onto the reseller's template grant" }
         "400": { $ref: "#/components/responses/Error" }
         "403": { $ref: "#/components/responses/Error" }
+        "409": { $ref: "#/components/responses/Error" }
+        "500": { $ref: "#/components/responses/Error" }
     delete:
       parameters:
         - { $ref: "#/components/parameters/IdempotencyKey" }
       tags: [admins]
       summary: Delete an admin (sudo only)
-      description: Self-deletion and deleting the last sudo admin are rejected, and so is deleting an account whose scopes the caller does not cover (403).
+      description: Self-deletion and deleting the last sudo admin are rejected, and so is deleting an account whose scopes the caller does not cover (403). Its subscription domain leaves the ingress with it. An account one of whose API tokens an `api` route admits (or whose addon slug such a route admits, with no other token carrying it), in the ingress or in the table a change waiting for its confirmation would put back, is refused with 409 naming the route; so is an account a route is bound to on an ingress the old settings cannot describe, or in the table a change waiting for its confirmation would put back, is refused with 409 until the route is unbound on the Ingress page or the change settles. 500 when the ingress cannot be read.
       responses:
         "200": { description: Deleted }
         "400": { $ref: "#/components/responses/Error" }
         "403": { $ref: "#/components/responses/Error" }
+        "409": { $ref: "#/components/responses/Error" }
+        "500": { $ref: "#/components/responses/Error" }
   /api/admins/{id}/owner:
     parameters: [ { $ref: "#/components/parameters/Id" } ]
     post:
@@ -753,6 +759,7 @@ paths:
         "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/User" } } } } }
         "400": { $ref: "#/components/responses/Error" }
         "404": { $ref: "#/components/responses/Error" }
+        "500": { $ref: "#/components/responses/Error" }
     post:
       parameters:
         - { $ref: "#/components/parameters/IdempotencyKey" }
@@ -1616,7 +1623,7 @@ paths:
       responses:
         "200": { $ref: "#/components/responses/Node" }
         "400": { description: "A field is missing or malformed; the message names it.", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
-        "402": { description: "The node is outside the licence cap (`licensed: false`): only the first N nodes by id are served. The same answer comes from `/enabled`, `/routing` and the per-node outbound and endpoint creates; delete is never refused for this reason.", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "402": { description: "The node is outside the licence cap (`licensed: false`): only the first N nodes by id are served. The same answer comes from `/enabled`; delete is never refused for this reason.", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
     delete:
       parameters:
         - { $ref: "#/components/parameters/IdempotencyKey" }
@@ -1894,17 +1901,6 @@ paths:
       responses:
         "200": { description: OK }
         "404": { $ref: "#/components/responses/Error" }
-  /api/nodes/{id}/routing:
-    parameters: [ { $ref: "#/components/parameters/Id" } ]
-    put:
-      parameters:
-        - { $ref: "#/components/parameters/IdempotencyKey" }
-      tags: [nodes]
-      summary: Set the node's inline routing (overrides template route)
-      requestBody:
-        required: true
-        content: { application/json: { schema: { type: object, properties: { routing: { $ref: "#/components/schemas/JSON" } } } } }
-      responses: { "200": { description: OK } }
   /api/nodes/{id}/stats:
     parameters: [ { $ref: "#/components/parameters/Id" } ]
     get:
@@ -2182,11 +2178,24 @@ paths:
   /api/nodes/{id}/check-outbound:
     parameters:
       - { $ref: "#/components/parameters/Id" }
-      - { name: tag, in: query, required: true, schema: { type: string }, description: Outbound or endpoint tag }
-      - { name: link, in: query, schema: { type: string }, description: "Test URL (default: generate_204)" }
+    get:
+      tags: [nodes]
+      summary: The outbounds and endpoints a check can run on
+      description: >
+        Read from the node's running inventory rather than from its template,
+        so the built-in direct and a relay's tunnel are listed too. Each row
+        carries the panel's type for the tag when the panel has one, and
+        `tunnel` for a tunnel. Operator-only.
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/CheckOutboundRow" } } } } }
+        "404": { $ref: "#/components/responses/Error" }
+        "502": { $ref: "#/components/responses/Error" }
+        "409": { $ref: "#/components/responses/Error" }
     post:
       parameters:
         - { $ref: "#/components/parameters/IdempotencyKey" }
+        - { name: tag, in: query, required: true, schema: { type: string }, description: Outbound or endpoint tag }
+        - { name: link, in: query, schema: { type: string }, description: "Test URL (default: generate_204)" }
       tags: [nodes]
       summary: URL-test an outbound/endpoint by tag (latency check)
       responses:
@@ -2459,7 +2468,9 @@ paths:
             The certificate serves the panel's own HTTPS listener
             (web_tls_mode=self_signed with web_cert_id pointing at it). Deleting
             it would leave the panel with a TLS mode and nothing behind it, so
-            change the mode first.
+            change the mode first. The same for any listener of the ingress
+            serving it, as its own certificate or among its SNI certificates,
+            and for one the change waiting for its confirmation would put back.
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
@@ -2644,22 +2655,6 @@ paths:
                   authentication: { type: string, enum: [x25519, mlkem768] }
         "400": { $ref: "#/components/responses/Error" }
 
-  /api/nodes/{id}/outbounds:
-    parameters: [ { $ref: "#/components/parameters/Id" } ]
-    get:
-      tags: [node-mappings]
-      summary: A node's extra outbounds
-      responses:
-        "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/Outbound" } } } } }
-    post:
-      parameters:
-        - { $ref: "#/components/parameters/IdempotencyKey" }
-      tags: [node-mappings]
-      summary: Add an outbound to a node
-      requestBody:
-        required: true
-        content: { application/json: { schema: { $ref: "#/components/schemas/Outbound" } } }
-      responses: { "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Outbound" } } } } }
   /api/outbounds/{id}:
     parameters: [ { $ref: "#/components/parameters/Id" } ]
     put:
@@ -2673,34 +2668,8 @@ paths:
       parameters:
         - { $ref: "#/components/parameters/IdempotencyKey" }
       tags: [pools]
-      summary: Delete an outbound (pool or per-node)
+      summary: Delete a pool outbound
       responses: { "200": { description: Deleted } }
-  /api/nodes/{id}/endpoints:
-    parameters: [ { $ref: "#/components/parameters/Id" } ]
-    get:
-      tags: [node-mappings]
-      summary: A node's endpoints (wireguard/tailscale/warp)
-      responses:
-        "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/Endpoint" } } } } }
-    post:
-      parameters:
-        - { $ref: "#/components/parameters/IdempotencyKey" }
-      tags: [node-mappings]
-      summary: Add an endpoint to a node (live, no restart)
-      description: >
-        Refused with 400 for an item only a client runs, and for an OpenVPN
-        endpoint the node would refuse: a static key that is missing or is not
-        one in static_key mode; control-channel protection (tls.control_wrap)
-        with no or an unknown type, no key, a key and a key_path both, a key
-        of the wrong kind or length, or a direction or force_cookie its type
-        does not take; and a server with tls_auth, auth NONE and a data cipher
-        that is not AEAD, whose users' profiles could not match it.
-      requestBody:
-        required: true
-        content: { application/json: { schema: { $ref: "#/components/schemas/Endpoint" } } }
-      responses:
-        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Endpoint" } } } }
-        "400": { $ref: "#/components/responses/Error" }
   /api/endpoints/{id}:
     parameters: [ { $ref: "#/components/parameters/Id" } ]
     put:
@@ -2724,7 +2693,7 @@ paths:
       parameters:
         - { $ref: "#/components/parameters/IdempotencyKey" }
       tags: [pools]
-      summary: Delete an endpoint (pool or per-node)
+      summary: Delete a pool endpoint
       responses: { "200": { description: Deleted } }
 
   /api/settings:
@@ -2808,7 +2777,12 @@ paths:
         their own: they read and write the ingress (GET /api/ingress) in its
         one-listener shape, and answer 409 for a change once the ingress holds
         more than they can describe. Writing back the value a key already has
-        succeeds. Their entries in GET /api/settings carry no id.
+        succeeds. Their entries in GET /api/settings carry no id. A change to
+        one needs the ingress:write permission too (403 otherwise); writing
+        back the value it holds does not. A change that moves where an account
+        bound to a route is let in (its subscription domain's route on the
+        primary listener, say, when the listen port moves) needs the caller to
+        cover that account, as PUT /api/ingress does (403 otherwise).
 
 
         The TLS keys are also checked against each other, because a mode with
@@ -2877,7 +2851,11 @@ paths:
       responses:
         "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Setting" } } } }
         "400": { $ref: "#/components/responses/Error" }
-        "403": { description: A sudo-only key from a non-sudo admin, or a secret key that is never writable here, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "403": { description: "A sudo-only key from a non-sudo admin, a secret key that is never writable here, or a change to an address key without ingress:write", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "409":
+          description: "An address key: under /api/v1 always (`moved: ingress`), under /api a change the ingress can no longer describe"
+          content: { application/json: { schema: { type: object, properties: { error: { type: string }, moved: { type: string } } } } }
+        "428": { description: The second factor must be presented again (POST /api/me/confirm), content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
 
   /api/scopes:
     get:
@@ -2965,11 +2943,12 @@ paths:
         - { $ref: "#/components/parameters/IdempotencyKey" }
       tags: [admins]
       summary: Delete a third-party API token (sudo only)
-      description: The token stops authenticating immediately. A token an addon holds (`managedBy`) is 409; it goes with the addon.
+      description: The token stops authenticating immediately. Refused with 409 naming the route while an `api` route of the ingress admits it — or its addon slug, when no other token carries that slug — also in the table a change waiting for its confirmation would put back; take it off the route first. A token an addon holds (`managedBy`) is 409; it goes with the addon.
       responses:
         "200": { description: Deleted }
         "403": { $ref: "#/components/responses/Error" }
         "409": { $ref: "#/components/responses/Error" }
+        "500": { $ref: "#/components/responses/Error" }
 
   /api/changes:
     get:
@@ -3144,7 +3123,9 @@ paths:
       description: >
         The same inspection as `POST /api/backup/preview`, minus the
         node-identity comparisons (`mtls_changed`, `node_pin_changed`): an
-        unconfigured panel has no nodes to compare the archive against. It is
+        unconfigured panel has no nodes to compare the archive against — and
+        minus `unusable_kept_address`, since this restore never keeps the
+        install's address. It is
         reachable while the panel has no account to authenticate against —
         which is exactly the state a server migration starts in.
 
@@ -3203,7 +3184,7 @@ paths:
             schema: { type: string, format: binary }
       responses:
         "200": { description: Restored; the panel is restarting, content: { application/json: { schema: { $ref: "#/components/schemas/BackupRestore" } } } }
-        "400": { description: "Refused: `confirm`, `no_admins`, `encrypted`, `passphrase` or `format`", content: { application/json: { schema: { $ref: "#/components/schemas/BackupError" } } } }
+        "400": { description: "Refused: `confirm`, `version_mismatch`, `no_admins`, `unusable_ingress`, `encrypted`, `passphrase` or `format`", content: { application/json: { schema: { $ref: "#/components/schemas/BackupError" } } } }
         "403": { $ref: "#/components/responses/Error" }
         "404": { description: "Missing or wrong `t` while the panel is unconfigured: the setup gate closes the route before the handler sees the request. (The 403 below is the handler's own second comparison, which the gate normally reaches first.)" }
         "409": { description: "Setup is complete (plain `Error`), or a restore is already in progress (code `busy`, a `BackupError`)", content: { application/json: { schema: { $ref: "#/components/schemas/BackupError" } } } }
@@ -3266,14 +3247,28 @@ paths:
         ignored). A row keeps its id when it carries the id, or else the name
         it had; a renamed row without its id is a new one. Refused with 400
         when a rule fails (exactly one primary listener, on and carrying a
-        panel route; names that tell the rows of a kind apart; no two
-        listeners on one socket; a TLS mode with what it needs; certificates,
+        panel route; the primary listener's `main` routes kept, with their
+        service, unbound and on it; an address of a listener not already the
+        panel's own that is in use on the server; names that tell the rows of
+        a kind apart; no two listeners on one socket; a TLS mode with what it
+        needs; certificates,
         decoy directories, API tokens, addons, accounts and brandings that
         exist; hosts with no port; a service's options only on that service)
         and when, afterwards, the request making the change would no longer
-        reach the panel on the listener, host and prefix it came in on, or its
-        own account could no longer sign in there. Binding a route to an
-        account the caller does not cover is 403.
+        reach the panel on the listener, host and prefix it came in on (its
+        page, and its API there, which the confirmation is sent to) — or, for
+        a request through an `api` route, that route would no longer take it
+        — or its own account could no longer sign in there. A change that
+        moves where an account bound to a route (panel, api or subscription)
+        is let in, when the caller does not cover that account, is 403:
+        binding, moving or removing a bound route (its account, service,
+        hosts, prefix, listeners, allowed addresses or options); switching
+        off, moving or changing the TLS of a listener it is on; adding,
+        removing or changing a passthrough row there whose SNI overlaps its
+        hosts; or adding, removing, reordering or changing what it takes of a
+        route ahead of it on a shared listener whose hosts and prefix overlap
+        its own. An edit that leaves all of that as it was — the document
+        sent back unchanged, a route on other hosts or listeners — is not.
 
         A change is applied at once and live — no restart: listeners are
         bound and let go, certificates and routes swapped, open connections
@@ -3294,7 +3289,9 @@ paths:
       responses:
         "200": { description: The table as saved, content: { application/json: { schema: { $ref: "#/components/schemas/Ingress" } } } }
         "400": { description: A rule failed, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "403": { description: Where an account bound to a route is let in moves and the caller does not cover that account, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
         "409": { description: Another change waits for its confirmation, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "428": { description: The second factor must be presented again (POST /api/me/confirm), content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
 
   /api/ingress/confirm:
     post:
@@ -3306,7 +3303,9 @@ paths:
         with. Public, since the new address may be a host the caller has no
         session on yet: the token (256 random bits, good once, for one
         change, until its window closes) is the authority. 404 for a token
-        that confirms nothing, a change already put back among them.
+        that confirms nothing, a change already put back among them; 409
+        with `applying: true` and Retry-After while the running panel is
+        still applying the change, which is asked again.
       security: []
       requestBody:
         required: true
@@ -3316,6 +3315,10 @@ paths:
       responses:
         "200": { description: Confirmed, content: { application/json: { schema: { type: object, properties: { revision: { type: integer }, state: { type: string } } } } } }
         "404": { description: Nothing is waiting for that token, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "409":
+          description: The change is still being applied; ask again after Retry-After
+          headers: { Retry-After: { schema: { type: integer } } }
+          content: { application/json: { schema: { type: object, properties: { error: { type: string }, applying: { type: boolean } } } } }
 
   /api/ingress/test:
     post:
@@ -3327,16 +3330,19 @@ paths:
         the path its service sees, a prefix redirect, or a refusal and the
         fallback answering it — and every route it looked at with what it made
         of it (other-listener, other-host, excluded-host, other-prefix,
-        not-taken, refused-ip, redirect, taken). With `ingress` it tries that
-        document instead of the saved one: the page tests a draft before
-        saving it.
+        not-taken, refused-ip, redirect, taken). A listener switched off, and
+        a TLS handshake naming none of the certificates of a listener that
+        refuses unknown names, are refusals no route took part in, with
+        `closed` saying which. With `ingress` it tries that document instead
+        of the saved one: the page tests a draft before saving it. An empty
+        host or path is tried as sent (an empty path is `/`).
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [listener, host, path]
+              required: [listener]
               properties:
                 listener: { type: string, description: "The listener's name" }
                 host: { type: string }
@@ -3361,6 +3367,7 @@ paths:
                   fallback: { type: string }
                   target: { type: string }
                   strictSni: { type: boolean }
+                  closed: { type: string, enum: [listener-off, unknown-sni], description: "On a refusal no route took part in, why" }
                   steps:
                     type: array
                     items: { type: object, properties: { route: { type: string }, outcome: { type: string } } }
@@ -3403,8 +3410,10 @@ paths:
       responses:
         "200": { description: The ingress as saved, pending, content: { application/json: { schema: { $ref: "#/components/schemas/Ingress" } } } }
         "400": { $ref: "#/components/responses/Error" }
+        "403": { $ref: "#/components/responses/Error" }
         "404": { $ref: "#/components/responses/Error" }
         "409": { $ref: "#/components/responses/Error" }
+        "428": { $ref: "#/components/responses/Error" }
 
   /api/brandings:
     get:
@@ -3924,7 +3933,9 @@ paths:
         its grants are what its manifest declares. An address on another
         host drops the certificate of its own trusted at the old one
         (pinnedCertSha256), judges `local` again by the new address, and is
-        400 when the certificate chosen for it does not fit there.
+        400 when the certificate chosen for it does not fit there. Switching
+        the token off is 409 while an `api` route admits the token or the
+        addon's slug.
       requestBody:
         required: true
         content:
@@ -3943,10 +3954,15 @@ paths:
       description: >
         The addon's webhook is sent `panel.addon_removed` first, whatever its
         filter; then its token, its subscription and its row are deleted. The
-        panel keeps nothing else of an addon.
+        panel keeps nothing else of an addon. Refused while an `upstream`
+        route of the ingress proxies to the addon, or an `api` route admits
+        its token or its slug — or a route of the address a change waiting for
+        its confirmation would put back does — with a 409 naming the route,
+        before the addon is told anything.
       responses:
         "200": { description: Removed }
         "404": { $ref: "#/components/responses/Error" }
+        "409": { $ref: "#/components/responses/Error" }
   /api/addons/{id}/entry:
     parameters: [ { $ref: "#/components/parameters/Id" } ]
     put:
@@ -4129,8 +4145,9 @@ paths:
         What the hourly check does, on demand. `result` is `same`, `applied`
         (a newer manifest asking for nothing more than the addon holds was
         applied) or `pending` (it asks for more and waits for approval).
-        409 for an addon registered by hand; 502 when the manifest cannot be
-        read or is refused.
+        409 for an addon registered by hand, and for a manifest that drops
+        the token while an `api` route admits it or the addon's slug; 502
+        when the manifest cannot be read or is refused.
       responses:
         "200":
           description: Checked
@@ -5352,9 +5369,16 @@ paths:
         "400":
           description: >
             Refused, with a stable `code`: `confirm` (the confirmation is
-            missing or wrong), `no_admins` (the archive holds no admin
+            missing or wrong), `version_mismatch` (another panel version
+            wrote the archive: a backup is restored only into the version
+            that took it, refused before anything is written), `no_admins`
+            (the archive holds no admin
             accounts, so restoring it would leave a panel nobody can log into),
-            `encrypted`, `passphrase`, or `format`.
+            `unusable_ingress` (the restored panel's addresses would not work:
+            an ingress the Ingress page would refuse, or one no main admin
+            could sign in through — the preview warns of it first as
+            `unusable_ingress` or `unusable_kept_address`), `encrypted`,
+            `passphrase`, or `format`.
           content: { application/json: { schema: { $ref: "#/components/schemas/BackupError" } } }
         "403": { $ref: "#/components/responses/Error" }
         "409": { description: A restore is already in progress (code `busy`), content: { application/json: { schema: { $ref: "#/components/schemas/BackupError" } } } }
@@ -5506,7 +5530,7 @@ paths:
         - { name: X-Backup-Passphrase, in: header, required: false, schema: { type: string } }
       responses:
         "200": { description: Staged or applied; the panel is restarting, content: { application/json: { schema: { $ref: "#/components/schemas/BackupRestore" } } } }
-        "400": { description: "Refused: `confirm`, `no_admins`, `encrypted`, `passphrase` or `format`", content: { application/json: { schema: { $ref: "#/components/schemas/BackupError" } } } }
+        "400": { description: "Refused: `confirm`, `version_mismatch`, `no_admins`, `unusable_ingress`, `encrypted`, `passphrase` or `format`", content: { application/json: { schema: { $ref: "#/components/schemas/BackupError" } } } }
         "403": { $ref: "#/components/responses/Error" }
         "404": { $ref: "#/components/responses/Error" }
         "409": { description: A restore is already in progress (code `busy`), content: { application/json: { schema: { $ref: "#/components/schemas/BackupError" } } } }
@@ -6142,20 +6166,20 @@ components:
             because a route lives on a template shared with nodes that do not
             carry the tag and the core resolves final eagerly at start — a
             template final naming a tunnel stops the core of every node that is
-            not the relay. Precedence: the relay node's own routing.final wins,
-            then this tunnel, then the template's final.
+            not the relay. It beats the template's final, unless the relay's
+            template has a rule sending traffic to the tunnel itself.
         finalReason:
           type: string
           readOnly: true
-          enum: [disabled, noOrigin, shared, nodeFinal]
+          enum: [disabled, noOrigin, shared, steered]
           description: >
             Why the tunnel is not the relay's default outbound, absent when it
             is. disabled/noOrigin — the tunnel produces no half at all.
             shared — the relay relays more than one tunnel, so which traffic
             goes down which is a choice the panel does not make; write route
-            rules. nodeFinal — the relay carries its own final, which wins
-            deliberately and is the supported way to keep a tunnel for selected
-            traffic only.
+            rules. steered — the relay's template routes some traffic to the
+            tunnel itself, so its own final stands for the rest; the supported
+            way to keep a tunnel for selected traffic only.
         createdAt: { type: integer }
         updatedAt: { type: integer }
     TunnelReset:
@@ -6464,7 +6488,7 @@ components:
         planIds: { type: array, items: { type: integer }, description: "Plans this reseller may sell (only meaningful with plansOnly). Absent on update leaves the selection alone." }
         templatesOnly: { type: boolean, description: "Reseller: its users are on the templates in templateIds and no other, so they reach only those templates' nodes. Membership is narrowed rather than refused wherever it is written — create, batch, edit, a change of owner — and `allTemplates` on such a user means every template of this reseller (stored as those templates, with `ownerTemplates`). Saving the reseller fits every user it owns: templates that left are removed at once, templates that joined reach its `ownerTemplates` users only. Requires at least one entry in templateIds (400 otherwise). Phrased as a restriction so an absent field restricts nothing." }
         templateIds: { type: array, items: { type: integer }, description: "Templates this reseller's users may be on (only meaningful with templatesOnly). Absent on update leaves the selection alone, and an empty list clears it; an id naming no template is 400." }
-        subDomain: { type: string, description: "Reseller: which of the configured sub_domain entries this reseller's customers are published under (empty = the first). Answers 400 for a domain that is not configured. Every admin route is main-admin-only, which is what keeps a reseller from moving its own customers onto another reseller's domain. An assignment naming a domain later removed from the setting falls back to the first. Kept in the ingress as a canonical sub route bound to the account (GET /api/ingress); once the ingress holds more than the old address settings describe, a change answers 409 and is made there, while the value the account already has is accepted." }
+        subDomain: { type: string, description: "Reseller: which of the configured sub_domain entries this reseller's customers are published under (empty = the first; absent on update keeps the stored one). Answers 400 for a domain that is not configured. Every admin route is main-admin-only, which is what keeps a reseller from moving its own customers onto another reseller's domain. An assignment naming a domain later removed from the setting falls back to the first. Kept in the ingress as a canonical sub route bound to the account (GET /api/ingress); once the ingress holds more than the old address settings describe, a change answers 409 and is made there, while the value the account already has is accepted." }
         brandingId: { type: integer, description: "The branding this account's customers' subscription page and headers carry, and its own bound routes' admin panel when they name none (GET /api/brandings); absent on a write keeps the stored one, 0 clears it. 400 for one that does not exist" }
         used: { type: integer, format: int64, readOnly: true, description: "Reseller: traffic its users burned in the current period" }
         users: { type: integer, readOnly: true, description: "Operator or reseller: how many users it owns. 0 for a main admin, whose accounts are the panel's." }
@@ -7138,7 +7162,6 @@ components:
         remark: { type: string }
         linkAddress: { type: string, description: "The node's public address, or several: a comma-separated list whose entries are each a bare address or \"label|address\". The first is the primary — what endpoints and app configs use, and what a tunnel dials; every entry after it adds a copy of each client link. Empty falls back to address. Never sent to a node." }
         isLocal: { type: boolean }
-        routing: { $ref: "#/components/schemas/JSON" }
         coreVersion: { type: string, readOnly: true }
         templateId: { type: integer, nullable: true }
         multiplier: { type: number, description: "Traffic multiplier applied to user usage on this node (0 treated as 1)" }
@@ -7278,7 +7301,6 @@ components:
       type: object
       properties:
         id: { type: integer, readOnly: true }
-        nodeId: { type: integer, nullable: true, description: "null = pool item; set = per-node manual" }
         tag: { type: string }
         type: { type: string }
         config: { $ref: "#/components/schemas/JSON" }
@@ -7663,6 +7685,7 @@ components:
         canonical: { type: boolean, description: "Links to the service are published on this route" }
         publicUrl: { type: string, description: "The origin links are built on, when something in front of the panel is what people reach" }
         fallback: { type: string }
+        main: { type: boolean, readOnly: true, description: "The panel or subscription route on the primary listener whose domain and base path the old settings name: it cannot be removed, given another service, bound to an account or taken off the primary listener, only edited" }
     Branding:
       type: object
       required: [name]
@@ -8072,16 +8095,38 @@ components:
     BackupWarning:
       type: object
       description: >
-        One advisory about restoring this archive here. None of them blocks a
-        restore; each is a decision for the operator.
+        One advisory about restoring this archive here. Each is a decision for
+        the operator, except the four a restore enforces:
+        `version_mismatch`, `no_admins`, `unusable_ingress` and
+        `unusable_kept_address`.
       properties:
         code:
           type: string
-          enum: [no_admins, hwid_mismatch, mtls_changed, node_pin_changed, newer_panel, different_panel, no_history, no_audit]
+          enum: [version_mismatch, no_admins, unusable_ingress, unusable_kept_address, ingress_unchecked, hwid_mismatch, mtls_changed, node_pin_changed, ingress_settled, different_panel, no_history, no_audit]
           description: >
+            `version_mismatch` — written by another panel version than this
+            one (the archive's in `detail`), older or newer: a restore refuses
+            it with 400 `version_mismatch`.
             `no_admins` — the archive holds no main-admin (sudo) account. This
-            is the one advisory a restore also enforces (400 `no_admins`), and
+            is one of the advisories a restore also enforces (400 `no_admins`), and
             the preview applies the same test so the two cannot disagree.
+            `unusable_ingress` — restored with its own addresses (this
+            install's not kept, as the setup wizard restores), the archive is
+            refused with 400 `unusable_ingress`: why is in `detail`.
+            `unusable_kept_address` — the same refusal when this install's
+            address is kept (`keep_web_settings`, the default). Both come from
+            running the restore's own address checks over the archive's rows,
+            so a preview and a restore cannot disagree.
+            `ingress_unchecked` — the archive holds more rows (over 50,000) or
+            bytes (over 64 MiB) of the tables the address check reads than a
+            preview keeps in memory, so the preview did not check its
+            addresses; the restore still checks them and may refuse with 400
+            `unusable_ingress`.
+            `ingress_settled` — what the restore changes in the addresses it
+            stages so they serve, in `detail`: a listener whose certificate the
+            archive lacks switched off, a route admitting only deleted tokens
+            or bound to an account the archive lacks answering 404 (prefixed
+            "keeping this install's address:" for the kept address).
             `hwid_mismatch` — a different host fingerprint: the licence
             travelling inside will not validate here.
             `mtls_changed` — the archive holds a different panel mTLS client
@@ -8091,7 +8136,6 @@ components:
             `node_pin_changed` — the archive's pinned server certificate for
             one or more nodes (named in `detail`) differs from the live one, so
             those nodes' control APIs would be refused until they are repinned.
-            `newer_panel` — written by a newer build than this one.
             `different_panel` — a different web domain, the visible sign of an
             archive from another install.
             `no_history` / `no_audit` — the optional groups were excluded, so a
@@ -8190,7 +8234,7 @@ components:
       type: object
       properties:
         error: { type: string }
-        code: { type: string, enum: [encrypted, passphrase, format, too_large, confirm, busy, no_admins, unsupported] }
+        code: { type: string, enum: [encrypted, passphrase, format, too_large, confirm, busy, version_mismatch, no_admins, unusable_ingress, unsupported] }
     Change:
       type: object
       description: >
@@ -8236,7 +8280,6 @@ components:
       type: object
       properties:
         id: { type: integer, readOnly: true }
-        nodeId: { type: integer, nullable: true, description: "null = pool item; set = per-node manual" }
         tag: { type: string }
         type: { type: string, description: "wireguard, tailscale, openvpn-server, openconnect-server, ..." }
         config: { $ref: "#/components/schemas/JSON" }
@@ -8472,6 +8515,13 @@ components:
               tag: { type: string }
               loaded: { type: boolean }
               matched: { type: boolean }
+    CheckOutboundRow:
+      type: object
+      required: [tag, kind]
+      properties:
+        tag: { type: string }
+        type: { type: string, description: "The panel's type for the tag; absent when the panel has no record of it" }
+        kind: { type: string, enum: [outbound, endpoint] }
     OutboundCheckResult:
       type: object
       properties:

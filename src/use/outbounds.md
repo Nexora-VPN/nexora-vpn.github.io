@@ -101,6 +101,14 @@ took. Through a proxy upstream the answer can be "not refused, unconfirmed",
 because a proxy does not always say whether its far end connected. See
 [[nodes]].
 
+**Test outbounds**, in the menu of a node's row, lists every outbound and
+endpoint the node is running, read from the node itself, so the built-in
+`direct` and any tunnel are there too. **Test all**, or the gauge on one row,
+has the node fetch a test URL through it and shows how many milliseconds the
+answer took, or the node's error. Leave **Test URL** empty for the node's
+default. It needs the right to change nodes, because it makes the node open
+connections.
+
 ## An outbound for one node only {#per-node-outbounds}
 
 An outbound reaches the nodes whose template selects it. When one server needs

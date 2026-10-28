@@ -157,6 +157,7 @@ rest. Between them they offer:
 | **Usage graph** | the node's traffic over time |
 | **Logs** | the node's log, live |
 | **Route test** | which routing rule the node would apply to a connection you describe. See [[use/routing]]. |
+| **Test outbounds** | how long each outbound the node runs takes to fetch a test URL. See [[use/outbounds#checking-an-outbound]]. |
 | **Install**, **Update to {v}** | the install dialog. Main admin only. |
 | **Certificate** | a certificate that belongs to this node. See [[use/certificates]]. |
 | **Enable** / **Disable** | switches the node on or off (below) |
@@ -202,7 +203,8 @@ how much the node logs. **Clear** empties the view.
 **Disable** on the menu switches a node off. The panel sends it an empty
 configuration, so it stops serving every user at once, and then stops
 contacting it. Its status reads `disabled`, and the actions that need the node
-(**Sync**, **Live connections**, **Logs**, **Route test**, **Reconnect**) are
+(**Sync**, **Live connections**, **Logs**, **Route test**, **Test outbounds**,
+**Reconnect**) are
 greyed out. **Enable** sends it its configuration again.
 
 A node also stops serving by itself when it cannot reach its panel: after
