@@ -94,7 +94,8 @@ See [[protocols/openvpn]] for the options and for client apps.
 ## Connecting out
 
 An `openvpn-client` endpoint lists its **Servers**, tried in order until one
-answers (or at random); each has its own port and network. In `tls` mode it
+answers (or at random); each has its own port and network. Drag a server by
+its handle to change the order. In `tls` mode it
 takes a username and password, the server's CA certificate and, under
 **Control channel protection**, the key the server's operator gives you. In
 `static_key` mode it takes the static key, the cipher and its tunnel

@@ -730,8 +730,9 @@ paths:
         - { name: admin_id, in: query, schema: { type: string, pattern: "^(me|[0-9]+)$" }, description: "Owner: an operator's or reseller's admin id, `0` for users owned by the panel (the main admins' and unbound tokens'), or `me` for the caller's own — its id, or `0` for a main admin. Ignored for a reseller session, which only ever sees its own." }
         - { name: template_id, in: query, schema: { type: integer, minimum: 1 }, description: "Users the template provisions: its explicit members plus every all-templates user" }
         - { name: node_id, in: query, schema: { type: integer, minimum: 1 }, description: "Users the node serves, through its template; 404 for an unknown node" }
-        - { name: inbound_id, in: query, schema: { type: integer, minimum: 1 }, description: "Users reaching the inbound through any template that carries it" }
-        - { name: protocol, in: query, schema: { type: string }, description: "Users reaching any inbound of this type (`vless`, `hysteria2`, …)" }
+        - { name: inbound_id, in: query, schema: { type: integer, minimum: 1 }, description: "Users served on the inbound: through a template that carries it, and allowed by their own `configFilter`" }
+        - { name: endpoint_id, in: query, schema: { type: integer, minimum: 1 }, description: "Users served on the endpoint: through a template that carries it, and allowed by their own `configFilter`" }
+        - { name: protocol, in: query, schema: { type: string }, description: "Users served on at least one inbound of this type (`vless`, `hysteria2`, …), their `configFilter` included" }
         - { name: expires_after, in: query, schema: { type: integer, format: int64, minimum: 0 }, description: "Unix seconds, inclusive lower bound on `expiry`; users that never expire are excluded" }
         - { name: expires_before, in: query, schema: { type: integer, format: int64, minimum: 0 }, description: "Unix seconds, inclusive upper bound on `expiry`; users that never expire are excluded" }
         - { name: expiry, in: query, schema: { type: string, enum: [never] }, description: "`never`: only users with no expiry" }
@@ -850,6 +851,60 @@ paths:
                   neverFetched: { type: integer, format: int64, description: "Accounts whose subscription body has never been handed over; a counter, not a status" }
                   unlicensed: { type: integer, format: int64, description: "Rows past the licence cutoff, within what the caller may see: listed and deletable, served on no node, refusing every other write with 402. 0 on a licensed install." }
                   groups: { type: array, items: { type: string } }
+  /api/users/config-filter/options:
+    get:
+      tags: [users]
+      summary: The values a config filter's dropdowns offer
+      description: >
+        Per section (`inbounds`, `endpoints`) and field, every value the field
+        takes: each inbound's and endpoint's tag and type, each inbound's
+        transport, and the three `security` values. Across the whole pool, or
+        for a reseller limited to chosen templates across the rows of those
+        templates — a reseller cannot read the pool lists itself.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  inbounds: { type: object, additionalProperties: { type: array, items: { type: string } } }
+                  endpoints: { type: object, additionalProperties: { type: array, items: { type: string } } }
+  /api/users/config-filter/preview:
+    post:
+      parameters:
+        - { $ref: "#/components/parameters/IdempotencyKey" }
+      tags: [users]
+      summary: Which of an account's configs a filter allows
+      description: >
+        The user-carrying inbounds and endpoints of the templates named (fitted
+        to a restricted reseller's grant as a save would fit them), each with
+        whether `configFilter` lets the account on it — judged by the same
+        code the node plan and the subscription use. Changes nothing. A filter
+        a save would refuse is `400` with the same message.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                allTemplates: { type: boolean }
+                templateIds: { type: array, items: { type: integer } }
+                configFilter: { allOf: [ { $ref: "#/components/schemas/ConfigFilter" } ], nullable: true }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [inbounds, endpoints]
+                properties:
+                  inbounds: { type: array, items: { $ref: "#/components/schemas/ConfigFilterPreviewRow" } }
+                  endpoints: { type: array, items: { $ref: "#/components/schemas/ConfigFilterPreviewRow" } }
+        "400": { $ref: "#/components/responses/Error" }
   /api/users/owners:
     get:
       tags: [users]
@@ -881,7 +936,7 @@ paths:
   /api/users/bulk/{op}:
     post:
       parameters:
-        - { name: op, in: path, required: true, schema: { type: string, enum: [enable, disable, reset-traffic, reset-devices, delete, add-days, add-months, add-traffic, limits, owner] } }
+        - { name: op, in: path, required: true, schema: { type: string, enum: [enable, disable, reset-traffic, reset-devices, delete, add-days, add-months, add-traffic, limits, owner, config-filter] } }
         - { $ref: "#/components/parameters/IdempotencyKey" }
         - { name: all, in: query, schema: { type: string, enum: ["true"] }, description: "Run on every user the caller owns. Required when no `ids` and no filter are sent, so an omitted parameter can never mean *everything*." }
         - { $ref: "#/components/parameters/Q" }
@@ -892,6 +947,7 @@ paths:
         - { name: template_id, in: query, schema: { type: integer, minimum: 1 } }
         - { name: node_id, in: query, schema: { type: integer, minimum: 1 } }
         - { name: inbound_id, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: endpoint_id, in: query, schema: { type: integer, minimum: 1 } }
         - { name: protocol, in: query, schema: { type: string } }
         - { name: expires_after, in: query, schema: { type: integer, format: int64, minimum: 0 } }
         - { name: expires_before, in: query, schema: { type: integer, format: int64, minimum: 0 } }
@@ -946,7 +1002,7 @@ paths:
         connecting — what changes is who may fetch next.
 
 
-        `add-days`, `add-months`, `add-traffic` and `limits` rewrite what an account was
+        `add-days`, `add-months`, `add-traffic`, `limits` and `config-filter` rewrite what an account was
         sold, so a `plansOnly` reseller is refused them (`403`) while the rest
         stay open to it.
 
@@ -986,6 +1042,7 @@ paths:
                 resetStartMonth: { type: integer, minimum: 1, maximum: 12, description: "`limits`: the anchor month, read for the yearly cycle only. Only beside `resetPeriod` (400 alone)." }
                 resetCalendar: { type: string, enum: ["", "jalali"], description: "`limits`: the calendar a monthly or yearly boundary is counted in. Empty = Gregorian. Only beside `resetPeriod` (400 alone)." }
                 adminId: { type: integer, minimum: 0, description: "`owner`: the account to hand the selection to, 0 for the panel. Required." }
+                configFilter: { allOf: [ { $ref: "#/components/schemas/ConfigFilter" } ], nullable: true, description: "`config-filter`: the filter every selected account gets, replacing its own; `null` lifts it. Required. `affected` counts the accounts whose filter changed." }
       responses:
         "200":
           description: OK
@@ -1150,6 +1207,7 @@ paths:
         - { name: template_id, in: query, schema: { type: integer, minimum: 1 } }
         - { name: node_id, in: query, schema: { type: integer, minimum: 1 } }
         - { name: inbound_id, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: endpoint_id, in: query, schema: { type: integer, minimum: 1 } }
         - { name: protocol, in: query, schema: { type: string } }
         - { name: expires_after, in: query, schema: { type: integer, format: int64, minimum: 0 } }
         - { name: expires_before, in: query, schema: { type: integer, format: int64, minimum: 0 } }
@@ -2090,6 +2148,19 @@ paths:
         "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/StatsSeries" } } } }
         "400": { $ref: "#/components/responses/Error" }
         "403": { $ref: "#/components/responses/Error" }
+  /api/nodes/{id}/logs/stream:
+    parameters: [ { $ref: "#/components/parameters/Id" } ]
+    get:
+      tags: [nodes]
+      summary: Follow the node engine log over a WebSocket
+      description: >
+        Upgrades to a WebSocket and sends each new log line of the node's
+        engine as a text frame while the socket is open. Operator-only;
+        `GET /api/nodes/{id}/logs` is the polled form, and the history before
+        the socket opened.
+      responses:
+        "101": { description: Switching to the WebSocket protocol }
+        "404": { $ref: "#/components/responses/Error" }
   /api/nodes/{id}/logs:
     parameters:
       - { $ref: "#/components/parameters/Id" }
@@ -2395,6 +2466,28 @@ paths:
       responses:
         "200": { description: Forgotten }
         "403": { $ref: "#/components/responses/Error" }
+        "404": { $ref: "#/components/responses/Error" }
+  /api/users/{id}/links:
+    parameters: [ { $ref: "#/components/parameters/Id" } ]
+    get:
+      tags: [users]
+      summary: The account's share links, one per allowed inbound entry
+      description: >
+        The same entries the plain subscription carries — every node the
+        account's templates reach, each inbound its `configFilter` allows,
+        fanned out over the node's link addresses and the inbound's domain
+        fronts — as share links, for per-config QR codes. A reseller is
+        answered 404 for an account it does not own.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [links]
+                properties:
+                  links: { type: array, items: { type: string } }
         "404": { $ref: "#/components/responses/Error" }
   /api/users/{id}/app-configs:
     parameters: [ { $ref: "#/components/parameters/Id" } ]
@@ -3002,6 +3095,67 @@ paths:
                   actions: { type: array, items: { type: string } }
         "403": { $ref: "#/components/responses/Error" }
 
+  /api/license:
+    get:
+      tags: [meta]
+      summary: The licence, this host's hardware id, usage against the caps, and the free tier
+      description: >
+        The licence's status (limits, expiry, whether it is valid here and
+        when it was last verified), the hardware id a licence is issued to,
+        each capped resource's use against its limit (`usage`), the free
+        tier's caps (`free`), and a purchase in progress (`checkout`). Main
+        admins only.
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/LicenseView" } } } }
+    post:
+      parameters:
+        - { $ref: "#/components/parameters/IdempotencyKey" }
+      tags: [meta]
+      summary: Install a licence token
+      description: >
+        Validates and stores a pasted token. One that is malformed, expired or
+        bound to another machine is `400` with the reason, rather than a
+        silent fall back to the free tier. Main admins only, and confirmed
+        with the second factor when the account has one (`428`).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token]
+              properties:
+                token: { type: string }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/LicenseView" } } } }
+        "400": { $ref: "#/components/responses/Error" }
+  /api/license/checkout:
+    post:
+      parameters:
+        - { $ref: "#/components/parameters/IdempotencyKey" }
+      tags: [meta]
+      summary: Open a purchase with the licence service
+      description: >
+        Buy, renew, upgrade or move: opens a checkout session and answers the
+        licence view with its address in `checkout` for the browser to open.
+        The token it pays for arrives on the heartbeat by itself. `502` when
+        the service cannot be reached or refuses, with its reason.
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/LicenseView" } } } }
+        "502": { $ref: "#/components/responses/Error" }
+  /api/license/recheck:
+    post:
+      parameters:
+        - { $ref: "#/components/parameters/IdempotencyKey" }
+      tags: [meta]
+      summary: Check the licence with the licence service now
+      description: >
+        Runs the heartbeat at once rather than waiting for its interval, so a
+        renewal or a revocation applies without a restart. The answer is the
+        licence view plus `recheck`: `verified`, `unverifiable`,
+        `unreachable` or `none`.
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/LicenseView" } } } }
   /api/panel/info:
     get:
       tags: [settings]
@@ -6758,7 +6912,53 @@ components:
         allTemplates: { type: boolean }
         ownerTemplates: { type: boolean }
         templateIds: { type: array, items: { type: integer } }
+        configFilter: { allOf: [ { $ref: "#/components/schemas/ConfigFilter" } ], nullable: true, description: "Replaces the filter; `null` lifts it." }
       additionalProperties: false
+    LicenseView:
+      type: object
+      description: >
+        The licence status at the top level — `licensed`, `reason`, `hwid`
+        (this host's hardware id, which a licence is issued to), `issuedTo`,
+        `licenseId`, `expiresAt`, `limits`, `verifiedAt`, `unverifiedAt` and
+        the rest the licence page reads — plus the four below.
+      additionalProperties: true
+      properties:
+        usage: { type: array, items: { type: object, additionalProperties: true }, description: "Each capped resource: what is used and what the licence allows." }
+        free: { type: object, additionalProperties: true, description: "The free tier's caps: what an expiry falls back to." }
+        checkout: { type: object, additionalProperties: true, description: "A purchase in progress, with the address to finish it." }
+        recheck: { type: string, enum: [verified, unverifiable, unreachable, none], description: "Only on `POST /api/license/recheck`." }
+    ConfigFilter:
+      type: object
+      description: >
+        Which of the inbounds and endpoints its templates carry the account is
+        served on. The templates still decide the nodes; this decides what the
+        account is put on there — in the user lists a node is sent, the
+        subscription and the client configs alike. A row is allowed when it
+        matches **every** rule of its section; a section with no rules
+        restricts nothing, and a filter with no rules at all is stored as none
+        (`null`). A rule naming a tag on none of the account's templates is
+        accepted and does nothing.
+      properties:
+        inbounds: { type: array, maxItems: 200, items: { $ref: "#/components/schemas/ConfigRule" } }
+        endpoints: { type: array, maxItems: 200, items: { $ref: "#/components/schemas/ConfigRule" }, description: "Fields `protocol` and `tag` only." }
+    ConfigFilterPreviewRow:
+      type: object
+      required: [id, tag, type, allowed]
+      properties:
+        id: { type: integer }
+        tag: { type: string }
+        type: { type: string }
+        security: { type: string, description: "Inbounds only" }
+        transport: { type: string, description: "Inbounds only" }
+        allowed: { type: boolean }
+    ConfigRule:
+      type: object
+      required: [field, op]
+      properties:
+        field: { type: string, enum: [protocol, tag, security, transport], description: "`protocol` is the row's type and `tag` its tag. Inbounds only: `security` (`none`, `tls`, `reality`) and `transport` (the transport's type, `none` when the inbound names none)." }
+        op: { type: string, enum: [eq, neq, in, notIn, prefix, suffix, contains], description: "`eq`/`neq` read `value`, `in`/`notIn` read `values`, and the three text operators read `value` ignoring case. `security` takes no text operator." }
+        value: { type: string, maxLength: 256 }
+        values: { type: array, maxItems: 200, items: { type: string, maxLength: 256 } }
     User:
       type: object
       properties:
@@ -6826,6 +7026,7 @@ components:
         allTemplates: { type: boolean, description: "Provision the user on every template (ignores templateIds). Under an owner limited to chosen templates (Admin.templatesOnly) it is stored as false with ownerTemplates set. On an edit that hands a user with ownerTemplates to an owner with no grant, it is read as that mark echoed back and the user keeps its templates; only a PATCH naming allTemplates alone widens it." }
         ownerTemplates: { type: boolean, description: "Every template the owner may use, on a user of a reseller limited to chosen templates: stored as those templates (templateIds), and a template added to the reseller's grant later is added here too. Sending it, or allTemplates, asks for the same thing; the panel sets whichever fits the owner. Absent on an edit (a PUT included) it keeps the stored value while the edit's templateIds are absent or the templates the user is on; a different templateIds is a choice of templates and clears it. A user handed with it to an owner with no grant — the panel, an operator — keeps the templates it is on rather than widening to every template." }
         templateIds: { type: array, items: { type: integer }, description: "Explicit template membership (used when allTemplates is false); absent on create keeps legacy all-templates behaviour. Narrowed to the owner's template grant when the owner is a restricted reseller." }
+        configFilter: { allOf: [ { $ref: "#/components/schemas/ConfigFilter" } ], nullable: true, description: "Limits the account to some of its templates' inbounds and endpoints; `null` = no limit. Absent on an edit (a PUT included) = unchanged, so a client that never heard of it cannot lift it; `null` lifts it. Ignored, and left as stored, for an account of a plans-only reseller." }
         subUrl: { type: string, readOnly: true, description: "This account's absolute subscription URL, computed per response and never stored. It is returned because a wildcard sub_domain mints a hostname per subscriber, derived from the account, which no client of this API can compute — build links from this rather than from the sub_domain setting. Omitted where a response does not carry it." }
         licensed: { type: boolean, readOnly: true, description: "Whether the row is inside the licence cap: one of the first N users by id, N being the licensed count. A row outside it is listed and can be deleted, is served on no node, and answers 402 to every other write. Computed per response; the cap moves whenever a row is deleted or a licence installed." }
         planId: { type: integer, writeOnly: true, description: "Create only: apply this plan's limits over the rest of the body. Ignored on update — see PUT /api/users/{id}. Nothing links the user to the plan afterwards." }

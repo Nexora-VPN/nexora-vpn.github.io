@@ -110,9 +110,10 @@ Press **Add**. The form has three tabs: **Settings**, **Customer** and
 | **Group** | a free label for finding and acting on accounts together. See [[use/user-operations]]. |
 | **Remark** | put in front of the name of every entry in the customer's app |
 | **Owner** | main admins only: who the account belongs to — an admin, a [[~reseller]], or **Panel (main admins)**. Only a main admin can create a user for somebody else; an account an admin creates is always the admin's own. A reseller's accounts count against its allowance; an admin's do not. |
-| **All templates**, **Templates** | which templates, and so which nodes, the account is served on (below) |
 | **Sub ID** | the identifier in the account's subscription link. Leave it as generated. |
 | **Description** | a note for you |
+| **All templates**, **Templates** | which templates, and so which nodes, the account is served on (below) |
+| **Limit configs** | serve the account only on some of its templates' inbounds and endpoints (below) |
 
 ### Limits
 
