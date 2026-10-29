@@ -56,12 +56,12 @@ Telegram принимает файлы до 50 МБ: архив побольше
 ## Переезд на новый сервер {#moving-to-a-new-server}
 
 1. Установите Shop на новый сервер как обычно ([[shop#install]]), затем
-   остановите его: `systemctl stop nexora-addon-shop` или `docker compose
+   остановите его: `systemctl stop nx-addon-shop` или `docker compose
    stop shop`.
 2. Скопируйте туда архив и восстановите его с ключом:
 
    ```bash
-   nexora-shop restore -i shop-20261004-120000.nxsb -key nxsb-…
+   nx-shop restore -i shop-20261004-120000.nxsb -key nxsb-…
    ```
 
    С Docker сначала скопируйте архив в `data/backups/`, затем:
@@ -78,11 +78,11 @@ Telegram принимает файлы до 50 МБ: архив побольше
 повреждённый архив ничего не меняют.
 
 Регистрации в панели в архиве нет. Если новый сервер сохраняет старый
-адрес, скопируйте вместе с архивом `data/nexora-credentials.json`. Иначе
+адрес, скопируйте вместе с архивом `data/nx-credentials.json`. Иначе
 удалите Shop на странице **Дополнения** панели и зарегистрируйте его снова
 ([[directory]]).
 
-`nexora-shop backup` снимает архив вручную, с тем же ключом.
+`nx-shop backup` снимает архив вручную, с тем же ключом.
 
 ## После восстановления панели {#after-a-panel-restore}
 

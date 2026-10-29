@@ -8,7 +8,7 @@ tags: [addons, api]
 
 # ساختن افزونه
 
-این صفحه برای توسعه‌دهنده‌هایی است که می‌خواهند برای نکسورا [[~addon|افزونه]]
+این صفحه برای توسعه‌دهنده‌هایی است که می‌خواهند برای انیکس [[~addon|افزونه]]
 بنویسند: برنامه‌ای جدا که از راه شبکه با پنل کار می‌کند، با یک
 [[~api-token|توکن API]] محدود، [[~event|رویدادهای]] امضاشدهٔ پنل و یک مانیفست که
 می‌گوید به چه چیزی نیاز دارد. این صفحه بخش‌های یک افزونه و ابزارهایی را که
@@ -22,7 +22,7 @@ tags: [addons, api]
 
 | بخش | چه می‌کند |
 | --- | --- |
-| مانیفست | `nexora-addon.json`: افزونه کیست، چه می‌خواهد، چطور نصب می‌شود. افزونهٔ در حال اجرا آن را در `/.well-known/nexora-addon.json` سرو می‌کند. |
+| مانیفست | `nx-addon.json`: افزونه کیست، چه می‌خواهد، چطور نصب می‌شود. افزونهٔ در حال اجرا آن را در `/.well-known/nx-addon.json` سرو می‌کند. |
 | مسیر setup | جایی که پنل هنگام ثبت، توکن و کلید وبهوک را همراه با کد ادعا تحویل می‌دهد. |
 | مسیر webhook | جایی که پنل رویدادهای درخواستی افزونه را، هر کدام امضاشده، می‌فرستد. |
 | مسیر health | تا وقتی افزونه سالم است `200` جواب می‌دهد. پنل هر دقیقه می‌پرسد. |
@@ -35,11 +35,11 @@ tags: [addons, api]
 دو مخزن عمومی بیشتر این‌ها را برایتان می‌نویسند.
 
 - **کیت افزونه**، ماژول Go
-  [`github.com/nexora-vpn/addon-kit`](https://github.com/nexora-vpn/addon-kit)،
+  [`github.com/nx-panel/addon-kit`](https://github.com/nx-panel/addon-kit)،
   با مجوز Apache-2.0، پس افزونه‌ای که روی آن ساخته شود می‌تواند متن‌باز یا
   بسته باشد. پنل مانیفست‌ها را با همین کد اعتبارسنجی می‌کند.
 - **قالب**،
-  [`github.com/nexora-vpn/addon-template`](https://github.com/nexora-vpn/addon-template):
+  [`github.com/nx-panel/addon-template`](https://github.com/nx-panel/addon-template):
   یک افزونهٔ کامل و حداقلی با فایل compose، نسخهٔ باینری و اسکریپت نصب. با کد
   ادعا ثبت می‌شود، رویداد دریافت می‌کند، به بررسی سلامت جواب می‌دهد و صفحه‌ای با
   تعداد حساب‌های پنل نشان می‌دهد.
@@ -52,12 +52,12 @@ tags: [addons, api]
 | `auth` | ورود مدیر خود افزونه: گذرواژه‌های هش‌شده، نشست‌ها، عامل دوم TOTP، محدودیت روی تلاش‌های ناموفق. |
 | `telegram` | کلاینت کوچکی برای Telegram Bot API، از راه پراکسی یا آینهٔ Bot API؛ بله را هم پشتیبانی می‌کند. |
 | `web` | بخش مدیریت را زیر مسیر پایهٔ نصب و صفحه‌های عمومی را بیرون از آن سرو می‌کند، با HTTPS از پنل، ACME یا گواهی خودامضا. |
-| `cmd/nexora-addon` | `check`، `keygen`، `sign` و `verify` برای مانیفست؛ `sign-sums` و `verify-sums` برای checksumهای یک نسخه. |
+| `cmd/nx-addon` | `check`، `keygen`، `sign` و `verify` برای مانیفست؛ `sign-sums` و `verify-sums` برای checksumهای یک نسخه. |
 
 کوچک‌ترین افزونه:
 
 ```go
-raw, _ := os.ReadFile("nexora-addon.json")
+raw, _ := os.ReadFile("nx-addon.json")
 a, err := addon.New(addon.Config{Manifest: raw, DataDir: "data"}.FromEnv())
 if err != nil { log.Fatal(err) }
 a.OnEvent(func(e addon.Event) { log.Printf("%s %s", e.Event, e.Data) })
@@ -69,7 +69,7 @@ log.Fatal(http.ListenAndServe(":8090", mux))
 ## قالب را مال خودتان کنید {#make-the-template-yours}
 
 1. `slug`، `name`، `publisher`، دامنه‌های دسترسی و رویدادها را در
-   `nexora-addon.json`، و `SLUG`، `REPO` و `BIN` را در بالای `install.sh` تغییر
+   `nx-addon.json`، و `SLUG`، `REPO` و `BIN` را در بالای `install.sh` تغییر
    دهید.
 2. سؤال‌هایی را که نصبتان لازم دارد زیر `install.options` اعلام کنید
    ([[manifest#install-options]]).
@@ -80,7 +80,7 @@ log.Fatal(http.ListenAndServe(":8090", mux))
 ## ثبت با کد ادعا {#registration-with-a-claim-code}
 
 افزونه ثبت‌نشده شروع می‌کند. نصب یک **کد ادعای** یک‌بارمصرف در
-`NEXORA_CLAIM_CODE` به آن می‌دهد؛ اگر دستی و بدون کد اجرا شود، کیت یک کد انتخاب
+`NX_CLAIM_CODE` به آن می‌دهد؛ اگر دستی و بدون کد اجرا شود، کیت یک کد انتخاب
 و در لاگ چاپ می‌کند.
 
 1. پنل مانیفست را از آدرس افزونه می‌خواند و امضایش را بررسی می‌کند.
@@ -95,7 +95,7 @@ log.Fatal(http.ListenAndServe(":8090", mux))
 پیش از ثبت nil؛ `ClaimCode()` کدی را که هنوز منتظر است برمی‌گرداند.
 
 پنل فقط مانیفستی را با کد ادعا ثبت می‌کند که با کلیدی مورد اعتمادش امضا شده باشد:
-کلید نکسورا، یا کلید توسعه‌دهنده‌ای که دایرکتوری تضمینش می‌کند. در زمان توسعه،
+کلید انیکس، یا کلید توسعه‌دهنده‌ای که دایرکتوری تضمینش می‌کند. در زمان توسعه،
 افزونه‌تان را به جای آن دستی ثبت کنید (**افزونه‌ها ← افزودن افزونهٔ خودتان**):
 دسترسی‌های توکن و رویدادهای وبهوک را خودتان انتخاب می‌کنید، و پنل توکن و کلید
 امضای وبهوک را یک بار برای تنظیمات برنامه‌تان نشان می‌دهد.
@@ -115,8 +115,8 @@ log.Fatal(http.ListenAndServe(":8090", mux))
 ## دریافت رویدادها {#receiving-events}
 
 پنل هر رویدادی را که افزونه خواسته به مسیر `webhook` آن می‌فرستد. هر تحویل
-`X-Nexora-Signature: t=<unix>,v1=<hex>` دارد، که hex همان HMAC-SHA256 روی
-`<t>.<body>` با کلید وبهوک است، و یک شناسهٔ `X-Nexora-Delivery` که در هر تلاش
+`X-Nx-Signature: t=<unix>,v1=<hex>` دارد، که hex همان HMAC-SHA256 روی
+`<t>.<body>` با کلید وبهوک است، و یک شناسهٔ `X-Nx-Delivery` که در هر تلاش
 دوباره یکسان می‌ماند.
 
 کیت امضا را بررسی می‌کند و تحویلی را که بیش از پنج دقیقه اختلاف زمانی دارد رد
@@ -166,8 +166,8 @@ err := client.Get(ctx, "/users?limit=1", &list)
 ## گزینه‌های نصب {#install-options}
 
 هر سؤال در `install.options` یک فیلد در فرم نصب پنل و یک flag در اسکریپت نصب شما
-می‌شود. جواب‌ها به صورت متغیرهای محیطی `NEXORA_OPT_<KEY>`، کنار
-`NEXORA_PANEL_URL` و `NEXORA_CLAIM_CODE`، به افزونه می‌رسند؛ هر کدام را با
+می‌شود. جواب‌ها به صورت متغیرهای محیطی `NX_OPT_<KEY>`، کنار
+`NX_PANEL_URL` و `NX_CLAIM_CODE`، به افزونه می‌رسند؛ هر کدام را با
 `addon.Option("key")` بخوانید. نوع گزینه‌ها و قاعده‌هایشان در
 [[manifest#install-options]] آمده است.
 
@@ -207,11 +207,11 @@ err := client.Get(ctx, "/users?limit=1", &list)
 می‌کند که با همان کلیدی امضا شده که مانیفست را امضا می‌کند:
 
 ```bash
-go install github.com/nexora-vpn/addon-kit/cmd/nexora-addon@latest
-nexora-addon check nexora-addon.json                    # would a panel accept it?
-nexora-addon keygen -out addon.key                      # once: your signing key
-nexora-addon sign -key addon.key nexora-addon.json > signed.json
-nexora-addon sign-sums -key addon.key SHA256SUMS > SHA256SUMS.sig
+go install github.com/nx-panel/addon-kit/cmd/nx-addon@latest
+nx-addon check nx-addon.json                    # would a panel accept it?
+nx-addon keygen -out addon.key                      # once: your signing key
+nx-addon sign -key addon.key nx-addon.json > signed.json
+nx-addon sign-sums -key addon.key SHA256SUMS > SHA256SUMS.sig
 gh release upload v1.2.3 SHA256SUMS.sig
 ```
 
@@ -226,9 +226,9 @@ gh release upload v1.2.3 SHA256SUMS.sig
 
 ## فهرست شدن {#getting-listed}
 
-افزونه‌ها در [addons.nexora-panel.org](https://addons.nexora-panel.org) به صورت
+افزونه‌ها در [addons.nx-panel.org](https://addons.nx-panel.org) به صورت
 رسمی، تأییدشده یا غیررسمی فهرست می‌شوند
 ([[directory#what-the-directory-lists]]). برای فهرست شدن، مانیفست را با کلید
-خودتان امضا کنید (`nexora-addon keygen`، `sign`) و در دایرکتوری یک pull request
-باز کنید. `nexora-addon.json` را در ریشهٔ مخزن عمومی‌تان نگه دارید (برای افزونهٔ
+خودتان امضا کنید (`nx-addon keygen`، `sign`) و در دایرکتوری یک pull request
+باز کنید. `nx-addon.json` را در ریشهٔ مخزن عمومی‌تان نگه دارید (برای افزونهٔ
 بسته، مخزن عمومی توزیعش): دایرکتوری و ویزارد نصب آن را همان‌جا می‌خوانند.

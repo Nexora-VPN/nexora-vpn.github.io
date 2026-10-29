@@ -1,6 +1,6 @@
 ---
 title: "命令行"
-description: "nexora-panel 和 nexora-node 的所有命令，以及如何重新进入被锁在外面的面板。"
+description: "nx-panel 和 nx-node 的所有命令，以及如何重新进入被锁在外面的面板。"
 order: 2
 tags: [reference, panel]
 ---
@@ -9,9 +9,9 @@ tags: [reference, panel]
 
 [[~panel]]和[[~node]]各是一个带有少量命令的程序。平时你几乎用不到它们：安装程序和面板页面会完成这些工作。以下情况需要它们：恢复一个无法访问的面板、在面板无法启动时还原备份，或者用脚本安装。
 
-面板安装程序会把 `nexora-panel` 放进 PATH，它也能自己找到配置文件，所以每条命令在任何目录下都能运行。在 Docker 中，请在前面加上 `docker compose exec panel /app/`：`docker compose exec panel /app/nexora-panel config list`。
+面板安装程序会把 `nx-panel` 放进 PATH，它也能自己找到配置文件，所以每条命令在任何目录下都能运行。在 Docker 中，请在前面加上 `docker compose exec panel /app/`：`docker compose exec panel /app/nx-panel config list`。
 
-## nexora-panel {#nexora-panel}
+## nx-panel {#nx-panel}
 
 | 命令 | 作用 |
 | --- | --- |
@@ -30,20 +30,20 @@ tags: [reference, panel]
 | `version` | 打印面板版本 |
 | `help` | 显示命令列表 |
 
-`-config FILE` 让命令使用另一个配置文件。会打开数据库的命令在其他参数之后接受它，例如 `nexora-panel config list -config /path/to/config.json`。
+`-config FILE` 让命令使用另一个配置文件。会打开数据库的命令在其他参数之后接受它，例如 `nx-panel config list -config /path/to/config.json`。
 
 ### 从命令行修改设置 {#settings-from-the-command-line}
 
 `config` 读写只有主管理员才能修改的设置：面板的地址、域名、路径和证书，订阅域名和路径，备份，受信任代理和登录白名单，以及其他几项。`config list` 会全部列出。
 
-机密信息（例如备份口令）只显示为 `(set)`。`config set` 会拒绝不是面板设置的键，也会拒绝面板不接受的值。一旦 **设置 → 地址** 中有不止一个地址，例如第二个端口，`config set` 就会拒绝修改地址设置；请改用下面的 `ingress reset`。备份设置无需重启，一小时内生效；其他设置请重启面板（`systemctl restart nexora-panel`）。
+机密信息（例如备份口令）只显示为 `(set)`。`config set` 会拒绝不是面板设置的键，也会拒绝面板不接受的值。一旦 **设置 → 地址** 中有不止一个地址，例如第二个端口，`config set` 就会拒绝修改地址设置；请改用下面的 `ingress reset`。备份设置无需重启，一小时内生效；其他设置请重启面板（`systemctl restart nx-panel`）。
 
 ### restore {#restore}
 
 ```bash
-systemctl stop nexora-panel
-nexora-panel restore /var/opt/nexora/backups/nexora-backup-20260914-030000.tar.gz
-systemctl start nexora-panel
+systemctl stop nx-panel
+nx-panel restore /var/opt/nx-panel/backups/nx-backup-20260914-030000.tar.gz
+systemctl start nx-panel
 ```
 
 它先读取归档，打印其中的内容和所有警告，然后要求你输入 `replace-database`。在脚本中改为传入 `-yes`。加密的归档需要 `-passphrase`，否则会提示输入。
@@ -61,10 +61,10 @@ systemctl start nexora-panel
 如果你在 **设置 → 地址** 中修改过面板的地址，请先查看它们，再恢复一个你能访问的地址：
 
 ```bash
-nexora-panel ingress list                        # every listener and route
-nexora-panel ingress reset                       # one plain listener, the panel on every host
-nexora-panel ingress reset -listen 0.0.0.0:2095  # the same, on this address
-systemctl restart nexora-panel
+nx-panel ingress list                        # every listener and route
+nx-panel ingress reset                       # one plain listener, the panel on every host
+nx-panel ingress reset -listen 0.0.0.0:2095  # the same, on this address
+systemctl restart nx-panel
 ```
 
 `ingress reset` 会把所有监听器、路由和兜底回答替换为一个监听器：它使用主监听器的地址（或 `-listen` 指定的地址），采用普通 HTTP，并在每个主机名的根路径提供面板。它会打印将要写入的内容，并要求你输入 `reset`；在脚本中请传入 `-yes`。证书、品牌外观和账户不受影响，这次更改会显示在页面的 **历史** 中。重新进入后，请在页面上重建其余部分。
@@ -76,13 +76,13 @@ systemctl restart nexora-panel
 当面板只有一个地址时，可以逐项修改它的设置：
 
 ```bash
-nexora-panel config list                       # what is set
-nexora-panel config set web_listen_port 2095   # a port you can reach
-nexora-panel config set web_listen_ip ""       # listen everywhere again (IPv4 and IPv6)
-nexora-panel config set web_domain ""          # stop restricting the hostname
-nexora-panel config set web_basepath ""        # serve at the root again
-nexora-panel config set sub_domain ""          # stop reserving hosts for subscriptions
-systemctl restart nexora-panel
+nx-panel config list                       # what is set
+nx-panel config set web_listen_port 2095   # a port you can reach
+nx-panel config set web_listen_ip ""       # listen everywhere again (IPv4 and IPv6)
+nx-panel config set web_domain ""          # stop restricting the hostname
+nx-panel config set web_basepath ""        # serve at the root again
+nx-panel config set sub_domain ""          # stop reserving hosts for subscriptions
+systemctl restart nx-panel
 ```
 
 当面板 **没有基础路径** 时，最后一项最容易让人中招。`sub_domain` 中的域名只提供订阅，不提供其他任何内容，所以当面板位于根路径时，这些域名永远不会显示面板。如果你只使用这些域名，面板在任何地方都无法访问。设置基础路径就能避开这个陷阱：面板在每个域名下的该路径都能访问。
@@ -92,9 +92,9 @@ systemctl restart nexora-panel
 ### 忘记密码 {#forgotten-password}
 
 ```bash
-nexora-panel admin list                        # the accounts, and which one owns the panel
-nexora-panel admin reset-password              # the owner; the password is typed, not shown
-nexora-panel admin reset-password -user alice  # any other account
+nx-panel admin list                        # the accounts, and which one owns the panel
+nx-panel admin reset-password              # the owner; the password is typed, not shown
+nx-panel admin reset-password -user alice  # any other account
 ```
 
 不带 `-user` 时，它重置面板 **所有者** 的密码。新密码需要输入两次，且从不显示。`-pass` 可以一次设好，但密码会留在 shell 历史中。
@@ -106,8 +106,8 @@ nexora-panel admin reset-password -user alice  # any other account
 同一地址登录失败五次就会被封禁，封禁在重启后依然有效。两项设置决定这个地址是谁、谁永远不会被封禁：
 
 ```bash
-nexora-panel config set trusted_proxies "10.0.0.0/8"   # your reverse proxy or CDN, or empty
-nexora-panel config set login_allowlist "203.0.113.7"  # addresses never banned
+nx-panel config set trusted_proxies "10.0.0.0/8"   # your reverse proxy or CDN, or empty
+nx-panel config set login_allowlist "203.0.113.7"  # addresses never banned
 ```
 
 ::: warning 位于代理或 CDN 之后
@@ -116,7 +116,7 @@ nexora-panel config set login_allowlist "203.0.113.7"  # addresses never banned
 
 重新进入后，主管理员可以在 **设置 → 安全** 中解除封禁（[[use/security]]）。
 
-## nexora-node {#nexora-node}
+## nx-node {#nx-node}
 
 节点由面板安装和配置，所以它的命令很少：
 

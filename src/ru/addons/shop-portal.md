@@ -8,7 +8,7 @@ tags: [addons, users]
 
 # Shop: портал для клиентов
 
-[[shop|Nexora Shop]] даёт вашим клиентам одно веб-приложение по адресу
+[[shop|NX Shop]] даёт вашим клиентам одно веб-приложение по адресу
 `https://<shop>/app/`. Эта страница описывает, что это такое, как дать ему
 HTTPS и три способа, которыми клиент входит вне Telegram.
 
@@ -86,8 +86,8 @@ Shop не называет никакого SMS-сервиса. Направьт
 
 ```http
 POST <your relay URL>
-X-Nexora-Timestamp: 1790000000
-X-Nexora-Signature: <hex HMAC-SHA256 of "1790000000.<body>" under the secret>
+X-Nx-Timestamp: 1790000000
+X-Nx-Signature: <hex HMAC-SHA256 of "1790000000.<body>" under the secret>
 Content-Type: application/json
 
 {"to": "+15550100", "text": "Your shop sign-in code: 123456"}
@@ -115,7 +115,7 @@ Content-Type: application/json
 
 Коды, входы и проверки платежей ограничиваются по адресу клиента. Когда
 Shop работает за обратным прокси, который завершает TLS, задайте в `.env`
-установки `NEXORA_OPT_TRUSTED_PROXIES` — адреса или диапазоны прокси,
+установки `NX_OPT_TRUSTED_PROXIES` — адреса или диапазоны прокси,
 например `127.0.0.1, 10.0.0.0/8`. Тогда Shop берёт адрес клиента из
 `X-Forwarded-For` прокси. Если оставить пустым (по умолчанию), никакому
 пересланному заголовку не доверяют.

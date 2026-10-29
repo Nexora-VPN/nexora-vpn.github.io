@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: Nexora Panel API
+  title: NX Panel API
   description: >
-    Control-plane REST API for the Nexora Panel. Admin endpoints under `/api`
+    Control-plane REST API for the NX Panel. Admin endpoints under `/api`
     accept either a session cookie (obtained from `POST /api/login`) or a
     third-party API token as `Authorization: Bearer` (see `POST /api/tokens`).
     This document is the source of truth for the frontend and any third-party
@@ -146,7 +146,7 @@ paths:
           required: false
           schema: { type: string }
           description: >
-            The one-time setup token (`nexora-panel setup-token` reprints it).
+            The one-time setup token (`nx-panel setup-token` reprints it).
             Required while setup is pending; without it this route answers 404
             like every other.
       responses:
@@ -168,7 +168,7 @@ paths:
         Creates the main admin, records every mandatory setting and issues the
         panel's own certificate — all in one transaction, so a rejected field
         leaves the panel untouched and still in setup. Authorised by the
-        one-time token the installer printed (`nexora-panel setup-token`
+        one-time token the installer printed (`nx-panel setup-token`
         reprints it); the token is retired when setup completes, and the route
         answers 409 from then on. The web settings are read at startup, so the
         panel restarts itself and the response says where it will answer.
@@ -221,7 +221,7 @@ paths:
       responses:
         "200":
           description: >
-            Logged in; `nexora_session` cookie set. Sessions survive a panel
+            Logged in; `nx_session` cookie set. Sessions survive a panel
             restart; see /api/me/sessions. For an account with two-factor
             authentication on, the password alone earns no session: the body is
             `MfaPending` instead, no cookie is set, and the login finishes at
@@ -259,7 +259,7 @@ paths:
                 code: { type: string, description: "A TOTP code (spaces ignored) or a recovery code (case and dash ignored)" }
       responses:
         "200":
-          description: Logged in; `nexora_session` cookie set
+          description: Logged in; `nx_session` cookie set
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Me" }
@@ -359,7 +359,7 @@ paths:
                 type: object
                 properties:
                   secret: { type: string, description: "Base32, no padding; for typing into an app by hand" }
-                  uri: { type: string, description: "otpauth://totp/Nexora:<username>?secret=…&issuer=Nexora — render as a QR code" }
+                  uri: { type: string, description: "otpauth://totp/NX:<username>?secret=…&issuer=NX — render as a QR code" }
         "400": { $ref: "#/components/responses/Error" }
   /api/me/2fa/totp/confirm:
     post:
@@ -2019,11 +2019,11 @@ paths:
 
         **A figure a node did not report has no series** rather than a zero one —
         disk, memory, load, connections, engine restarts, rejected connections
-        (`nexora_node_rejected_connections_total`, one series per block outbound
+        (`nx_node_rejected_connections_total`, one series per block outbound
         the node has actually sent something to, labelled by its tag) and the
         per-node online count are all conditional, because zero means "did not say" everywhere
         else in this API and a zero here draws a graph in which the disk emptied
-        itself. The one deliberate exception is `nexora_event_deliveries`, which
+        itself. The one deliberate exception is `nx_event_deliveries`, which
         always reports every status, so an alert on dead deliveries can evaluate
         on a healthy panel.
       responses:
@@ -2867,7 +2867,7 @@ paths:
         line re-arms the volume one. Two keys are never writable here and answer 403 for anyone:
         setup_token (written only by the first-run wizard) and
         backup_passphrase (written by PUT /api/backups/schedule, or by
-        `nexora-panel config set` on a headless host) — this route echoes the
+        `nx-panel config set` on a headless host) — this route echoes the
         saved row back, and both are bearer secrets. The same two are omitted
         from GET /api/settings. Several keys are validated on write and answer 400 when
         malformed: web_listen_ip (an IP literal, or empty to keep the address
@@ -2878,7 +2878,7 @@ paths:
         or empty), web_tls_mode (none | self_signed | files) and web_cert_id (a
         number, or empty). ruleset_dir must be an absolute path, or empty for the directory beside
         the database. The backup keys are checked here too, since this
-        route and `nexora-panel config set` reach the same rows the schedule
+        route and `nx-panel config set` reach the same rows the schedule
         endpoint guards: backup_dir (an absolute path, or empty for the default
         beside the database), backup_interval_hours (a number of hours up to
         8760, or empty for the daily default), backup_keep (a number of
@@ -2950,13 +2950,13 @@ paths:
         panel itself is reachable only at web_basepath — with no base path set
         they serve subscriptions and nothing else at all, which is also the one
         way this setting locks an operator out (the panel then answers on no
-        listed name, and `nexora-panel config set sub_domain ""` is the way
+        listed name, and `nx-panel config set sub_domain ""` is the way
         back). The **first** is the one generated subscription links are
         published on, so a blocked domain is replaced by adding its successor and
         moving it to the front, while links already handed out keep working on
         the domain that issued them until it is removed. A single value — every
         install that predates the list — behaves exactly as before.
-        Every key here is also writable offline with `nexora-panel config set`,
+        Every key here is also writable offline with `nx-panel config set`,
         which is the way back in when one of them makes the panel unreachable.
       requestBody:
         required: true
@@ -3345,7 +3345,7 @@ paths:
 
 
         The address that comes back is therefore the old server's. That is
-        recoverable by design: `-listen` / `NEXORA_WEB_LISTEN` pin the bind
+        recoverable by design: `-listen` / `NX_WEB_LISTEN` pin the bind
         address over any setting, and the panel falls back to the address it
         was started with when the configured one refuses to bind.
       parameters:
@@ -3452,7 +3452,7 @@ paths:
         ingress before it is put back by itself, and a panel that stops with a
         change pending puts it back as it starts. While one waits another is
         409. A write through the old address settings, an account's
-        subscription domain or `nexora-panel ingress reset` supersedes a
+        subscription domain or `nx-panel ingress reset` supersedes a
         pending change rather than being undone by it. For an account with
         two-factor authentication on it answers 428 until the second factor
         is presented again.
@@ -3796,9 +3796,9 @@ paths:
       tags: [addons]
       summary: Read and verify a signed addon's manifest (sudo; no token) — a main admin holding every permission
       description: >
-        Fetches `/.well-known/nexora-addon.json` under the address, checks
+        Fetches `/.well-known/nx-addon.json` under the address, checks
         its shape, its `api` version (0 and 1) and its signature against the
-        keys the panel trusts — Nexora's, and the developer keys the addon
+        keys the panel trusts — NX's, and the developer keys the addon
         directory vouches for on that slug — and answers what the consent
         screen shows, with the addon's directory tier. Nothing is created. 502 when the addon does
         not answer or its manifest is refused; 409 when an addon with its id
@@ -3818,7 +3818,7 @@ paths:
       tags: [addons]
       summary: The addon directory as this panel last read it (sudo; no token) — a main admin holding every permission
       description: >
-        The signed index of addons.nexora-panel.org, or of the mirror named by
+        The signed index of addons.nx-panel.org, or of the mirror named by
         the `addon_directory_url` setting, read once a day beside the release
         check (and on the same `update_check` switch) and refused unless the
         directory key signed it. Each listing comes with its manifest read the
@@ -4367,9 +4367,9 @@ paths:
         Where events go. Each subscriber receives every event its `events`
         filter names (empty = all), narrowed by `adminId` to the events about
         that account when set. Deliveries are signed
-        (`X-Nexora-Signature: t=<unix>,v1=<hex>`, the hex being
-        HMAC-SHA256(secret, "<unix>.<body>")), carry `X-Nexora-Event` and
-        `X-Nexora-Delivery` (the id a receiver dedups on: a retry repeats it),
+        (`X-Nx-Signature: t=<unix>,v1=<hex>`, the hex being
+        HMAC-SHA256(secret, "<unix>.<body>")), carry `X-Nx-Event` and
+        `X-Nx-Delivery` (the id a receiver dedups on: a retry repeats it),
         and are retried with exponential backoff (30 s doubling to 1 h) up to
         10 attempts. A subscriber is switched off only once it has been
         failing for a day and at least 50 attempts — a receiver down for an
@@ -5151,7 +5151,7 @@ paths:
         panel's /api/login/oidc/callback as the browser sees it, on the host
         the request came to — the address to register at the provider. The
         sign-in must come back within ten minutes, in the same browser: the
-        answer sets the `nexora_oidc` cookie, and the callback refuses a
+        answer sets the `nx_oidc` cookie, and the callback refuses a
         state that browser was not given. Refused from a banned address;
         409 for a provider that is off, 429 when the address already has ten
         sign-ins waiting or the panel a thousand.
@@ -6142,7 +6142,7 @@ components:
     cookieAuth:
       type: apiKey
       in: cookie
-      name: nexora_session
+      name: nx_session
       description: Session cookie set by POST /api/login.
     bearerAuth:
       type: http
@@ -6483,7 +6483,7 @@ components:
               type: boolean
               description: >
                 True when the bind address is pinned by -listen or
-                NEXORA_WEB_LISTEN (the container case). The listen fields in the
+                NX_WEB_LISTEN (the container case). The listen fields in the
                 submission are then ignored in favour of that address, so a
                 client should present them as read-only rather than offering a
                 port the panel will never move to.
@@ -6582,7 +6582,7 @@ components:
           type: boolean
           readOnly: true
           description: >
-            True when the bind address is pinned by -listen or NEXORA_WEB_LISTEN
+            True when the bind address is pinned by -listen or NX_WEB_LISTEN
             (the container case). The web_listen_ip / web_listen_port settings
             are still writable but are ignored at every start, so a client
             should present them read-only rather than as an effective change.
@@ -6871,7 +6871,7 @@ components:
     EventDelivery:
       type: object
       properties:
-        id: { type: integer, format: int64, readOnly: true, description: "The X-Nexora-Delivery value" }
+        id: { type: integer, format: int64, readOnly: true, description: "The X-Nx-Delivery value" }
         outboxId: { type: integer, format: int64, readOnly: true, description: "The event's id (the envelope's `id`)" }
         event: { type: string }
         status: { type: string, enum: [pending, delivered, dead] }
@@ -7004,7 +7004,7 @@ components:
             bot's chat id), `email` and `phone` — and are the ones the panel
             itself reads: they are filtered on (`contact_<key>`), matched by
             the free-text `q`, exported as their own CSV columns and written by
-            nexora-migrate. Any other pair is the operator's own: stored and
+            nx-migrate. Any other pair is the operator's own: stored and
             returned untouched, and interpreted by nothing.
             Values may be sent as JSON numbers or booleans and come back as
             text; an empty value removes the key, and a document left with no
@@ -7458,7 +7458,7 @@ components:
                 of the host's own connectivity; panel has the host download it
                 over HTTP; github has it download a public release.
             version: { type: string, description: "Node release tag; only source=github and docker installs can honour one" }
-            image: { type: string, description: "Docker image reference; defaults to ghcr.io/nexora-vpn/node:<version>" }
+            image: { type: string, description: "Docker image reference; defaults to ghcr.io/nx-panel/node:<version>" }
             listen: { type: string, description: "Control API listen address on the node" }
             panelUrl: { type: string, description: "The panel as this node can reach it; needed only by source=panel" }
             insecure: { type: boolean, description: "Do not verify the panel's TLS certificate when downloading from it" }
@@ -7814,7 +7814,7 @@ components:
       properties:
         id: { type: integer, description: "Keeps the row across a save; absent matches by name, or makes a new row" }
         name: { type: string }
-        primary: { type: boolean, description: "The listener the -listen / NEXORA_WEB_LISTEN pin overrides; exactly one" }
+        primary: { type: boolean, description: "The listener the -listen / NX_WEB_LISTEN pin overrides; exactly one" }
         enabled: { type: boolean, description: "Absent is on; the primary listener is always on" }
         listenIp: { type: string, description: "An IP literal; empty listens everywhere (the primary listener: the address it was started with)" }
         listenPort: { type: string, description: "1-65535; the primary listener may leave it empty to keep the port it was started with" }
@@ -7997,8 +7997,8 @@ components:
         entryUrl: { type: string, description: "The link to the addon's own interface; empty for none" }
         healthPath: { type: string, description: "Polled when set; empty for no check" }
         signed: { type: boolean }
-        signedBy: { type: string, description: "Who signed the manifest: Nexora, development key, or developer key of <the directory listing's developer> — never a developer key's bare name" }
-        signedByKind: { type: string, enum: [nexora, developer, development, ""], description: "The kind of key that signed it, read from the key itself; empty on an addon registered before the panel recorded it, until its manifest is next read" }
+        signedBy: { type: string, description: "Who signed the manifest: NX, development key, or developer key of <the directory listing's developer> — never a developer key's bare name" }
+        signedByKind: { type: string, enum: [nx, developer, development, ""], description: "The kind of key that signed it, read from the key itself; empty on an addon registered before the panel recorded it, until its manifest is next read" }
         state: { type: string, enum: [registered, suspended, unhealthy] }
         healthAt: { type: integer, format: int64, description: "When the health path was last asked; 0 = never" }
         healthFailures: { type: integer, description: "Failed asks in a row; two make the addon unhealthy" }
@@ -8077,8 +8077,8 @@ components:
         name: { type: string }
         version: { type: string }
         publisher: { type: string }
-        signedBy: { type: string, description: "Who signed the manifest: Nexora, development key, or developer key of <the directory listing's developer>" }
-        signedByKind: { type: string, enum: [nexora, developer, development], description: "The kind of key that signed it, read from the key itself, never from its name" }
+        signedBy: { type: string, description: "Who signed the manifest: NX, development key, or developer key of <the directory listing's developer>" }
+        signedByKind: { type: string, enum: [nx, developer, development], description: "The kind of key that signed it, read from the key itself, never from its name" }
         tier: { type: string, enum: [official, verified, unofficial, ""], description: "The addon's tier in the addon directory; empty when the directory does not list it" }
         scopes: { type: array, items: { type: object, required: [scope, purpose], properties: { scope: { type: string }, purpose: { type: string } } } }
         rateLimit: { type: integer, description: "Requests a minute the token may make: the manifest's rateLimit (at most 600), else the panel's default, 120." }
@@ -8095,7 +8095,7 @@ components:
       properties:
         url: { type: string, description: Where the index is read from }
         source: { type: string, description: "Where the index held was read from; differs from url after the address changed and the new one has not passed yet" }
-        default: { type: boolean, description: "url is addons.nexora-panel.org's, not a mirror" }
+        default: { type: boolean, description: "url is addons.nx-panel.org's, not a mirror" }
         checkEnabled: { type: boolean, description: "The update_check setting, which the daily read follows" }
         site: { type: string, description: "The directory's own address, from the signed index; empty before the first read" }
         generatedAt: { type: integer, format: int64, description: Unix seconds the index held was built }
@@ -8240,7 +8240,7 @@ components:
           properties: { tag: { type: string }, publishedAt: { type: string }, url: { type: string } }
         stale: { type: boolean, description: "The directory's latest read of it failed; this is its last good manifest" }
         error: { type: string }
-        signedBy: { type: string, enum: [nexora, developer, development, unknown, none], description: "Who signed its manifest, as this panel sees it" }
+        signedBy: { type: string, enum: [nx, developer, development, unknown, none], description: "Who signed its manifest, as this panel sees it" }
         page: { type: string, description: The addon's page on the directory }
         registered:
           type: object

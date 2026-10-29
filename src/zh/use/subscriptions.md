@@ -125,7 +125,7 @@ tags: [subscriptions]
 
 ### 自定义主题 {#your-own-theme}
 
-主题是主题目录中的一个目录，包含 `index.html`（或 `sub.html`）及其用到的所有文件。标准安装下默认目录是 `/var/opt/nexora/sub-themes/`，Docker 下是 compose 文件旁边的 `./sub-themes`。放入一个目录，点击 **重新扫描主题目录**，然后在 **主题** 中选中它即可。无需重启。
+主题是主题目录中的一个目录，包含 `index.html`（或 `sub.html`）及其用到的所有文件。标准安装下默认目录是 `/var/opt/nx-panel/sub-themes/`，Docker 下是 compose 文件旁边的 `./sub-themes`。放入一个目录，点击 **重新扫描主题目录**，然后在 **主题** 中选中它即可。无需重启。
 
 - 目录名可以使用字母、数字、`.`、`_` 和 `-`。
 - 修改会在几秒内生效。

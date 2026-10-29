@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // A screenshot of the panel, in the reader's theme and, where one was taken,
 // in the reader's language: /shots/<lang>/<page>-<light|dark>.webp, taken by
-// nexora-panel/tools/docsdemo/shots.sh. Russian and Chinese pages show the
+// nx-panel/tools/docsdemo/shots.sh. Russian and Chinese pages show the
 // English panel (docs-site.md P7) unless `own` says the shot exists in theirs.
 import { computed } from 'vue'
 import { useData, withBase } from 'vitepress'

@@ -1,13 +1,13 @@
 ---
 title: "插件目录"
-description: "在面板中浏览 addons.nexora-panel.org，并在面板服务器上、通过 SSH 或手动安装、更新和移除插件。"
+description: "在面板中浏览 addons.nx-panel.org，并在面板服务器上、通过 SSH 或手动安装、更新和移除插件。"
 order: 2
 tags: [addons, install]
 ---
 
 # 插件目录
 
-[addons.nexora-panel.org](https://addons.nexora-panel.org) 上的插件目录列出了你可以安装的[[~addon|插件]]。面板读取目录，在 **扩展 → 浏览** 下显示它，把插件安装到你的某台服务器上，并在你批准它请求的内容后完成注册。本页介绍所有安装方式，然后是更新和移除。
+[addons.nx-panel.org](https://addons.nx-panel.org) 上的插件目录列出了你可以安装的[[~addon|插件]]。面板读取目录，在 **扩展 → 浏览** 下显示它，把插件安装到你的某台服务器上，并在你批准它请求的内容后完成注册。本页介绍所有安装方式，然后是更新和移除。
 
 <NxShot page="addons" alt="扩展页面的浏览选项卡：带信任等级和安装按钮的目录卡片" />
 
@@ -17,9 +17,9 @@ tags: [addons, install]
 
 | 等级 | 含义 |
 | --- | --- |
-| **官方** | 由 Nexora 制作；清单由 Nexora 签名。 |
-| **已验证** | 来自其他开发者，经 Nexora 审核；清单用开发者的密钥签名，目录为该密钥背书。 |
-| **非官方** | 只经过简单检查就上架。Nexora 没有审核过它。 |
+| **官方** | 由 NX 制作；清单由 NX 签名。 |
+| **已验证** | 来自其他开发者，经 NX 审核；清单用开发者的密钥签名，目录为该密钥背书。 |
+| **非官方** | 只经过简单检查就上架。NX 没有审核过它。 |
 
 需要更新版本面板的插件会显示 **需要面板** 及版本号。请先更新面板（[[start/update]]）。
 
@@ -31,7 +31,7 @@ tags: [addons, install]
 
 ### 镜像 {#a-mirror}
 
-如果你的面板无法访问 addons.nexora-panel.org，可以用 **更改来源** 让它指向目录 `index.json` 的副本。镜像可以提供列表，但无法修改它，因为签名校验依然有效。把字段留空即可回到 addons.nexora-panel.org。
+如果你的面板无法访问 addons.nx-panel.org，可以用 **更改来源** 让它指向目录 `index.json` 的副本。镜像可以提供列表，但无法修改它，因为签名校验依然有效。把字段留空即可回到 addons.nx-panel.org。
 
 ## 从面板安装 {#install-from-the-panel}
 
@@ -79,14 +79,14 @@ Docker 中的面板不提供这个选项，因为它会装进自己的容器里�
 
 ## 插件的 HTTPS {#https-for-the-addon}
 
-大多数插件会询问如何提供 HTTPS。Nexora 发布的插件提供以下选项：
+大多数插件会询问如何提供 HTTPS。NX 发布的插件提供以下选项：
 
 | 选项 | 作用 |
 | --- | --- |
 | `panel` | 来自面板自身证书库（**证书**）的证书，由面板签发和续期，插件每隔几分钟获取一次。任何端口都可以，因此多个插件可以与面板共用一台服务器。这是面板表单中的默认值。 |
 | `acme` | 插件为自己的域名获取证书，在自己的端口上响应证书机构，该端口必须是 443。 |
 | `acme-http` | 同上，但可用任意端口，证书机构在 80 端口上发起验证。 |
-| `self-signed` | 插件自己生成证书，用于以 IP 访问的地址。批准页面会显示其 SHA-256 指纹：请与插件自己设置页面上的指纹比对（Nexora Shop 中为 **快速设置**，通知器中为 **设置**）。批准即信任这一张证书。 |
+| `self-signed` | 插件自己生成证书，用于以 IP 访问的地址。批准页面会显示其 SHA-256 指纹：请与插件自己设置页面上的指纹比对（NX Shop 中为 **快速设置**，通知器中为 **设置**）。批准即信任这一张证书。 |
 | `off` | 纯 HTTP，供你自己的反向代理使用，或由面板本身充当这个代理（[[use/ingress#another-program]]）。 |
 
 开启 HTTPS 时，插件只在其安装端口上提供 HTTPS，公网地址必须写明该端口（未写明时为 443），例如 `https://shop.example.com:8443`。
@@ -98,7 +98,7 @@ Docker 中的面板不提供这个选项，因为它会装进自己的容器里�
 当目录中有已注册插件的新版本时，**已注册** 上该插件所在行会显示出来（例如 *目录中为 0.2.0*），扩展菜单上也会出现一个圆点。
 
 - **在本服务器上或通过 SSH 安装的**：**在其服务器上更新** 会再次运行安装脚本。设置和数据会保留，面板会立即读取新清单。
-- **用命令安装的**：在插件服务器上不带参数再次运行它的安装脚本：`sh nexora-addon-install.sh`。它会以同样的方式安装最新版本，并保留回答和数据。对于 **Compose 文件** 安装，把 `.env` 中的 `NEXORA_ADDON_VERSION` 设为新版本，然后运行 `docker compose pull && docker compose up -d`。
+- **用命令安装的**：在插件服务器上不带参数再次运行它的安装脚本：`sh nx-addon-install.sh`。它会以同样的方式安装最新版本，并保留回答和数据。对于 **Compose 文件** 安装，把 `.env` 中的 `NX_ADDON_VERSION` 设为新版本，然后运行 `docker compose pull && docker compose up -d`。
 
 请求更多权限或事件的新版本会被安装，但要等你批准（**查看更新**）后才能获得它们；见 [[use/addons]]。
 
@@ -115,8 +115,8 @@ Docker 中的面板不提供这个选项，因为它会装进自己的容器里�
 在插件服务器上手动操作：
 
 ```bash
-sh nexora-addon-install.sh --uninstall           # keeps its data
-sh nexora-addon-install.sh --uninstall --purge   # deletes the data too
+sh nx-addon-install.sh --uninstall           # keeps its data
+sh nx-addon-install.sh --uninstall --purge   # deletes the data too
 ```
 
 保留数据移除后又从面板重新安装的插件（新的安装、新的认领码）会像其他插件一样注册。它会丢弃之前保留的注册信息，把管理员密码设为新安装时的回答，关闭该管理员的第二因素，并让它在所有地方退出登录。更新或重启则会保留这两者。

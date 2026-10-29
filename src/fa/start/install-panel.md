@@ -1,6 +1,6 @@
 ---
 title: "نصب پنل"
-description: "پنل نکسورا را با یک دستور یا یک استک Docker نصب کنید و لینک راه‌اندازی یک‌بارمصرف را بگیرید."
+description: "پنل انیکس را با یک دستور یا یک استک Docker نصب کنید و لینک راه‌اندازی یک‌بارمصرف را بگیرید."
 order: 2
 tags: [install, panel]
 ---
@@ -22,21 +22,21 @@ tags: [install, panel]
 آن را با کاربر root اجرا کنید. با SQLite، که به هیچ سرویس دیگری نیاز ندارد:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/nexora-vpn/panel/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/nx-panel/panel/main/install.sh)
 ```
 
 نصب‌کننده در پایان لینک راه‌اندازی را چاپ می‌کند:
 
 ```terminal title="root@server: ~"
-$ bash <(curl -fsSL https://raw.githubusercontent.com/nexora-vpn/panel/main/install.sh)
-==> installing Nexora Panel (linux-amd64)
+$ bash <(curl -fsSL https://raw.githubusercontent.com/nx-panel/panel/main/install.sh)
+==> installing NX Panel (linux-amd64)
 ==> downloading the panel
 ==> downloading node binaries
 ==> migrating the database
 database migrated: sqlite
 no admin seeded; the panel will open its setup wizard on first start
 ==> the panel will listen on port 28431
-==> Nexora 0.0.3 is installed
+==> NX 0.0.3 is installed
 
   Finish the setup by opening one of these links — whichever address
   reaches this server from where you are:
@@ -46,8 +46,8 @@ no admin seeded; the panel will open its setup wizard on first start
   Port 28431 was picked at random and is free on this host — open it in
   the firewall if one is running. The wizard can move it before you finish.
 
-  Service:  systemctl status nexora-panel
-  Logs:     journalctl -u nexora-panel -f
+  Service:  systemctl status nx-panel
+  Logs:     journalctl -u nx-panel -f
 ```
 
 لینک را باز کنید و با [[setup-wizard]] ادامه دهید. توکن داخل لینک مدیر اصلی را
@@ -75,7 +75,7 @@ SQLite برای بیشتر پنل‌ها مناسب است: یک فایل، که
 دو استک، یکی برای هر پایگاه داده:
 
 ```bash
-git clone https://github.com/nexora-vpn/panel
+git clone https://github.com/nx-panel/panel
 cd panel/docker/sqlite      # or: cd panel/docker/postgres
 docker compose up -d
 docker compose logs panel | grep setup
@@ -85,7 +85,7 @@ docker compose logs panel | grep setup
 یک گذرواژه در آن بگذارید.
 
 پنل Docker روی پورت ۲۰۹۵ گوش می‌دهد. این پورت در فایل compose
-(`NEXORA_WEB_LISTEN`) همراه با نگاشت پورت منتشرشده ثابت شده است، پس ویزارد
+(`NX_WEB_LISTEN`) همراه با نگاشت پورت منتشرشده ثابت شده است، پس ویزارد
 نمی‌تواند آن را جابه‌جا کند: اگر پورت دیگری می‌خواهید، هر دو را در فایل compose
 تغییر دهید. هر پورت دیگری که در [[use/ingress]] اضافه شود هم باید در فایل compose
 منتشر شود.
@@ -114,8 +114,8 @@ IPv6 دارد، IPv6 را در سرویس Docker فعال کنید (`"ipv6": tru
 
 ## نصب‌کننده چه می‌کند {#what-the-installer-does}
 
-1. پنل را برای معماری این سرور در `/opt/nexora-panel` دانلود می‌کند.
-2. باینری‌های نود را برای amd64 و arm64 در `/var/opt/nexora/bin` آماده می‌کند.
+1. پنل را برای معماری این سرور در `/opt/nx-panel` دانلود می‌کند.
+2. باینری‌های نود را برای amd64 و arm64 در `/var/opt/nx-panel/bin` آماده می‌کند.
    پنل بعداً این‌ها را به نصب‌کننده‌های نود می‌دهد، پس نودها از پنل خودتان
    دانلود می‌کنند.
 3. `config.json` را با اتصال پایگاه داده می‌نویسد، و با `--postgres`
@@ -123,7 +123,7 @@ IPv6 دارد، IPv6 را در سرویس Docker فعال کنید (`"ipv6": tru
 4. جدول‌های پایگاه داده را می‌سازد.
 5. یک پورت بالای آزاد را تصادفی انتخاب می‌کند، تا پنلی که هنوز کسی
    راه‌اندازی‌اش نکرده روی پورتی نباشد که اسکنرها اول سراغش می‌روند.
-6. سرویس `nexora-panel` را نصب و اجرا می‌کند، و `nexora-panel` را برای
+6. سرویس `nx-panel` را نصب و اجرا می‌کند، و `nx-panel` را برای
    [[reference/cli|خط فرمان]] در PATH قرار می‌دهد.
 7. برای هر آدرسی که پیدا کرده یک لینک راه‌اندازی چاپ می‌کند، و اول آدرسی را
    می‌آورد که اینترنت این سرور را با آن می‌بیند.
@@ -137,12 +137,12 @@ IPv6 دارد، IPv6 را در سرویس Docker فعال کنید (`"ipv6": tru
 توکن را دوباره چاپ کنید و آدرس را دور آن بسازید:
 
 ```bash
-nexora-panel setup-token
-nexora-panel config get web_listen_port
+nx-panel setup-token
+nx-panel config get web_listen_port
 # then open http://203.0.113.10:PORT/setup?t=TOKEN
 ```
 
-در Docker: `docker compose exec panel /app/nexora-panel setup-token`.
+در Docker: `docker compose exec panel /app/nx-panel setup-token`.
 
 ## IPv6 {#ipv6}
 

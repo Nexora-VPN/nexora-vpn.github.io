@@ -9,7 +9,7 @@ tags: [addons, install]
 
 An [[~addon]] is a separate program that works beside the panel, such as a shop
 or a notification bot. The panel finds addons in the directory at
-[addons.nexora-panel.org](https://addons.nexora-panel.org), installs them, and
+[addons.nx-panel.org](https://addons.nx-panel.org), installs them, and
 registers them once you have approved what they ask for. This page is the short
 path; [[use/addons]] and [[addons/directory]] have the detail.
 
@@ -22,8 +22,8 @@ tier:
 
 | Tier | Meaning | Installed |
 | --- | --- | --- |
-| **Official** | made by Nexora | by the panel or by a command |
-| **Verified** | from another developer, reviewed by Nexora | by the panel or by a command |
+| **Official** | made by NX | by the panel or by a command |
+| **Verified** | from another developer, reviewed by NX | by the panel or by a command |
 | **Unofficial** | listed after a light check only | by a command only, with a warning |
 
 If the list is empty, press **Read now**. Press **Install** on the addon you

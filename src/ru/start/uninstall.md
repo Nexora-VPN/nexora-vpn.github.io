@@ -1,7 +1,7 @@
 ---
 title: "Удаление"
 description: "Удалите панель или узел с сервера и узнайте, что остаётся после каждого удаления."
-order: 10
+order: 11
 tags: [install]
 ---
 
@@ -15,20 +15,20 @@ tags: [install]
 ## Панель {#the-panel}
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/nexora-vpn/panel/main/install.sh) --uninstall
+bash <(curl -fsSL https://raw.githubusercontent.com/nx-panel/panel/main/install.sh) --uninstall
 ```
 
 | Удаляется | Остаётся |
 | --- | --- |
-| служба `nexora-panel` | база в `/var/opt/nexora` |
-| `/opt/nexora-panel` с бинарным файлом и `config.json` | резервные копии в `/var/opt/nexora/backups` |
-| команда `nexora-panel` | бинарные файлы узла, темы и наборы правил в `/var/opt/nexora` |
+| служба `nx-panel` | база в `/var/opt/nx-panel` |
+| `/opt/nx-panel` с бинарным файлом и `config.json` | резервные копии в `/var/opt/nx-panel/backups` |
+| команда `nx-panel` | бинарные файлы узла, темы и наборы правил в `/var/opt/nx-panel` |
 
 ::: danger Сначала скопируйте резервные копии
-Если сам сервер уходит, скопируйте `/var/opt/nexora/backups` в другое место,
-прежде чем что-либо удалять. Остальное удалите сами: `rm -rf
-/var/opt/nexora`. Если на том же сервере работает узел, не делайте этого, не
-прочитав следующий раздел.
+Если сам сервер уходит, скопируйте `/var/opt/nx-panel/backups` в другое место,
+прежде чем что-либо удалять. Затем удалите остальное сами:
+`rm -rf /var/opt/nx-panel`. Узел на том же сервере хранит свои файлы в
+`/var/opt/nx-node`, и это его не затрагивает.
 :::
 
 С PostgreSQL база живёт в PostgreSQL и не затрагивается.
@@ -49,27 +49,26 @@ bash <(curl -fsSL https://raw.githubusercontent.com/nexora-vpn/panel/main/instal
 curl -fsSL https://PANEL/install-node.sh | bash -s -- --uninstall
 ```
 
-Он удаляет службу или контейнер и `/opt/nexora-node`, а сертификаты в
-`/var/opt/nexora/certs` и кеш в `/var/opt/nexora/cache` оставляет. Если на
+Он удаляет службу или контейнер и `/opt/nx-node`, а сертификаты в
+`/var/opt/nx-node/certs` и кеш в `/var/opt/nx-node/cache` оставляет. Если на
 этом сервере узла больше не будет, удалите их:
 
 ```bash
-rm -rf /var/opt/nexora/certs /var/opt/nexora/cache
+rm -rf /var/opt/nx-node/certs /var/opt/nx-node/cache
 ```
 
 Или удалите всё вручную:
 
 ```bash
-systemctl disable --now nexora-node
-rm -f /etc/systemd/system/nexora-node.service
+systemctl disable --now nx-node
+rm -f /etc/systemd/system/nx-node.service
 systemctl daemon-reload
-rm -rf /opt/nexora-node /var/opt/nexora/certs /var/opt/nexora/cache
+rm -rf /opt/nx-node /var/opt/nx-node/certs /var/opt/nx-node/cache
 ```
 
-::: danger Панель на том же сервере
-Никогда не удаляйте `/var/opt/nexora` целиком на сервере, где работает и
-панель. В этом каталоге лежит база панели. Удаляйте только `certs` и
-`cache`.
+::: tip Панель на том же сервере
+Панель хранит свои файлы в `/var/opt/nx-panel`, поэтому удаление файлов узла её
+не затрагивает.
 :::
 
 Затем **удалите узел и в панели**. Иначе он продолжит занимать место в

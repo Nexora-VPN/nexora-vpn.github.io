@@ -7,7 +7,7 @@ tags: [install]
 
 # Get started
 
-Nexora is a [[~panel]] you run on one server and any number of
+NX is a [[~panel]] you run on one server and any number of
 [[~node|nodes]] that carry your users' traffic. This section takes you from an
 empty server to a first customer with a working link.
 
@@ -41,14 +41,14 @@ dashboard follows the same order and ticks off each step as you finish it.
 ## Other ways in
 
 - **Coming from another panel?** [[migrate]] moves your users, inbounds and
-  routing into Nexora.
-- **Moving Nexora to a new server?** Restore a backup from the setup wizard; see
+  routing into NX.
+- **Moving NX to a new server?** Restore a backup from the setup wizard; see
   [[setup-wizard#restore-a-backup-instead]].
 - **Adding a shop or a bot?** [[install-addon]].
 
 ## Later
 
 - [[start/update|Updating]] the panel and its nodes.
-- [[uninstall|Removing]] Nexora from a server.
+- [[uninstall|Removing]] NX from a server.
 - [[reference/cli|The command line]], [[files-and-ports|files and ports]] and
   [[troubleshooting]] when something does not work.

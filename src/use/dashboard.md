@@ -95,7 +95,7 @@ they describe.
 | **Load history**, **Memory history** | the same over the last minutes |
 | **Network** | that node's throughput |
 | **System** | the machine: name, address, CPU, load, disk, swap, uptime |
-| **Nexora node** | the node program: running or not, version, uptime, traffic, online users |
+| **NX node** | the node program: running or not, version, uptime, traffic, online users |
 
 A dash (**—**) in a tile means the node did not report that figure. It does
 not mean zero.

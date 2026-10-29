@@ -50,10 +50,10 @@ tags: [reference, events]
 | 请求头 | |
 | --- | --- |
 | `Content-Type` | `application/json` |
-| `User-Agent` | `nexora-panel` |
-| `X-Nexora-Event` | 事件名称 |
-| `X-Nexora-Delivery` | 投递的 id：每次重试以及 **重新发送** 时都相同 |
-| `X-Nexora-Signature` | `t=<unix seconds>,v1=<hex>`，订阅者设置了密钥时出现 |
+| `User-Agent` | `nx-panel` |
+| `X-Nx-Event` | 事件名称 |
+| `X-Nx-Delivery` | 投递的 id：每次重试以及 **重新发送** 时都相同 |
+| `X-Nx-Signature` | `t=<unix seconds>,v1=<hex>`，订阅者设置了密钥时出现 |
 
 `v1` 是用订阅者的签名密钥，对时间戳、一个点和原始正文计算的 HMAC-SHA256 的十六进制值：
 

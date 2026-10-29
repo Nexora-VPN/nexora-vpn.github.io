@@ -85,7 +85,7 @@ In under a minute it:
 2. trades the token for the panel's certificate. The token works once and
    expires;
 3. makes the node's own certificate;
-4. writes `/opt/nexora-node/config.json` and a service, and starts it.
+4. writes `/opt/nx-node/config.json` and a service, and starts it.
 
 The panel then connects. It remembers the node's certificate on that first
 connection and accepts only that one afterwards, and the node accepts only the
@@ -170,7 +170,7 @@ To run the node's compose file by hand instead, save the certificate shown under
 **mTLS certificate** on the same tab as `certs/panel_ca.pem`, then:
 
 ```bash
-git clone https://github.com/nexora-vpn/node
+git clone https://github.com/nx-panel/node
 cd node
 mkdir -p certs
 cp /path/to/panel_ca.pem certs/

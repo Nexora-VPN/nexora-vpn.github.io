@@ -8,7 +8,7 @@ tags: [addons, users]
 
 # فروشگاه: پورتال مشتری
 
-[[shop|Nexora Shop]] به مشتری‌هایتان یک وب‌اپ در `https://<shop>/app/` می‌دهد.
+[[shop|NX Shop]] به مشتری‌هایتان یک وب‌اپ در `https://<shop>/app/` می‌دهد.
 این صفحه توضیح می‌دهد این وب‌اپ چیست، چطور به آن HTTPS بدهید، و سه راهی که مشتری
 بیرون از تلگرام وارد می‌شود.
 
@@ -81,8 +81,8 @@ URL آن زیر **تنظیمات**، به سرویس خودتان وصل کنی�
 
 ```http
 POST <your relay URL>
-X-Nexora-Timestamp: 1790000000
-X-Nexora-Signature: <hex HMAC-SHA256 of "1790000000.<body>" under the secret>
+X-Nx-Timestamp: 1790000000
+X-Nx-Signature: <hex HMAC-SHA256 of "1790000000.<body>" under the secret>
 Content-Type: application/json
 
 {"to": "+15550100", "text": "Your shop sign-in code: 123456"}
@@ -108,7 +108,7 @@ Content-Type: application/json
 
 کدها، ورودها و بررسی پرداخت‌ها برای هر نشانی کاربر محدودیت نرخ دارند. وقتی
 فروشگاه پشت یک reverse proxy اجرا می‌شود که TLS را باز می‌کند،
-`NEXORA_OPT_TRUSTED_PROXIES` را در `.env` نصب روی نشانی‌ها یا بازه‌های پراکسی
+`NX_OPT_TRUSTED_PROXIES` را در `.env` نصب روی نشانی‌ها یا بازه‌های پراکسی
 بگذارید، مثلاً `127.0.0.1, 10.0.0.0/8`. آن وقت فروشگاه نشانی کاربر را از
 `X-Forwarded-For` پراکسی می‌خواند. اگر خالی بماند، که پیش‌فرض است، هیچ هدر
 فرستاده‌شده‌ای پذیرفته نمی‌شود.

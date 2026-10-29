@@ -45,7 +45,7 @@ A manifest is trusted only by its signature:
 
 | Kind | Signed by | Registered |
 | --- | --- | --- |
-| Official | Nexora's key | by its claim code |
+| Official | NX's key | by its claim code |
 | Verified | its developer's key, which the addon directory vouches for | by its claim code; the consent screen names the developer |
 | Unsigned or unofficial | nobody the panel trusts | by hand, as your own addon |
 

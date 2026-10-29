@@ -43,7 +43,7 @@ tags: [access, api]
 每次请求都要带上令牌：
 
 ```bash
-curl -H "Authorization: Bearer $NEXORA_TOKEN" \
+curl -H "Authorization: Bearer $NX_TOKEN" \
   https://panel.example.com/your-base-path/api/v1/me
 ```
 

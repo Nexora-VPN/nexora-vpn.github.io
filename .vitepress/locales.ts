@@ -6,9 +6,9 @@ import type { DefaultTheme, LocaleSpecificConfig } from 'vitepress'
 
 type Locale = LocaleSpecificConfig<DefaultTheme.Config> & { label: string; link?: string }
 
-// The repository is the org's own Pages site, so that nexora-vpn.github.io
+// The repository is the org's own Pages site, so that nx-panel.github.io
 // itself (not only a /docs path under it) redirects to the custom domain.
-const REPO = 'https://github.com/Nexora-VPN/nexora-vpn.github.io'
+const REPO = 'https://github.com/nx-panel/nx-panel.github.io'
 
 function edit(text: string): DefaultTheme.EditLink {
   return { pattern: `${REPO}/edit/main/src/:path`, text }
@@ -18,7 +18,7 @@ export const locales: Record<string, Locale> = {
   root: {
     label: 'English',
     lang: 'en',
-    description: 'Documentation for Nexora: a self-hosted panel and nodes for running a VPN fleet.',
+    description: 'Documentation for NX: a self-hosted panel and nodes for running a VPN fleet.',
     themeConfig: {
       nav: [
         { text: 'Get started', link: '/start/' },
@@ -42,7 +42,7 @@ export const locales: Record<string, Locale> = {
         linkLabel: 'Go to the home page',
         linkText: 'Home',
       },
-      footer: { message: 'Text and images under CC BY 4.0.', copyright: '© Nexora' },
+      footer: { message: 'Text and images under CC BY 4.0.', copyright: '© NX' },
     },
   },
   fa: {
@@ -50,7 +50,7 @@ export const locales: Record<string, Locale> = {
     lang: 'fa',
     dir: 'rtl',
     link: '/fa/',
-    description: 'مستندات نکسورا: پنل و نودهای خودمیزبان برای اداره‌ی ناوگان VPN.',
+    description: 'مستندات انیکس: پنل و نودهای خودمیزبان برای اداره‌ی ناوگان VPN.',
     themeConfig: {
       nav: [
         { text: 'شروع', link: '/fa/start/' },
@@ -74,14 +74,14 @@ export const locales: Record<string, Locale> = {
         linkLabel: 'رفتن به صفحه‌ی اصلی',
         linkText: 'خانه',
       },
-      footer: { message: 'متن و تصویرها با مجوز CC BY 4.0.', copyright: '© Nexora' },
+      footer: { message: 'متن و تصویرها با مجوز CC BY 4.0.', copyright: '© NX' },
     },
   },
   ru: {
     label: 'Русский',
     lang: 'ru',
     link: '/ru/',
-    description: 'Документация Nexora: собственная панель и узлы для управления VPN-флотом.',
+    description: 'Документация NX: собственная панель и узлы для управления VPN-флотом.',
     themeConfig: {
       nav: [
         { text: 'Начало работы', link: '/ru/start/' },
@@ -105,14 +105,14 @@ export const locales: Record<string, Locale> = {
         linkLabel: 'На главную',
         linkText: 'Главная',
       },
-      footer: { message: 'Текст и изображения — CC BY 4.0.', copyright: '© Nexora' },
+      footer: { message: 'Текст и изображения — CC BY 4.0.', copyright: '© NX' },
     },
   },
   zh: {
     label: '简体中文',
     lang: 'zh-CN',
     link: '/zh/',
-    description: 'Nexora 文档:自托管的面板与节点,用于运营 VPN 节点集群。',
+    description: 'NX 文档:自托管的面板与节点,用于运营 VPN 节点集群。',
     themeConfig: {
       nav: [
         { text: '快速开始', link: '/zh/start/' },
@@ -136,7 +136,7 @@ export const locales: Record<string, Locale> = {
         linkLabel: '返回首页',
         linkText: '首页',
       },
-      footer: { message: '文字与图片采用 CC BY 4.0 许可。', copyright: '© Nexora' },
+      footer: { message: '文字与图片采用 CC BY 4.0 许可。', copyright: '© NX' },
     },
   },
 }

@@ -8,7 +8,7 @@ tags: [addons]
 
 # Shop: promotions
 
-[[shop|Nexora Shop]] has three kinds of promotion: discount codes, gift
+[[shop|NX Shop]] has three kinds of promotion: discount codes, gift
 codes and referrals. All three are set on the **Codes** page
 of Shop's admin. Customers use them in the bot and in the web app; nothing
 about them reaches the panel.

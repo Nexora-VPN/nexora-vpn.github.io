@@ -70,7 +70,7 @@ tags: [routing]
 
 ## 副本存放位置 {#where-the-copies-live}
 
-**设置 → 常规 → 规则集镜像 → 存储目录**设置副本的存放位置：面板服务器上的一个绝对路径。留空时与数据库放在一起：标准安装为 `/var/opt/nexora/rulesets/`，Docker 中为 compose 文件旁的 `./rulesets`。
+**设置 → 常规 → 规则集镜像 → 存储目录**设置副本的存放位置：面板服务器上的一个绝对路径。留空时与数据库放在一起：标准安装为 `/var/opt/nx-panel/rulesets/`，Docker 中为 compose 文件旁的 `./rulesets`。
 
 这些副本只是缓存。它们不包含在备份中，清空该目录也是安全的：面板会在下次启动时下载缺失的内容。
 

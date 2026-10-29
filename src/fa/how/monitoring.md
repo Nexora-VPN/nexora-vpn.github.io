@@ -106,7 +106,7 @@ overlay به شبکه‌ی compose پنل می‌پیوندد و با نام س�
 
 ```bash
 # 1. Fetch the monitoring directory next to your docker-compose.yml
-curl -fsSL https://github.com/nexora-vpn/panel/archive/refs/heads/main.tar.gz \
+curl -fsSL https://github.com/nx-panel/panel/archive/refs/heads/main.tar.gz \
   | tar -xz --strip-components=1 panel-main/monitoring
 
 # 2. Put a token with the stats:read scope where Prometheus reads it
@@ -134,7 +134,7 @@ ssh -L 3000:localhost:3000 you@your-server
 # then open http://localhost:3000 and sign in with GRAFANA_PASSWORD
 ```
 
-داشبورد **Nexora fleet** از قبل آنجاست. Prometheus اصلاً منتشر نمی‌شود: ورود خودش را
+داشبورد **NX fleet** از قبل آنجاست. Prometheus اصلاً منتشر نمی‌شود: ورود خودش را
 ندارد و کل تصویر عملیاتی شما را در خود دارد.
 
 - **پنل خودش HTTPS سرو می‌کند:** در `monitoring/prometheus/prometheus.yml`،
@@ -151,19 +151,19 @@ ssh -L 3000:localhost:3000 you@your-server
 
 ```yaml
 scrape_configs:
-  - job_name: nexora-panel
+  - job_name: nx-panel
     scheme: https
     metrics_path: /metrics
     authorization:
       type: Bearer
-      credentials_file: /etc/prometheus/nexora-token
+      credentials_file: /etc/prometheus/nx-token
     static_configs:
       - targets: ['panel.example.com']
 ```
 
-برای Grafana، فایل `monitoring/grafana/dashboards/nexora-fleet.json` را از
-[مخزن پنل](https://github.com/nexora-vpn/panel) وارد کنید. یک datasource از نوع
-Prometheus با uid `nexora-prometheus` انتظار دارد.
+برای Grafana، فایل `monitoring/grafana/dashboards/nx-fleet.json` را از
+[مخزن پنل](https://github.com/nx-panel/panel) وارد کنید. یک datasource از نوع
+Prometheus با uid `nx-prometheus` انتظار دارد.
 
 ::: tip پورتی فقط برای Prometheus
 در [[use/ingress]]، یک مسیر **متریک‌ها** روی شنونده‌ای که به یک آدرس خصوصی بسته
@@ -181,22 +181,22 @@ Prometheus با uid `nexora-prometheus` انتظار دارد.
 
 | معیار | معنا |
 | --- | --- |
-| `nexora_panel_build_info` | ۱، با نسخه‌ی در حال اجرا به‌عنوان برچسب |
-| `nexora_panel_start_time_seconds` | زمان شروع پروسه‌ی پنل؛ `time() - this` مدت uptime آن است |
-| `nexora_license_valid` | ۱ تا وقتی لایسنس معتبر است، در غیر این صورت ۰ |
-| `nexora_license_expires_at_seconds` | انقضای لایسنس؛ وقتی منقضی نمی‌شود غایب است |
-| `nexora_license_limit{resource}`، `nexora_license_used{resource}` | سقف و شمار برای `user` و `node` (‎−1 = نامحدود) |
-| `nexora_users_total{status}` | حساب‌ها بر اساس وضعیت: active، disabled، expired، limited، pending |
-| `nexora_users_online` | حساب‌هایی که در بازه‌ی آنلاین ترافیک داشته‌اند |
-| `nexora_nodes_total` | نودهایی که پنل می‌شناسد |
-| `nexora_node_up`، `nexora_node_enabled` | برای هر نود: جواب می‌دهد، و روشن است |
-| `nexora_node_traffic_bytes_total{direction}` | ترافیکی که به حساب نود گذاشته شده |
-| `nexora_node_online_users` | حساب‌هایی که در بازه‌ی آنلاین روی آن نود ترافیک داشته‌اند |
-| `nexora_node_connections`، `nexora_node_engine_restarts_total` | اتصال‌های باز؛ ری‌استارت‌ها از زمان شروع نود |
-| `nexora_node_rejected_connections_total{outbound}` | اتصال‌هایی که یک اوتباند block رد کرده |
-| `nexora_node_disk_bytes`، `nexora_node_disk_used_bytes`، `nexora_node_memory_bytes`، `nexora_node_memory_used_bytes`، `nexora_node_load1` | میزبان نود |
-| `nexora_event_deliveries{status}`، `nexora_event_subscribers` | تحویل‌های رویداد بر اساس وضعیت (pending، delivered، dead) و مشترک‌های فعال |
-| `nexora_ingress_requests_total{route,outcome}` | درخواست‌ها از زمان شروع پنل، بر اساس [[use/ingress\|مسیری]] که تصمیم گرفته (وقتی هیچ مسیری مطابقت نداشته خالی است) و کاری که کرده: `served`، `redirect` یا `refused` |
+| `nx_panel_build_info` | ۱، با نسخه‌ی در حال اجرا به‌عنوان برچسب |
+| `nx_panel_start_time_seconds` | زمان شروع پروسه‌ی پنل؛ `time() - this` مدت uptime آن است |
+| `nx_license_valid` | ۱ تا وقتی لایسنس معتبر است، در غیر این صورت ۰ |
+| `nx_license_expires_at_seconds` | انقضای لایسنس؛ وقتی منقضی نمی‌شود غایب است |
+| `nx_license_limit{resource}`، `nx_license_used{resource}` | سقف و شمار برای `user` و `node` (‎−1 = نامحدود) |
+| `nx_users_total{status}` | حساب‌ها بر اساس وضعیت: active، disabled، expired، limited، pending |
+| `nx_users_online` | حساب‌هایی که در بازه‌ی آنلاین ترافیک داشته‌اند |
+| `nx_nodes_total` | نودهایی که پنل می‌شناسد |
+| `nx_node_up`، `nx_node_enabled` | برای هر نود: جواب می‌دهد، و روشن است |
+| `nx_node_traffic_bytes_total{direction}` | ترافیکی که به حساب نود گذاشته شده |
+| `nx_node_online_users` | حساب‌هایی که در بازه‌ی آنلاین روی آن نود ترافیک داشته‌اند |
+| `nx_node_connections`، `nx_node_engine_restarts_total` | اتصال‌های باز؛ ری‌استارت‌ها از زمان شروع نود |
+| `nx_node_rejected_connections_total{outbound}` | اتصال‌هایی که یک اوتباند block رد کرده |
+| `nx_node_disk_bytes`، `nx_node_disk_used_bytes`، `nx_node_memory_bytes`، `nx_node_memory_used_bytes`، `nx_node_load1` | میزبان نود |
+| `nx_event_deliveries{status}`، `nx_event_subscribers` | تحویل‌های رویداد بر اساس وضعیت (pending، delivered، dead) و مشترک‌های فعال |
+| `nx_ingress_requests_total{route,outcome}` | درخواست‌ها از زمان شروع پنل، بر اساس [[use/ingress\|مسیری]] که تصمیم گرفته (وقتی هیچ مسیری مطابقت نداشته خالی است) و کاری که کرده: `served`، `redirect` یا `refused` |
 
 هر معیار نود برچسب‌های `node` (نامش) و `id` را دارد.
 
@@ -204,22 +204,22 @@ Prometheus با uid `nexora-prometheus` انتظار دارد.
 
 ```yaml
 groups:
-  - name: nexora
+  - name: nx
     rules:
-      - alert: NexoraPanelDown
-        expr: up{job="nexora-panel"} == 0
+      - alert: NXPanelDown
+        expr: up{job="nx-panel"} == 0
         for: 5m
-      - alert: NexoraNodeDown          # a switched-off node is not an outage
-        expr: nexora_node_up == 0 and nexora_node_enabled == 1
+      - alert: NXNodeDown          # a switched-off node is not an outage
+        expr: nx_node_up == 0 and nx_node_enabled == 1
         for: 10m
-      - alert: NexoraNodeDiskFilling
-        expr: nexora_node_disk_used_bytes / nexora_node_disk_bytes > 0.9
+      - alert: NXNodeDiskFilling
+        expr: nx_node_disk_used_bytes / nx_node_disk_bytes > 0.9
         for: 30m
-      - alert: NexoraEventDeliveriesDead
-        expr: increase(nexora_event_deliveries{status="dead"}[1h]) > 0
+      - alert: NXEventDeliveriesDead
+        expr: increase(nx_event_deliveries{status="dead"}[1h]) > 0
 ```
 
-اگر با لایسنس می‌فروشید، `nexora_license_expires_at_seconds - time() < 7 * 86400` را هم
+اگر با لایسنس می‌فروشید، `nx_license_expires_at_seconds - time() < 7 * 86400` را هم
 اضافه کنید.
 
 ## هشدارها به شکل رویداد {#alerts-as-events}

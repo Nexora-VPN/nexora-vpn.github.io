@@ -1,6 +1,6 @@
 ---
 title: "Security model"
-description: "How Nexora protects the panel, its nodes and its operators: mutual TLS and pinning, sessions, two-factor sign-in, roles, scopes and ownership, API tokens, login protection, the setup gate and the audit log."
+description: "How NX protects the panel, its nodes and its operators: mutual TLS and pinning, sessions, two-factor sign-in, roles, scopes and ownership, API tokens, login protection, the setup gate and the audit log."
 order: 11
 tags: [security, access]
 ---
@@ -161,7 +161,7 @@ clear it, and clearing it is recorded too. See [[use/audit]].
 
 ## Recovery
 
-`nexora-panel admin reset-password`, run on the panel's server, sets a new
+`nx-panel admin reset-password`, run on the panel's server, sets a new
 password for an account (the owner by default), turns its two-factor sign-in
 off, ends its sessions and removes its single sign-on links. A lost phone and a
 lost password are one recovery, and the command stays the one way back in. See

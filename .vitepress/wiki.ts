@@ -344,14 +344,14 @@ export function sidebarFor(srcDir: string, lang: Lang): DefaultTheme.SidebarItem
 }
 
 // llms.txt and llms-full.txt (llmstxt.org): the English pages as plain
-// Markdown, for the assistants operators ask about Nexora. Wiki links become
+// Markdown, for the assistants operators ask about NX. Wiki links become
 // their text, components are dropped.
 export function llmsText(srcDir: string, outDir: string) {
   const index = getIndex(srcDir)
   const pages = [...index.values()]
     .filter((p) => p.lang === 'en' && p.id !== 'index' && p.id !== 'tags')
     .sort((a, b) => a.id.localeCompare(b.id))
-  const site = 'https://docs.nexora-panel.org'
+  const site = 'https://docs.nx-panel.org'
   const plainLinks = (body: string) =>
     body
       .replace(/\[\[~?([^\]|]+)\|([^\]]+)\]\]/g, '$2')
@@ -368,7 +368,7 @@ export function llmsText(srcDir: string, outDir: string) {
   const list = pages.map((p) => `- [${p.title}](${site}${p.link})${p.description ? `: ${p.description}` : ''}`)
   fs.writeFileSync(
     path.join(outDir, 'llms.txt'),
-    `# Nexora\n\n> Documentation for Nexora, a self-hosted control panel and nodes for running a VPN fleet.\n\n## Pages\n\n${list.join('\n')}\n`,
+    `# NX\n\n> Documentation for NX, a self-hosted control panel and nodes for running a VPN fleet.\n\n## Pages\n\n${list.join('\n')}\n`,
   )
   const full = pages.map((p) => {
     const body = matter(fs.readFileSync(path.join(srcDir, `${p.id}.md`), 'utf8')).content

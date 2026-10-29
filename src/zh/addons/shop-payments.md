@@ -8,7 +8,7 @@ tags: [addons]
 
 # Shop：支付
 
-[[shop|Nexora Shop]] **不自带任何支付网关**。它自带的是那些根本不算网关的收款方式（卡对卡转账，由人根据客户的凭证确认，或由你银行的短信确认），以及一项通用能力：**通用 HTTP 网关**，一个小型 JSON 协议，你可以把它接到自己选择的任何中介上。选用哪个中介、是否可以使用它，由你决定，也由你负责。
+[[shop|NX Shop]] **不自带任何支付网关**。它自带的是那些根本不算网关的收款方式（卡对卡转账，由人根据客户的凭证确认，或由你银行的短信确认），以及一项通用能力：**通用 HTTP 网关**，一个小型 JSON 协议，你可以把它接到自己选择的任何中介上。选用哪个中介、是否可以使用它，由你决定，也由你负责。
 
 这些都在 Shop 管理后台的 **支付方式** 中设置。
 
@@ -78,14 +78,14 @@ Shop 中的网关就是 **你这一侧** 的四个地址（通常是放在你所
 
 ### 签名 {#signing}
 
-双向的每个请求，以及 Shop 对你的服务发出的每次调用，都以同样的方式签名：请求头 `X-Nexora-Timestamp`（Unix 秒）和 `X-Nexora-Signature`，即用密钥对 `<timestamp>.<raw body>` 计算的十六进制 HMAC-SHA256。请在中转中校验 Shop 的签名。签名错误或时间戳与 Shop 时钟相差超过五分钟的回调会被 Shop 拒绝。
+双向的每个请求，以及 Shop 对你的服务发出的每次调用，都以同样的方式签名：请求头 `X-Nx-Timestamp`（Unix 秒）和 `X-Nx-Signature`，即用密钥对 `<timestamp>.<raw body>` 计算的十六进制 HMAC-SHA256。请在中转中校验 Shop 的签名。签名错误或时间戳与 Shop 时钟相差超过五分钟的回调会被 Shop 拒绝。
 
 ```bash
 TS=$(date +%s)
 BODY='{"text":"..."}'
 SIG=$(printf '%s.%s' "$TS" "$BODY" | openssl dgst -sha256 -hmac "$SECRET" -hex | sed 's/^.* //')
 curl -X POST https://shop.example.com/pay/hook/card \
-  -H "X-Nexora-Timestamp: $TS" -H "X-Nexora-Signature: $SIG" \
+  -H "X-Nx-Timestamp: $TS" -H "X-Nx-Signature: $SIG" \
   -H 'Content-Type: application/json' --data "$BODY"
 ```
 

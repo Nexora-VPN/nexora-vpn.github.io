@@ -104,9 +104,9 @@ It comes with three headers:
 
 | Header | Carries |
 | --- | --- |
-| `X-Nexora-Event` | the event's name |
-| `X-Nexora-Delivery` | the delivery id; a retry repeats it, so a receiver drops repeats by this id |
-| `X-Nexora-Signature` | a timestamp and an HMAC-SHA256 of the timestamp and the body, made with the subscriber's secret |
+| `X-Nx-Event` | the event's name |
+| `X-Nx-Delivery` | the delivery id; a retry repeats it, so a receiver drops repeats by this id |
+| `X-Nx-Signature` | a timestamp and an HMAC-SHA256 of the timestamp and the body, made with the subscriber's secret |
 
 A receiver checks the signature with the secret it was shown once, when the
 subscriber was made. A restore from a backup brings back the deliveries table

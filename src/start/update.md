@@ -27,7 +27,7 @@ On an install made with the script, **Update now** does the whole upgrade:
 3. **Verifying** it against the checksum published with it, and running it once
    to be sure it starts on this server.
 4. **Installing** it, keeping the old binary as
-   `/opt/nexora-panel/nexora-panel.previous`.
+   `/opt/nx-panel/nx-panel.previous`.
 5. **Restarting.** You stay logged in. The panel is unreachable for a few
    seconds, and the page says when it is back.
 
@@ -49,12 +49,12 @@ database finds none of them: it comes up on port 2095, in plain HTTP, with no
 domain or path.
 
 - **Take a backup before you update, and keep it.** **Update now** takes one in
-  step 1; the installer copies a SQLite database to `nexora.db.bak`.
+  step 1; the installer copies a SQLite database to `nx.db.bak`.
 - **Do not go back** by installing an older version over the new one.
 - If an update from this page fails and the previous version is put back by
   itself, the same happens. Run the update again, from the server if needed,
   or restore the backup taken before the update with
-  `nexora-panel restore FILE -keep-web-settings=false` and restart the panel.
+  `nx-panel restore FILE -keep-web-settings=false` and restart the panel.
 :::
 
 **Check for releases daily** turns the daily check off. It is one request a day
@@ -66,10 +66,10 @@ still works with the check off.
 Run the installer again. It finds the existing install and updates it in place:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/nexora-vpn/panel/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/nx-panel/panel/main/install.sh)
 ```
 
-It stops the service, copies a SQLite database to `nexora.db.bak`, keeps the
+It stops the service, copies a SQLite database to `nx.db.bak`, keeps the
 previous binary, updates the database and starts again. Your settings and admin
 accounts are untouched. On PostgreSQL, take your own database dump first.
 

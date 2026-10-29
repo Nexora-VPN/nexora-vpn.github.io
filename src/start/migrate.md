@@ -1,19 +1,19 @@
 ---
 title: "Move from another panel"
-description: "Copy users, inbounds, routing and admins from another VPN panel into Nexora with the nexora-migrate wizard."
+description: "Copy users, inbounds, routing and admins from another VPN panel into NX with the nx-migrate wizard."
 order: 7
 tags: [migration, install]
 ---
 
 # Move from another panel
 
-**nexora-migrate** is a small program that copies the users and settings of
-another VPN panel into Nexora: credentials, remaining traffic, expiry dates,
+**nx-migrate** is a small program that copies the users and settings of
+another VPN panel into NX: credentials, remaining traffic, expiry dates,
 inbounds, outbounds, routing, DNS and admins. Where the old panel's link shape
 allows it, your customers keep the subscription link they already have.
 
 It runs as a local web wizard on your computer or on a server, reads the old
-panel, and writes into your Nexora panel through its API.
+panel, and writes into your NX panel through its API.
 
 ## Which panels
 
@@ -41,17 +41,17 @@ an API key.
 ## Run it
 
 Download it for your system from
-[the releases page](https://github.com/nexora-vpn/nexora-migrate/releases/latest)
+[the releases page](https://github.com/nx-panel/nx-migrate/releases/latest)
 (Windows, Linux and macOS). On Linux:
 
 ```bash
-curl -LO https://github.com/nexora-vpn/nexora-migrate/releases/latest/download/nexora-migrate-linux-amd64.tar.gz
-tar -xzf nexora-migrate-linux-amd64.tar.gz
-./nexora-migrate
+curl -LO https://github.com/nx-panel/nx-migrate/releases/latest/download/nx-migrate-linux-amd64.tar.gz
+tar -xzf nx-migrate-linux-amd64.tar.gz
+./nx-migrate
 ```
 
-On Windows, unzip it and double-click `nexora-migrate.exe`. On macOS, remove the
-download quarantine once with `xattr -d com.apple.quarantine nexora-migrate`.
+On Windows, unzip it and double-click `nx-migrate.exe`. On macOS, remove the
+download quarantine once with `xattr -d com.apple.quarantine nx-migrate`.
 
 It prints a link such as `http://127.0.0.1:8787/?key=…`. Open it in your browser.
 The key works once, and the wizard listens only on `127.0.0.1`. To run it on a
@@ -72,7 +72,7 @@ link.
 2. **Review and select.** Every converted item is listed in groups. Tick
    everything, a group or single rows. A yellow row comes across with a change
    its note explains. A red row cannot come across and is listed so you know.
-3. **Connect Nexora.** Your Nexora panel's address, and a username and password
+3. **Connect NX.** Your NX panel's address, and a username and password
    or an API token. With two-factor sign-in, also the current code.
 4. **Preview.** Exactly what will be created, the room left in your licence, and
    names that already exist. Nothing has been written yet.
@@ -80,22 +80,22 @@ link.
 
 ## What to know before the transfer
 
-- **Subscription links.** Nexora also answers the old `/sub/{token}` links. For
+- **Subscription links.** NX also answers the old `/sub/{token}` links. For
   s-ui, 3x-ui, x-ui, Marzban and PasarGuard, existing links keep working once
-  the old domain points at Nexora. Marzneshin, Hiddify and Remnawave users get
+  the old domain points at NX. Marzneshin, Hiddify and Remnawave users get
   new links; the wizard says so per user.
-- **One set of credentials per user.** Nexora keeps one UUID and one password per
+- **One set of credentials per user.** NX keeps one UUID and one password per
   user. Where the old panel had one per protocol, the UUID comes from
   VLESS/VMess and the password from Trojan/Shadowsocks, and the row names what was
   dropped.
-- **Inbounds are converted into Nexora's format.** Settings with no equivalent
-  in Nexora, such as fallbacks, mux and TCP header obfuscation, are dropped with
+- **Inbounds are converted into NX's format.** Settings with no equivalent
+  in NX, such as fallbacks, mux and TCP header obfuscation, are dropped with
   a note on the row. A REALITY inbound without a private key gets a new key, so
   its users need new links. Check each inbound before you put it on a node.
-- **The `direct` outbound.** Nexora gives every node a `direct` outbound itself,
-  so the old one is not created again and rules that named it use Nexora's.
+- **The `direct` outbound.** NX gives every node a `direct` outbound itself,
+  so the old one is not created again and rules that named it use NX's.
 - **WireGuard peers** come across on their endpoint as written. They do not
-  become Nexora users.
+  become NX users.
 - **Nodes are paused during the transfer** and synced once at the end, to avoid
   thousands of updates. They are switched back on even if the transfer fails.
 - **Admin passwords cannot be moved.** Imported admins get a generated password,
@@ -103,7 +103,7 @@ link.
 
 ## After the move
 
-The imported inbounds, outbounds and rules are grouped in a Nexora
+The imported inbounds, outbounds and rules are grouped in an NX
 [[~template]]. Assign that template to your nodes, then check that the nodes
 connect and the links work ([[first-user]]).
 

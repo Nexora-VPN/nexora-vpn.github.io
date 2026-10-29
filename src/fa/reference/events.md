@@ -56,10 +56,10 @@ tags: [reference, events]
 | هدر | |
 | --- | --- |
 | `Content-Type` | `application/json` |
-| `User-Agent` | `nexora-panel` |
-| `X-Nexora-Event` | نام رویداد |
-| `X-Nexora-Delivery` | شناسهٔ تحویل: در هر تلاش دوباره و با **ارسال دوباره** یکسان است |
-| `X-Nexora-Signature` | `t=<unix seconds>,v1=<hex>`، وقتی مشترک کلید امضا داشته باشد |
+| `User-Agent` | `nx-panel` |
+| `X-Nx-Event` | نام رویداد |
+| `X-Nx-Delivery` | شناسهٔ تحویل: در هر تلاش دوباره و با **ارسال دوباره** یکسان است |
+| `X-Nx-Signature` | `t=<unix seconds>,v1=<hex>`، وقتی مشترک کلید امضا داشته باشد |
 
 `v1` مقدار hex از HMAC-SHA256 روی زمان، یک نقطه و بدنهٔ خام است، با کلید امضای
 مشترک:

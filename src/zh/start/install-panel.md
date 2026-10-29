@@ -1,6 +1,6 @@
 ---
 title: "安装面板"
-description: "用一条命令或 Docker 部署安装 Nexora 面板，并拿到一次性设置链接。"
+description: "用一条命令或 Docker 部署安装 NX 面板，并拿到一次性设置链接。"
 order: 2
 tags: [install, panel]
 ---
@@ -18,21 +18,21 @@ tags: [install, panel]
 以 root 身份运行。使用 SQLite 时不需要其他服务：
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/nexora-vpn/panel/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/nx-panel/panel/main/install.sh)
 ```
 
 安装程序最后会打印设置链接：
 
 ```terminal title="root@server: ~"
-$ bash <(curl -fsSL https://raw.githubusercontent.com/nexora-vpn/panel/main/install.sh)
-==> installing Nexora Panel (linux-amd64)
+$ bash <(curl -fsSL https://raw.githubusercontent.com/nx-panel/panel/main/install.sh)
+==> installing NX Panel (linux-amd64)
 ==> downloading the panel
 ==> downloading node binaries
 ==> migrating the database
 database migrated: sqlite
 no admin seeded; the panel will open its setup wizard on first start
 ==> the panel will listen on port 28431
-==> Nexora 0.0.3 is installed
+==> NX 0.0.3 is installed
 
   Finish the setup by opening one of these links — whichever address
   reaches this server from where you are:
@@ -42,8 +42,8 @@ no admin seeded; the panel will open its setup wizard on first start
   Port 28431 was picked at random and is free on this host — open it in
   the firewall if one is running. The wizard can move it before you finish.
 
-  Service:  systemctl status nexora-panel
-  Logs:     journalctl -u nexora-panel -f
+  Service:  systemctl status nx-panel
+  Logs:     journalctl -u nx-panel -f
 ```
 
 打开链接，继续阅读 [[setup-wizard]]。链接中的令牌可以创建主管理员，请勿外泄。设置完成后它就失效。
@@ -66,7 +66,7 @@ SQLite 适合大多数面板：只有一个文件，备份和迁移都容易。�
 两套部署，每种数据库一套：
 
 ```bash
-git clone https://github.com/nexora-vpn/panel
+git clone https://github.com/nx-panel/panel
 cd panel/docker/sqlite      # or: cd panel/docker/postgres
 docker compose up -d
 docker compose logs panel | grep setup
@@ -74,7 +74,7 @@ docker compose logs panel | grep setup
 
 使用 PostgreSQL 部署时，首次启动前把 `.env.example` 复制为 `.env` 并设置密码。
 
-Docker 中的面板监听 2095 端口。该端口与发布的端口映射一起固定在 compose 文件中（`NEXORA_WEB_LISTEN`），因此向导无法修改它：如需其他端口，请在 compose 文件中同时修改两处。在 [[use/ingress]] 中添加的其他端口也必须在 compose 文件中发布。
+Docker 中的面板监听 2095 端口。该端口与发布的端口映射一起固定在 compose 文件中（`NX_WEB_LISTEN`），因此向导无法修改它：如需其他端口，请在 compose 文件中同时修改两处。在 [[use/ingress]] 中添加的其他端口也必须在 compose 文件中发布。
 
 Docker 默认只在 IPv4 上发布端口。在仅有 IPv6 的主机上，请在 Docker 守护进程中启用 IPv6（在 `/etc/docker/daemon.json` 中设置 `"ipv6": true` 和 `"ip6tables": true`），并在两种地址族上发布：
 
@@ -94,12 +94,12 @@ Docker 默认只在 IPv4 上发布端口。在仅有 IPv6 的主机上，请在 
 
 ## 安装程序做了什么 {#what-the-installer-does}
 
-1. 按本服务器的架构把面板下载到 `/opt/nexora-panel`。
-2. 在 `/var/opt/nexora/bin` 中准备 amd64 和 arm64 的节点程序。面板之后会把它们交给节点安装程序，因此节点从你的面板下载。
+1. 按本服务器的架构把面板下载到 `/opt/nx-panel`。
+2. 在 `/var/opt/nx-panel/bin` 中准备 amd64 和 arm64 的节点程序。面板之后会把它们交给节点安装程序，因此节点从你的面板下载。
 3. 写入包含数据库连接的 `config.json`；使用 `--postgres` 时安装并配置 PostgreSQL。
 4. 创建数据库表。
 5. 随机选择一个空闲的高位端口，这样尚未设置的面板不会出现在扫描器最先查看的端口上。
-6. 安装并启动 `nexora-panel` 服务，并把 `nexora-panel` 放进 PATH，供[[reference/cli|命令行]]使用。
+6. 安装并启动 `nx-panel` 服务，并把 `nx-panel` 放进 PATH，供[[reference/cli|命令行]]使用。
 7. 为找到的每个地址打印一个设置链接，排在最前的是互联网看到的本服务器地址。
 
 它使用的所有路径都列在 [[files-and-ports]] 中。设置完成之前，面板只响应设置链接。之后再次运行同一条命令会就地更新面板；见 [[start/update]]。
@@ -109,12 +109,12 @@ Docker 默认只在 IPv4 上发布端口。在仅有 IPv6 的主机上，请在 
 重新打印令牌，再用它拼出地址：
 
 ```bash
-nexora-panel setup-token
-nexora-panel config get web_listen_port
+nx-panel setup-token
+nx-panel config get web_listen_port
 # then open http://203.0.113.10:PORT/setup?t=TOKEN
 ```
 
-在 Docker 中：`docker compose exec panel /app/nexora-panel setup-token`。
+在 Docker 中：`docker compose exec panel /app/nx-panel setup-token`。
 
 ## IPv6 {#ipv6}
 

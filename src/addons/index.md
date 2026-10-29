@@ -10,7 +10,7 @@ tags: [addons]
 An [[~addon]] is a separate program that works beside your [[~panel]]: a
 shop that sells your plans, a bot that tells users their account is about to
 expire, a report of your own. This page explains what an addon is and what it
-may do, and points you to the addons Nexora publishes.
+may do, and points you to the addons NX publishes.
 
 <NxShot page="addons" alt="The Addons page: registered addons with their health and grants, and the Browse tab of the directory" />
 
@@ -60,13 +60,13 @@ keeps exactly what it had.
 ## How far each addon is trusted
 
 The [[directory|addon directory]] at
-[addons.nexora-panel.org](https://addons.nexora-panel.org) lists every addon
+[addons.nx-panel.org](https://addons.nx-panel.org) lists every addon
 in one of three tiers:
 
 | Tier | Who made it | How it can be installed |
 | --- | --- | --- |
-| **Official** | Nexora. Its manifest is signed with Nexora's key. | By the panel on its own server, over SSH, or by a command you run |
-| **Verified** | Another developer, reviewed by Nexora. Its manifest is signed with the developer's key, which the directory vouches for. The approval screen names the developer. | The same as official |
+| **Official** | NX. Its manifest is signed with NX's key. | By the panel on its own server, over SSH, or by a command you run |
+| **Verified** | Another developer, reviewed by NX. Its manifest is signed with the developer's key, which the directory vouches for. The approval screen names the developer. | The same as official |
 | **Unofficial** | Another developer, listed after a light check only. | By a command you run, with a warning on its card and on the approval screen |
 
 An addon this panel cannot trust by its signature is still usable: you add it
@@ -80,11 +80,11 @@ it asks for on the approval screen before you press **Approve and
 register**, especially for an unofficial one.
 :::
 
-## The addons Nexora publishes
+## The addons NX publishes
 
 | Addon | What it does |
 | --- | --- |
-| [[shop\|Nexora Shop]] | Sells your plans through a Telegram bot and a web app: products, orders, a wallet, card-to-card and gateway payments, discount codes, referrals and agents. |
+| [[shop\|NX Shop]] | Sells your plans through a Telegram bot and a web app: products, orders, a wallet, card-to-card and gateway payments, discount codes, referrals and agents. |
 | [[notifier\|The notifier]] | Tells every user on the panel about their account (expiry, traffic, renewals) and sends your own messages, over Telegram, Bale, SMS, email or any HTTP API. |
 
 ## Where to start

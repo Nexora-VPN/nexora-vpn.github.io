@@ -9,8 +9,8 @@ tags: [reference]
 
 The panel and the node have their own version numbers. **Update the panel
 first, then the nodes** ([[start/update]]). Downloads and full notes are on
-the releases pages of [the panel](https://github.com/nexora-vpn/panel/releases)
-and [the node](https://github.com/nexora-vpn/node/releases).
+the releases pages of [the panel](https://github.com/nx-panel/panel/releases)
+and [the node](https://github.com/nx-panel/node/releases).
 
 ## Panel
 
@@ -43,7 +43,7 @@ clean quota cut-offs need nodes on v0.0.3.
   backup destinations (S3-compatible, SFTP, Telegram) and single sign-on
   (Google, Microsoft, GitHub, GitLab, Keycloak, Authentik, Okta, Auth0, any
   OpenID Connect or OAuth 2.0 provider). Webhooks moved under Services.
-- **Addons:** browse the [addon directory](https://addons.nexora-panel.org),
+- **Addons:** browse the [addon directory](https://addons.nx-panel.org),
   install with a claim code or over SSH, suspend, watch health, approve an
   update only when it asks for more.
 - **Route test:** ask a node which rule and outbound a connection would take.
@@ -92,10 +92,10 @@ updated from the panel ([[start/add-node]]).
 
 | Release | Date | Notes |
 |---|---|---|
-| Nexora Shop v0.0.2 | 9 October 2026 | Install from the panel's **Addons** page or with `ghcr.io/nexora-vpn/shop:0.0.2` ([[addons/shop]]) |
-| Nexora Shop v0.0.1 | 4 October 2026 | First release |
-| Notifier v0.3.0 | 9 October 2026 | `ghcr.io/nexora-vpn/notif:0.3.0` ([[addons/notifier]]) |
+| NX Shop v0.0.2 | 9 October 2026 | Install from the panel's **Addons** page or with `ghcr.io/nx-panel/shop:0.0.2` ([[addons/shop]]) |
+| NX Shop v0.0.1 | 4 October 2026 | First release |
+| Notifier v0.3.0 | 9 October 2026 | `ghcr.io/nx-panel/notif:0.3.0` ([[addons/notifier]]) |
 | Notifier v0.2.0 | 4 October 2026 | |
 | Notifier v0.1.0 | 4 October 2026 | First release |
-| nexora-migrate v0.0.2 | 9 October 2026 | Windows, Linux and macOS builds ([[start/migrate]]) |
-| nexora-migrate v0.0.1 | 23 September 2026 | First release |
+| nx-migrate v0.0.2 | 9 October 2026 | Windows, Linux and macOS builds ([[start/migrate]]) |
+| nx-migrate v0.0.1 | 23 September 2026 | First release |

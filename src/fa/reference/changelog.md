@@ -9,8 +9,8 @@ tags: [reference]
 
 پنل و نود شمارهٔ نسخهٔ جداگانه دارند. **اول پنل را به‌روز کنید، بعد نودها را**
 ([[start/update]]). دانلودها و یادداشت‌های کامل در صفحه‌های انتشار
-[پنل](https://github.com/nexora-vpn/panel/releases) و
-[نود](https://github.com/nexora-vpn/node/releases) است.
+[پنل](https://github.com/nx-panel/panel/releases) و
+[نود](https://github.com/nx-panel/node/releases) است.
 
 ## پنل {#panel}
 
@@ -44,7 +44,7 @@ tags: [reference]
   مقصدهای پشتیبان (سازگار با S3، SFTP، تلگرام) و ورود یکپارچه (Google،
   Microsoft، GitHub، GitLab، Keycloak، Authentik، Okta، Auth0، هر ارائه‌دهندهٔ
   OpenID Connect یا OAuth 2.0). وبهوک‌ها به زیر سرویس‌ها منتقل شدند.
-- **افزونه‌ها:** مرور [دایرکتوری افزونه‌ها](https://addons.nexora-panel.org)،
+- **افزونه‌ها:** مرور [دایرکتوری افزونه‌ها](https://addons.nx-panel.org)،
   نصب با کد ادعا یا با SSH، تعلیق، پایش سلامت، و تأیید به‌روزرسانی فقط وقتی
   دسترسی بیشتری می‌خواهد.
 - **آزمون مسیر:** از نود بپرسید یک اتصال به کدام قانون و اوتباند می‌رسد.
@@ -92,10 +92,10 @@ tags: [reference]
 
 | نسخه | تاریخ | یادداشت |
 |---|---|---|
-| Nexora Shop v0.0.2 | ۹ اکتبر ۲۰۲۶ | از صفحهٔ **افزونه‌ها** در پنل یا با `ghcr.io/nexora-vpn/shop:0.0.2` نصب کنید ([[addons/shop]]) |
-| Nexora Shop v0.0.1 | ۴ اکتبر ۲۰۲۶ | اولین نسخه |
-| Notifier v0.3.0 | ۹ اکتبر ۲۰۲۶ | `ghcr.io/nexora-vpn/notif:0.3.0` ([[addons/notifier]]) |
+| NX Shop v0.0.2 | ۹ اکتبر ۲۰۲۶ | از صفحهٔ **افزونه‌ها** در پنل یا با `ghcr.io/nx-panel/shop:0.0.2` نصب کنید ([[addons/shop]]) |
+| NX Shop v0.0.1 | ۴ اکتبر ۲۰۲۶ | اولین نسخه |
+| Notifier v0.3.0 | ۹ اکتبر ۲۰۲۶ | `ghcr.io/nx-panel/notif:0.3.0` ([[addons/notifier]]) |
 | Notifier v0.2.0 | ۴ اکتبر ۲۰۲۶ | |
 | Notifier v0.1.0 | ۴ اکتبر ۲۰۲۶ | اولین نسخه |
-| nexora-migrate v0.0.2 | ۹ اکتبر ۲۰۲۶ | نسخه‌های Windows، Linux و macOS ([[start/migrate]]) |
-| nexora-migrate v0.0.1 | ۲۳ سپتامبر ۲۰۲۶ | اولین نسخه |
+| nx-migrate v0.0.2 | ۹ اکتبر ۲۰۲۶ | نسخه‌های Windows، Linux و macOS ([[start/migrate]]) |
+| nx-migrate v0.0.1 | ۲۳ سپتامبر ۲۰۲۶ | اولین نسخه |

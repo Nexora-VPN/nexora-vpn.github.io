@@ -74,9 +74,9 @@ Webhook 收到一个带 JSON 正文的 POST：
 
 | 头部 | 携带内容 |
 | --- | --- |
-| `X-Nexora-Event` | 事件名称 |
-| `X-Nexora-Delivery` | 投递 id；重试时会重复，所以接收方按这个 id 丢弃重复项 |
-| `X-Nexora-Signature` | 一个时间戳，以及用订阅者密钥对时间戳和正文计算的 HMAC-SHA256 |
+| `X-Nx-Event` | 事件名称 |
+| `X-Nx-Delivery` | 投递 id；重试时会重复，所以接收方按这个 id 丢弃重复项 |
+| `X-Nx-Signature` | 一个时间戳，以及用订阅者密钥对时间戳和正文计算的 HMAC-SHA256 |
 
 接收方用创建订阅者时只显示过一次的密钥校验签名。从备份恢复时，投递表也会一起恢复，所以恢复后投递 id 可能重复：跨恢复保存 id 的接收方应在收到 `panel.restore_applied` 时从头开始。
 

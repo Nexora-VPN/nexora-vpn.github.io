@@ -1,6 +1,6 @@
 ---
 title: "The addon directory"
-description: "Browse addons.nexora-panel.org from the panel and install, update and remove an addon on the panel's server, over SSH or by hand."
+description: "Browse addons.nx-panel.org from the panel and install, update and remove an addon on the panel's server, over SSH or by hand."
 order: 2
 tags: [addons, install]
 ---
@@ -8,7 +8,7 @@ tags: [addons, install]
 # The addon directory
 
 The addon directory at
-[addons.nexora-panel.org](https://addons.nexora-panel.org) lists the
+[addons.nx-panel.org](https://addons.nx-panel.org) lists the
 [[~addon|addons]] you can install. The panel reads it, shows it under
 **Addons → Browse**, installs an addon on a server of yours and registers it
 once you approve what it asks for. This page covers every way to install, then
@@ -26,9 +26,9 @@ tier:
 
 | Tier | What it means |
 | --- | --- |
-| **Official** | Made by Nexora; its manifest is signed by Nexora. |
-| **Verified** | From another developer, reviewed by Nexora; its manifest is signed with the developer's key, which the directory vouches for. |
-| **Unofficial** | Listed after a light check only. Nexora has not reviewed it. |
+| **Official** | Made by NX; its manifest is signed by NX. |
+| **Verified** | From another developer, reviewed by NX; its manifest is signed with the developer's key, which the directory vouches for. |
+| **Unofficial** | Listed after a light check only. NX has not reviewed it. |
 
 An addon that needs a newer panel shows **Needs panel** with the version.
 Update the panel first ([[start/update]]).
@@ -47,10 +47,10 @@ showing the last list that passed.
 
 ### A mirror
 
-Where addons.nexora-panel.org cannot be reached from your panel, point it at
+Where addons.nx-panel.org cannot be reached from your panel, point it at
 a copy of the directory's `index.json` with **Change source**. A mirror can
 serve the list but cannot change it, because the signature check still
-applies. Leave the field empty to go back to addons.nexora-panel.org.
+applies. Leave the field empty to go back to addons.nx-panel.org.
 
 ## Install from the panel
 
@@ -136,7 +136,7 @@ yourself; see [[use/addons]].
 
 ## HTTPS for the addon
 
-Most addons ask how to serve HTTPS. The answers the addons Nexora publishes
+Most addons ask how to serve HTTPS. The answers the addons NX publishes
 offer:
 
 | Answer | What it does |
@@ -168,9 +168,9 @@ Addons menu gets a dot.
   install script again. Settings and data are kept, and the panel reads the
   new manifest at once.
 - **Installed by command**: run its install script again on its server with
-  no arguments, `sh nexora-addon-install.sh`. It installs the latest release
+  no arguments, `sh nx-addon-install.sh`. It installs the latest release
   the same way and keeps the answers and the data. For a **Compose file**
-  install, set `NEXORA_ADDON_VERSION` in its `.env` to the new version, then
+  install, set `NX_ADDON_VERSION` in its `.env` to the new version, then
   run `docker compose pull && docker compose up -d`.
 
 A new version that asks for more permissions or events is installed, but
@@ -194,8 +194,8 @@ Removing it there tells the addon first, then deletes its token and webhook.
 By hand, on the addon's server:
 
 ```bash
-sh nexora-addon-install.sh --uninstall           # keeps its data
-sh nexora-addon-install.sh --uninstall --purge   # deletes the data too
+sh nx-addon-install.sh --uninstall           # keeps its data
+sh nx-addon-install.sh --uninstall --purge   # deletes the data too
 ```
 
 An addon removed with its data kept and installed again from the panel (a

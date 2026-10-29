@@ -43,7 +43,7 @@ ownership was handed over since. The owner:
 - cannot be deleted;
 - cannot be moved off the main admin tier;
 - is the only account that can hand the panel over;
-- is the account `nexora-panel admin reset-password` picks when you give it no
+- is the account `nx-panel admin reset-password` picks when you give it no
   username (see [[reference/cli]]).
 
 There is always exactly one owner, so there is always one account you can get
@@ -110,7 +110,7 @@ and pairs its own again once it is back in its owner's hands.
 
 To change your **own** password, use **Change password** on your account menu,
 which asks for your current one. If you have lost access to every main admin,
-use `nexora-panel admin reset-password` on the server, which also turns off the
+use `nx-panel admin reset-password` on the server, which also turns off the
 account's two-factor authentication (see [[reference/cli]]).
 
 ## Ending sessions

@@ -1,13 +1,13 @@
 ---
-title: "How Nexora works"
+title: "How NX works"
 description: "The architecture in one page: the panel as the control plane, nodes as the data plane, how they talk, and where addons and users fit."
 order: 1
 tags: [panel, node]
 ---
 
-# How Nexora works
+# How NX works
 
-Nexora has two parts: one [[~panel]] that decides everything, and any number of
+NX has two parts: one [[~panel]] that decides everything, and any number of
 [[~node|nodes]] that carry your users' traffic. This section explains how they
 work inside, for when you want to know why something behaves as it does. You
 do not need it to run a service; the [[use/index|Use the panel]] section
@@ -85,7 +85,7 @@ but you and your staff.
 
 ## Addons sit beside the panel
 
-An addon, such as Nexora Shop or the notifier, is a separate program with its
+An addon, such as NX Shop or the notifier, is a separate program with its
 own process, database and interface. It works with the panel over the network
 only: an API token with the permissions you approved, and a webhook that
 receives the events it asked for. The panel never runs an addon's code. See

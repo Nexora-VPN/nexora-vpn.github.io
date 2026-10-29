@@ -55,7 +55,7 @@ Trusted proxies, the login allowlist and address bans are on
 
 **Restart panel** restarts the panel. Changes on [[use/ingress]] need no
 restart; a restart is for what was changed from the server's command line,
-such as `nexora-panel ingress reset` ([[reference/cli]]), and for the panel's
+such as `nx-panel ingress reset` ([[reference/cli]]), and for the panel's
 own log to follow a new timezone. When the panel is back, the page opens it at
 its address, on the same page. Users' connections are not affected: nodes keep
 serving through a panel restart.

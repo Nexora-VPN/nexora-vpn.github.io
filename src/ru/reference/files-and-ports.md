@@ -16,16 +16,16 @@ tags: [reference, install]
 
 | Путь | Что это |
 | --- | --- |
-| `/opt/nexora-panel/nexora-panel` | программа |
-| `/opt/nexora-panel/nexora-panel.previous` | программа до последнего обновления, сохраняется для отката |
-| `/opt/nexora-panel/config.json` | подключение к базе и больше ничего |
-| `/var/opt/nexora/nexora.db` | база SQLite (пока панель работает, рядом лежат файлы `-wal` и `-shm`) |
-| `/var/opt/nexora/bin/` | бинарные файлы узла, которые панель отдаёт установщикам узлов |
-| `/var/opt/nexora/sub-themes/` | темы страницы подписки |
-| `/var/opt/nexora/presets/` | ваши собственные файлы каталога пресетов, добавляемые к встроенным |
-| `/var/opt/nexora/backups/` | архивы резервных копий и снимки перед восстановлением (читать может только root) |
-| `/var/opt/nexora/rulesets/` | копии файлов наборов правил, которые панель отдаёт узлам; можно очистить, панель скачает их заново |
-| `/etc/systemd/system/nexora-panel.service` | служба |
+| `/opt/nx-panel/nx-panel` | программа |
+| `/opt/nx-panel/nx-panel.previous` | программа до последнего обновления, сохраняется для отката |
+| `/opt/nx-panel/config.json` | подключение к базе и больше ничего |
+| `/var/opt/nx-panel/nx.db` | база SQLite (пока панель работает, рядом лежат файлы `-wal` и `-shm`) |
+| `/var/opt/nx-panel/bin/` | бинарные файлы узла, которые панель отдаёт установщикам узлов |
+| `/var/opt/nx-panel/sub-themes/` | темы страницы подписки |
+| `/var/opt/nx-panel/presets/` | ваши собственные файлы каталога пресетов, добавляемые к встроенным |
+| `/var/opt/nx-panel/backups/` | архивы резервных копий и снимки перед восстановлением (читать может только root) |
+| `/var/opt/nx-panel/rulesets/` | копии файлов наборов правил, которые панель отдаёт узлам; можно очистить, панель скачает их заново |
+| `/etc/systemd/system/nx-panel.service` | служба |
 
 Копирование файлов базы при работающей панели — не резервная копия.
 Используйте резервное копирование самой панели ([[use/backup]]): оно
@@ -34,7 +34,7 @@ tags: [reference, install]
 `config.json` выглядит так:
 
 ```json
-{ "db": { "driver": "sqlite", "dsn": "/var/opt/nexora/nexora.db" } }
+{ "db": { "driver": "sqlite", "dsn": "/var/opt/nx-panel/nx.db" } }
 ```
 
 С PostgreSQL `driver` равен `postgres`, а `dsn` — строка подключения.
@@ -58,13 +58,13 @@ tags: [reference, install]
 
 | Путь | Что это |
 | --- | --- |
-| `/opt/nexora-node/nexora-node` | программа |
-| `/opt/nexora-node/config.json` | адрес управляющего порта и пути к сертификатам, больше ничего |
-| `/var/opt/nexora/certs/ssl_cert.pem` | собственный сертификат узла |
-| `/var/opt/nexora/certs/ssl_key.pem` | его закрытый ключ |
-| `/var/opt/nexora/certs/panel_ca.pem` | сертификат панели — единственный, который принимает узел |
-| `/var/opt/nexora/cache/` | наборы правил и другие файлы, присланные панелью, которые она пришлёт снова, если их удалить, и вход эндпоинта Tailscale, который при удалении теряется |
-| `/etc/systemd/system/nexora-node.service` | служба |
+| `/opt/nx-node/nx-node` | программа |
+| `/opt/nx-node/config.json` | адрес управляющего порта и пути к сертификатам, больше ничего |
+| `/var/opt/nx-node/certs/ssl_cert.pem` | собственный сертификат узла |
+| `/var/opt/nx-node/certs/ssl_key.pem` | его закрытый ключ |
+| `/var/opt/nx-node/certs/panel_ca.pem` | сертификат панели — единственный, который принимает узел |
+| `/var/opt/nx-node/cache/` | наборы правил и другие файлы, присланные панелью, которые она пришлёт снова, если их удалить, и вход эндпоинта Tailscale, который при удалении теряется |
+| `/etc/systemd/system/nx-node.service` | служба |
 
 Всё, что обслуживает узел, присылает панель, и хранится это в памяти.
 Перезапущенный узел ничего не обслуживает, пока панель снова не пришлёт ему
@@ -73,7 +73,7 @@ tags: [reference, install]
 
 В Docker узел хранит `./certs` и `./cache` рядом со своим файлом compose.
 
-Когда панель и узел делят сервер, `/var/opt/nexora` содержит данные обоих:
+Когда панель и узел делят сервер, `/var/opt/nx-panel` содержит данные обоих:
 база, `bin`, `backups` и остальное принадлежат панели, а `certs` и `cache` —
 узлу. См. [[same-server]].
 
@@ -89,7 +89,7 @@ tags: [reference, install]
 | 5432 TCP, только локально | PostgreSQL (с `--postgres`) | база, к которой панель обращается на `127.0.0.1` |
 
 Порт панели можно изменить в мастере настройки, позже — на странице
-настроек или командой `nexora-panel config set web_listen_port`. И панель, и
+настроек или командой `nx-panel config set web_listen_port`. И панель, и
 узел слушают IPv6 и IPv4 одновременно, а на сервере с выключенным IPv6
 переходят на IPv4.
 
@@ -99,26 +99,26 @@ tags: [reference, install]
 
 | Переменная | Действие |
 | --- | --- |
-| `NEXORA_DB_DRIVER` | `sqlite` или `postgres` |
-| `NEXORA_DB_DSN` | подключение к базе: путь к файлу для SQLite, строка подключения для PostgreSQL |
-| `NEXORA_DB_MAX_OPEN_CONNS` | размер пула соединений с базой |
-| `NEXORA_WEB_LISTEN` | закрепляет адрес прослушивания (`IP:PORT`). Тогда панель игнорирует адрес из своих настроек, и мастер настройки не может его изменить. Так работают стеки Docker |
+| `NX_DB_DRIVER` | `sqlite` или `postgres` |
+| `NX_DB_DSN` | подключение к базе: путь к файлу для SQLite, строка подключения для PostgreSQL |
+| `NX_DB_MAX_OPEN_CONNS` | размер пула соединений с базой |
+| `NX_WEB_LISTEN` | закрепляет адрес прослушивания (`IP:PORT`). Тогда панель игнорирует адрес из своих настроек, и мастер настройки не может его изменить. Так работают стеки Docker |
 
-Они имеют приоритет над `config.json`. `nexora-panel run -listen IP:PORT`
-закрепляет адрес так же, как `NEXORA_WEB_LISTEN`.
+Они имеют приоритет над `config.json`. `nx-panel run -listen IP:PORT`
+закрепляет адрес так же, как `NX_WEB_LISTEN`.
 
 ### Узел {#node}
 
 | Переменная | Действие |
 | --- | --- |
-| `NEXORA_NODE_LISTEN` | адрес управляющего порта, по умолчанию `[::]:62050` |
-| `NEXORA_NODE_CERT` | файл сертификата узла |
-| `NEXORA_NODE_KEY` | файл его закрытого ключа |
-| `NEXORA_NODE_CLIENT_CA` | файл сертификата панели |
-| `NEXORA_STATE_DIR` | каталог для `certs` и `cache`, по умолчанию `/var/opt/nexora` |
+| `NX_NODE_LISTEN` | адрес управляющего порта, по умолчанию `[::]:62050` |
+| `NX_NODE_CERT` | файл сертификата узла |
+| `NX_NODE_KEY` | файл его закрытого ключа |
+| `NX_NODE_CLIENT_CA` | файл сертификата панели |
+| `NX_STATE_DIR` | каталог для `certs` и `cache`, по умолчанию `/var/opt/nx-panel` |
 
 Они имеют приоритет над `config.json` узла. Установщик узла также читает
-`NEXORA_INSTALL_TOKEN` вместо `--token`.
+`NX_INSTALL_TOKEN` вместо `--token`.
 
 ## Связанные страницы {#related}
 

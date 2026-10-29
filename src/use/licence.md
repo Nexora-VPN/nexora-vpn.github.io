@@ -111,7 +111,7 @@ licence limit was reached.
 
 ## Staying in contact
 
-The panel needs to reach `license.nexora-panel.org` over HTTPS. If it cannot
+The panel needs to reach `license.nx-panel.org` over HTTPS. If it cannot
 for 14 days, it runs on the free tier until it can again, and a banner warns a
 week before that happens. If the server sits behind a firewall, allow
 outbound HTTPS to that address. **Recheck online** tries straight away.

@@ -53,11 +53,11 @@ tags: [addons, backup]
 ## انتقال به سرور تازه {#moving-to-a-new-server}
 
 1. فروشگاه را طبق معمول روی سرور تازه نصب کنید ([[shop#install]])، بعد متوقفش
-   کنید: `systemctl stop nexora-addon-shop` یا `docker compose stop shop`.
+   کنید: `systemctl stop nx-addon-shop` یا `docker compose stop shop`.
 2. یک آرشیو را آن‌جا کپی کنید و با کلید بازیابی‌اش کنید:
 
    ```bash
-   nexora-shop restore -i shop-20261004-120000.nxsb -key nxsb-…
+   nx-shop restore -i shop-20261004-120000.nxsb -key nxsb-…
    ```
 
    با Docker، اول آرشیو را در `data/backups/` کپی کنید، بعد:
@@ -74,10 +74,10 @@ tags: [addons, backup]
 نمی‌دهد.
 
 ثبت فروشگاه در پنل داخل آرشیو نیست. اگر سرور تازه همان آدرس قبلی را نگه می‌دارد،
-`data/nexora-credentials.json` را هم کپی کنید. وگرنه فروشگاه را در صفحهٔ
+`data/nx-credentials.json` را هم کپی کنید. وگرنه فروشگاه را در صفحهٔ
 **افزونه‌ها**ی پنل حذف کنید و دوباره ثبتش کنید ([[directory]]).
 
-`nexora-shop backup` دستی یک آرشیو می‌گیرد، با همان کلید.
+`nx-shop backup` دستی یک آرشیو می‌گیرد، با همان کلید.
 
 ## بعد از بازیابی پنل {#after-a-panel-restore}
 

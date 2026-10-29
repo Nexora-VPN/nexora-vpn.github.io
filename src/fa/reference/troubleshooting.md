@@ -8,8 +8,8 @@ tags: [reference]
 # عیب‌یابی
 
 مشکل‌ها بر اساس آنچه می‌بینید، با رایج‌ترین علت در ابتدا. دو جا به بیشترشان کمک
-می‌کند: لاگ سرویس (`journalctl -u nexora-panel -n 50` روی پنل،
-`journalctl -u nexora-node -n 50` روی نود) و ردیف نود در صفحهٔ **نودها**، که
+می‌کند: لاگ سرویس (`journalctl -u nx-panel -n 50` روی پنل،
+`journalctl -u nx-node -n 50` روی نود) و ردیف نود در صفحهٔ **نودها**، که
 وقتی نشانگر را روی وضعیتش ببرید آخرین خطا را نشان می‌دهد.
 
 ## پنل بعد از نصب باز نمی‌شود {#the-panel-does-not-open-after-install}
@@ -24,7 +24,7 @@ tags: [reference]
 - **لینک IPv6 بدون کروشه.** آن را کامل بچسبانید:
   `http://[2001:db8::10]:28431/setup?t=…`.
 - **صفحه «یافت نشد» می‌گوید.** تا راه‌اندازی تمام نشده، پنل فقط به لینک کامل
-  راه‌اندازی با توکنش جواب می‌دهد. توکن را با `nexora-panel setup-token` دوباره
+  راه‌اندازی با توکنش جواب می‌دهد. توکن را با `nx-panel setup-token` دوباره
   چاپ کنید ([[install-panel#lost-the-link]] را ببینید).
 
 ## پنل بعد از ویزارد راه‌اندازی باز نمی‌شود {#the-panel-does-not-open-after-the-setup-wizard}
@@ -42,13 +42,13 @@ tags: [reference]
 
 ## بیرون مانده‌اید {#locked-out}
 
-- **گذرواژهٔ فراموش‌شده:** `nexora-panel admin reset-password`. این دستور ورود
+- **گذرواژهٔ فراموش‌شده:** `nx-panel admin reset-password`. این دستور ورود
   دومرحله‌ای حساب را هم خاموش می‌کند.
 - **مسدود بعد از ورودهای ناموفق:** آدرستان را به `login_allowlist` اضافه کنید، و
   اگر پنل پشت پراکسی یا CDN است `trusted_proxies` را تنظیم کنید.
-- **آدرس، دامنه یا مسیری که در دسترس نیست:** `nexora-panel config set …` و یک
+- **آدرس، دامنه یا مسیری که در دسترس نیست:** `nx-panel config set …` و یک
   راه‌اندازی مجدد، یا پس از تغییرهایی در **تنظیمات ← آدرس‌ها**،
-  `nexora-panel ingress reset` و یک راه‌اندازی مجدد.
+  `nx-panel ingress reset` و یک راه‌اندازی مجدد.
 - **گذرواژهٔ درست فقط روی یک نام میزبان رد می‌شود:** ممکن است آن هاست در
   **تنظیمات ← آدرس‌ها** به حساب دیگری بسته شده باشد، یا حساب شما به هاست‌های
   دیگری. آنجا فقط حساب بسته‌شده وارد می‌شود، و ورودِ ردشده درست مثل گذرواژهٔ
@@ -62,8 +62,8 @@ tags: [reference]
 کنید:
 
 ```bash
-systemctl status nexora-node          # on the node
-journalctl -u nexora-node -n 50       # on the node
+systemctl status nx-node          # on the node
+journalctl -u nx-node -n 50       # on the node
 nc -vz 198.51.100.20 62050            # from the panel server
 ```
 
@@ -85,9 +85,9 @@ nc -vz 198.51.100.20 62050            # from the panel server
 
   ```bash
   curl -fsSL -o /tmp/node.tar.gz \
-    https://github.com/nexora-vpn/node/releases/latest/download/nexora-node-linux-armv7.tar.gz
+    https://github.com/nx-panel/node/releases/latest/download/nx-node-linux-armv7.tar.gz
   tar -C /tmp -xzf /tmp/node.tar.gz
-  install -m 0755 /tmp/nexora-node/nexora-node /var/opt/nexora/bin/nexora-node-linux-armv7
+  install -m 0755 /tmp/nx-node/nx-node /var/opt/nx-panel/bin/nx-node-linux-armv7
   ```
 
   یا `--source github` را به دستور اضافه کنید تا سرور نود خودش نسخه را دانلود

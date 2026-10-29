@@ -7,7 +7,7 @@ tags: [addons, events]
 
 # The notifier
 
-The notifier (Nexora Notif) is the official [[~addon]] that tells your
+The notifier (NX Notif) is the official [[~addon]] that tells your
 panel's users about their accounts: the expiry date drawing near, traffic
 running low, a renewal, traffic added, and your own messages to one user or
 a group. It sends over Telegram, Bale, Soroush Plus, Rubika, SMS, email,
@@ -30,7 +30,7 @@ account's contact card on the panel (`telegram_id`, `bale_id`,
 
 ## Install
 
-On the panel: **Addons → Browse → Nexora Notif → Install**. The panel asks
+On the panel: **Addons → Browse → NX Notif → Install**. The panel asks
 its questions and installs it on its own server or another one over SSH, or
 gives you a command to run. Every way to install is in [[directory]].
 

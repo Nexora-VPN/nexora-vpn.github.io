@@ -7,7 +7,7 @@ tags: [install, node, panel]
 
 # 面板和节点共用一台服务器
 
-[[~node]]可以与[[~panel]]运行在同一台服务器上。Nexora 并不禁止这样做，两者也不会互相干扰。但对于你出售的服务，**不推荐** 这样做，本页先说明原因，再说明方法。
+[[~node]]可以与[[~panel]]运行在同一台服务器上。NX 并不禁止这样做，两者也不会互相干扰。但对于你出售的服务，**不推荐** 这样做，本页先说明原因，再说明方法。
 
 ## 什么时候可以接受 {#when-it-is-acceptable}
 
@@ -22,12 +22,11 @@ tags: [install, node, panel]
 - **它会公开面板的地址。** 节点的地址会出现在你分发的每条订阅链接和每个客户端配置中。每个用户，以及任何收集这些链接的人，都会知道你的面板在哪里。如果这个地址之后被封锁，你失去的就是面板以及所有订阅地址，而不只是一个节点。
 - **一台机器，同一命运。** 用户流量波动大且没有上限。繁忙的节点可能耗尽面板的 CPU、内存或带宽，而面板一旦宕机，其他所有节点的用户的订阅也会停止服务。
 - **它把可丢弃的和不可替代的混在一起。** 节点本来就是可以丢掉重装的。面板的数据库是整个集群离开它就无法重建的东西。
-- **卸载节点时需要小心。** 两者都使用 `/var/opt/nexora`。删除整个目录会删掉面板的数据库；见 [[uninstall]]。
 - **它仍然算作一个节点**，占用你的许可证额度。
 
 ## 用安装脚本设置 {#set-it-up-with-the-install-script}
 
-两者安装到不同的目录并作为不同的服务运行：`/opt/nexora-panel` 和 `/opt/nexora-node`。在 `/var/opt/nexora` 下，数据库、`bin/` 和 `backups/` 属于面板；`certs/` 和 `cache/` 属于节点。
+两者安装到不同的目录并作为不同的服务运行：程序在 `/opt/nx-panel` 和 `/opt/nx-node`，状态在 `/var/opt/nx-panel`（数据库、`bin/` 和 `backups/`）和 `/var/opt/nx-node`（`certs/` 和 `cache/`）。
 
 1. 照常安装面板并完成设置向导。
 2. 在面板中添加一个节点，地址为 `127.0.0.1`，端口为 62050。
@@ -50,7 +49,7 @@ tags: [install, node, panel]
 面板仓库中有一套现成的部署 `docker/panel-and-node`：SQLite 面板加上旁边的一个节点。节点启动前需要面板的证书，而面板只有在节点存在后才显示该证书，所以这套部署分两步启动：
 
 ```bash
-git clone https://github.com/nexora-vpn/panel
+git clone https://github.com/nx-panel/panel
 cd panel/docker/panel-and-node
 docker compose up -d panel
 docker compose logs panel | grep setup      # open the link, finish the wizard

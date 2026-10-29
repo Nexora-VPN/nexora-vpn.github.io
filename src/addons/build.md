@@ -8,7 +8,7 @@ tags: [addons, api]
 
 # Build an addon
 
-This page is for developers who want to write an [[~addon]] for Nexora: a
+This page is for developers who want to write an [[~addon]] for NX: a
 separate program that works with the panel over the network, with a scoped
 [[~api-token]], the panel's signed [[~event|events]] and a manifest that says
 what it needs. It walks through the parts an addon has and the tools that
@@ -22,7 +22,7 @@ of its data. An addon has four parts the panel touches:
 
 | Part | What it does |
 | --- | --- |
-| The manifest | `nexora-addon.json`: who the addon is, what it asks for, how it is installed. Served by the running addon at `/.well-known/nexora-addon.json`. |
+| The manifest | `nx-addon.json`: who the addon is, what it asks for, how it is installed. Served by the running addon at `/.well-known/nx-addon.json`. |
 | A setup path | Where the panel delivers the token and webhook secret at registration, with the claim code. |
 | A webhook path | Where the panel posts the events the addon asked for, each one signed. |
 | A health path | Answers `200` while the addon is healthy. The panel asks every minute. |
@@ -35,11 +35,11 @@ How the panel treats an addon is described in [[how/addon-platform]].
 Two public repositories write most of this for you.
 
 - **The addon kit**, the Go module
-  [`github.com/nexora-vpn/addon-kit`](https://github.com/nexora-vpn/addon-kit),
+  [`github.com/nx-panel/addon-kit`](https://github.com/nx-panel/addon-kit),
   licensed Apache-2.0, so an addon built on it may be open or closed. The
   panel validates manifests with the same code.
 - **The template**,
-  [`github.com/nexora-vpn/addon-template`](https://github.com/nexora-vpn/addon-template):
+  [`github.com/nx-panel/addon-template`](https://github.com/nx-panel/addon-template):
   a complete minimal addon with a compose file, a binary release and an
   install script. It registers by claim code, receives events, answers the
   health check and shows a page with the panel's account count.
@@ -52,12 +52,12 @@ Two public repositories write most of this for you.
 | `auth` | The addon's own admin sign-in: hashed passwords, sessions, a TOTP second factor, a limit on failed attempts. |
 | `telegram` | A small Telegram Bot API client, through a proxy or a Bot API mirror; also Bale. |
 | `web` | Serves the admin under the install's base path and public pages outside it, with HTTPS from the panel, ACME or a self-signed certificate. |
-| `cmd/nexora-addon` | `check`, `keygen`, `sign` and `verify` a manifest; `sign-sums` and `verify-sums` a release's checksums. |
+| `cmd/nx-addon` | `check`, `keygen`, `sign` and `verify` a manifest; `sign-sums` and `verify-sums` a release's checksums. |
 
 The smallest addon:
 
 ```go
-raw, _ := os.ReadFile("nexora-addon.json")
+raw, _ := os.ReadFile("nx-addon.json")
 a, err := addon.New(addon.Config{Manifest: raw, DataDir: "data"}.FromEnv())
 if err != nil { log.Fatal(err) }
 a.OnEvent(func(e addon.Event) { log.Printf("%s %s", e.Event, e.Data) })
@@ -69,7 +69,7 @@ log.Fatal(http.ListenAndServe(":8090", mux))
 ## Make the template yours
 
 1. Change `slug`, `name`, `publisher`, the scopes and the events in
-   `nexora-addon.json`, and `SLUG`, `REPO` and `BIN` at the top of
+   `nx-addon.json`, and `SLUG`, `REPO` and `BIN` at the top of
    `install.sh`.
 2. Declare the questions your install needs under `install.options`
    ([[manifest#install-options]]).
@@ -81,7 +81,7 @@ log.Fatal(http.ListenAndServe(":8090", mux))
 ## Registration with a claim code
 
 An addon starts unregistered. The install passes it a one-time **claim code**
-in `NEXORA_CLAIM_CODE`; started by hand without one, the kit draws a code and
+in `NX_CLAIM_CODE`; started by hand without one, the kit draws a code and
 logs it.
 
 1. The panel reads the manifest at the addon's address and checks its
@@ -97,7 +97,7 @@ you set with `OnSetup` once they arrive. `Credentials()` returns them, or
 nil before registration; `ClaimCode()` returns the code still waiting.
 
 A panel registers by claim code only a manifest signed by a key it trusts:
-Nexora's, or a developer key the directory vouches for. While you develop,
+NX's, or a developer key the directory vouches for. While you develop,
 register your addon by hand instead (**Addons → Add your own addon**): you
 pick the token's permissions and the webhook's events, and the panel shows
 the token and the webhook's signing secret once for your program's
@@ -119,9 +119,9 @@ and is never a new install.
 ## Receiving events
 
 The panel posts each event the addon asked for to its `webhook` path. A
-delivery carries `X-Nexora-Signature: t=<unix>,v1=<hex>`, the hex being the
+delivery carries `X-Nx-Signature: t=<unix>,v1=<hex>`, the hex being the
 HMAC-SHA256 of `<t>.<body>` under the webhook secret, and an
-`X-Nexora-Delivery` id that stays the same on every retry.
+`X-Nx-Delivery` id that stays the same on every retry.
 
 The kit checks the signature and refuses a delivery more than five minutes
 off, hands each verified event to your handler once per delivery id, and
@@ -171,8 +171,8 @@ An addon without a health path is never asked.
 
 Each question in `install.options` becomes a field in the panel's install
 form and a flag of your install script. Answers reach the addon as
-environment variables `NEXORA_OPT_<KEY>`, beside `NEXORA_PANEL_URL` and
-`NEXORA_CLAIM_CODE`; read one with `addon.Option("key")`. The option types
+environment variables `NX_OPT_<KEY>`, beside `NX_PANEL_URL` and
+`NX_CLAIM_CODE`; read one with `addon.Option("key")`. The option types
 and their rules are in [[manifest#install-options]].
 
 Two types change how the panel installs you:
@@ -211,11 +211,11 @@ the image in `install.docker`, a `SHA256SUMS` of every asset, and
 `SHA256SUMS.sig`, signed with the key that signs the manifest:
 
 ```bash
-go install github.com/nexora-vpn/addon-kit/cmd/nexora-addon@latest
-nexora-addon check nexora-addon.json                    # would a panel accept it?
-nexora-addon keygen -out addon.key                      # once: your signing key
-nexora-addon sign -key addon.key nexora-addon.json > signed.json
-nexora-addon sign-sums -key addon.key SHA256SUMS > SHA256SUMS.sig
+go install github.com/nx-panel/addon-kit/cmd/nx-addon@latest
+nx-addon check nx-addon.json                    # would a panel accept it?
+nx-addon keygen -out addon.key                      # once: your signing key
+nx-addon sign -key addon.key nx-addon.json > signed.json
+nx-addon sign-sums -key addon.key SHA256SUMS > SHA256SUMS.sig
 gh release upload v1.2.3 SHA256SUMS.sig
 ```
 
@@ -233,9 +233,9 @@ are in [[manifest#signing]].
 ## Getting listed
 
 Addons are listed at
-[addons.nexora-panel.org](https://addons.nexora-panel.org) as official,
+[addons.nx-panel.org](https://addons.nx-panel.org) as official,
 verified or unofficial ([[directory#what-the-directory-lists]]). To be
-listed, sign the manifest with your own key (`nexora-addon keygen`, `sign`)
-and open a pull request on the directory. Keep `nexora-addon.json` at the
+listed, sign the manifest with your own key (`nx-addon keygen`, `sign`)
+and open a pull request on the directory. Keep `nx-addon.json` at the
 root of your public repository (for a closed addon, its public distribution
 repository): the directory and the install wizard read it there.

@@ -1,7 +1,7 @@
 // The core-name rule (docs-site.md P4, owner 2026-10-11): the site may name
 // sing-box and Xray as *client* software — a sing-box subscription, sing-box
 // apps, Xray-based clients, the `singbox` / `xray` format identifiers — and
-// must never say or imply that Nexora is built on, inherits from or contains
+// must never say or imply that NX is built on, inherits from or contains
 // their code.
 //
 // A word ban cannot tell those apart, so this is an allow-list: every mention
@@ -25,7 +25,7 @@ const REFUSED = [
   /xtls\/xray-core/i,
   /(built|based)\s+on\s+(sing[\s-]?box|xray)/i,
   /(fork|forked)\s+(of|from)\s+(sing[\s-]?box|xray)/i,
-  /(nexora|node|nodes|panel)\s+(runs?|uses?|embeds?|wraps?)\s+(sing[\s-]?box|xray)/i,
+  /(nx|node|nodes|panel)\s+(runs?|uses?|embeds?|wraps?)\s+(sing[\s-]?box|xray)/i,
   /(sing[\s-]?box|xray)[\s-]+(core|engine|library|code|kernel|upstream)\b/i,
 ]
 

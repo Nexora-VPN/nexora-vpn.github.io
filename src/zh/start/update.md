@@ -20,7 +20,7 @@ tags: [install, panel, node]
 1. **正在备份**：把数据库备份到你的备份目录。
 2. **正在下载**：下载新版本。
 3. **正在校验**：对照随版本发布的校验和进行校验，并试运行一次，确认它能在本服务器上启动。
-4. **正在安装**：安装新版本，把旧程序保留为 `/opt/nexora-panel/nexora-panel.previous`。
+4. **正在安装**：安装新版本，把旧程序保留为 `/opt/nx-panel/nx-panel.previous`。
 5. **正在重启**：你会保持登录状态。面板会有几秒钟无法访问，页面会提示它何时恢复。
 
 如果新版本没能启动，旧程序会在大约十秒内自动恢复，页面显示 **已回退**。
@@ -32,9 +32,9 @@ tags: [install, panel, node]
 ::: danger 回到旧版本
 从带来 **设置 → 地址**（[[use/ingress]]）的版本起，面板以新的形式保存端口、域名、路径和 HTTPS，旧设置会从数据库中删除。在该数据库上启动的旧版本找不到其中任何一项：它会在端口 2095 上以普通 HTTP 启动，没有域名和路径。
 
-- **更新前先备份，并保留它。** 从页面更新会在第 1 步自动备份；安装脚本会把 SQLite 数据库复制为 `nexora.db.bak`。
+- **更新前先备份，并保留它。** 从页面更新会在第 1 步自动备份；安装脚本会把 SQLite 数据库复制为 `nx.db.bak`。
 - **不要**通过在新版本上安装旧版本来回退。
-- 如果从此页面更新失败、旧版本被自动换回，也会发生同样的情况。请再次运行更新（必要时在服务器上运行），或用 `nexora-panel restore FILE -keep-web-settings=false` 还原更新前的备份，然后重启面板。
+- 如果从此页面更新失败、旧版本被自动换回，也会发生同样的情况。请再次运行更新（必要时在服务器上运行），或用 `nx-panel restore FILE -keep-web-settings=false` 还原更新前的备份，然后重启面板。
 :::
 
 **每天检查新版本** 可以关闭每日检查。它每天向公开的面板仓库发一次请求，这会让对方知道你服务器的地址。关闭检查后按钮仍然可用。
@@ -44,10 +44,10 @@ tags: [install, panel, node]
 再次运行安装程序。它会找到现有安装并就地更新：
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/nexora-vpn/panel/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/nx-panel/panel/main/install.sh)
 ```
 
-它会停止服务，把 SQLite 数据库复制为 `nexora.db.bak`，保留旧程序，更新数据库，然后重新启动。你的设置和管理员账户不受影响。使用 PostgreSQL 时，请先自行导出数据库。
+它会停止服务，把 SQLite 数据库复制为 `nx.db.bak`，保留旧程序，更新数据库，然后重新启动。你的设置和管理员账户不受影响。使用 PostgreSQL 时，请先自行导出数据库。
 
 ## Docker 中的面板 {#the-panel-in-docker}
 

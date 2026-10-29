@@ -8,7 +8,7 @@ tags: [addons]
 
 # Shop: payments
 
-[[shop|Nexora Shop]] ships **no payment gateway**. It ships ways to take
+[[shop|NX Shop]] ships **no payment gateway**. It ships ways to take
 money that are not gateways at all (card-to-card, confirmed by a person from
 the customer's receipt or by your bank's SMS) and one general capability: a
 **generic HTTP gateway**, a small JSON contract you can point at whatever
@@ -119,8 +119,8 @@ gateway sends the customer back there ([[shop-portal#https]]).
 ### Signing {#signing}
 
 Every request in both directions, and every call Shop makes to a service of
-yours, is signed the same way: the header `X-Nexora-Timestamp` (Unix
-seconds) and `X-Nexora-Signature`, the hex HMAC-SHA256 of
+yours, is signed the same way: the header `X-Nx-Timestamp` (Unix
+seconds) and `X-Nx-Signature`, the hex HMAC-SHA256 of
 `<timestamp>.<raw body>` under the secret. Check Shop's signature in your
 relay. Shop refuses a callback whose signature is wrong or whose timestamp
 is more than five minutes off its clock.
@@ -130,7 +130,7 @@ TS=$(date +%s)
 BODY='{"text":"..."}'
 SIG=$(printf '%s.%s' "$TS" "$BODY" | openssl dgst -sha256 -hmac "$SECRET" -hex | sed 's/^.* //')
 curl -X POST https://shop.example.com/pay/hook/card \
-  -H "X-Nexora-Timestamp: $TS" -H "X-Nexora-Signature: $SIG" \
+  -H "X-Nx-Timestamp: $TS" -H "X-Nx-Signature: $SIG" \
   -H 'Content-Type: application/json' --data "$BODY"
 ```
 

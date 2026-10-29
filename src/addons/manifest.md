@@ -1,6 +1,6 @@
 ---
 title: "The addon manifest"
-description: "Reference for nexora-addon.json: every field, the install section and its option types, requires.panel, and how manifests and releases are signed."
+description: "Reference for nx-addon.json: every field, the install section and its option types, requires.panel, and how manifests and releases are signed."
 order: 11
 group: authors
 tags: [addons, api, reference]
@@ -8,7 +8,7 @@ tags: [addons, api, reference]
 
 # The addon manifest
 
-The manifest, `nexora-addon.json`, is the contract between an [[~addon]] and
+The manifest, `nx-addon.json`, is the contract between an [[~addon]] and
 the panel, the [[directory|addon directory]] and the panel's install form. It
 says who the addon is, what it asks for and how it is installed. This page
 lists every field; [[build]] explains how to use them.
@@ -17,7 +17,7 @@ The addon kit's `manifest` package enforces this contract, and the panel
 validates with the same code. Check a manifest before you publish it:
 
 ```bash
-nexora-addon check nexora-addon.json
+nx-addon check nx-addon.json
 ```
 
 ## Where it lives
@@ -25,7 +25,7 @@ nexora-addon check nexora-addon.json
 - **At the root of the addon's public repository.** The directory and the
   install form read it there before anything runs. For a closed addon, that
   is its public distribution repository.
-- **Served by the running addon** at `/.well-known/nexora-addon.json`, which
+- **Served by the running addon** at `/.well-known/nx-addon.json`, which
   registration reads.
 
 ## A complete example
@@ -39,9 +39,9 @@ nexora-addon check nexora-addon.json
   "publisher": "Example Ltd",
   "license": "Apache-2.0",
   "description": { "en": "A minimal addon to start from." },
-  "docs": "https://github.com/nexora-vpn/addon-template",
+  "docs": "https://github.com/nx-panel/addon-template",
   "install": {
-    "docker": { "image": "ghcr.io/nexora-vpn/addon-template", "compose": "deploy/compose.yml" },
+    "docker": { "image": "ghcr.io/nx-panel/addon-template", "compose": "deploy/compose.yml" },
     "binary": { "linux-amd64": "addon-template-linux-amd64.tar.gz" },
     "options": [
       { "key": "port", "type": "port", "default": 8090, "label": { "en": "Port" } }
@@ -51,8 +51,8 @@ nexora-addon check nexora-addon.json
     { "scope": "users:read", "purpose": "to show how many accounts the panel has" }
   ],
   "events": ["user.created", "panel.addon_removed"],
-  "webhook": "/nexora/events",
-  "setup": "/nexora/setup",
+  "webhook": "/nx/events",
+  "setup": "/nx/setup",
   "health": "/health",
   "ui": "/",
   "rateLimit": 60,
@@ -108,7 +108,7 @@ A manifest that names one key twice in any object is refused.
 
 ```json
 "install": {
-  "docker": { "image": "ghcr.io/nexora-vpn/shop", "compose": "deploy/compose.yml" },
+  "docker": { "image": "ghcr.io/nx-panel/shop", "compose": "deploy/compose.yml" },
   "binary": { "linux-amd64": "shop-linux-amd64.tar.gz", "linux-arm64": "shop-linux-arm64.tar.gz" },
   "options": [ … ]
 }
@@ -168,9 +168,9 @@ and say in your release notes which panel your addon needs.
 
 ### How answers reach the addon
 
-Answers arrive as environment variables `NEXORA_OPT_<KEY>`, in an `.env`
+Answers arrive as environment variables `NX_OPT_<KEY>`, in an `.env`
 beside the compose file or the systemd unit's `EnvironmentFile`. Beside
-them come `NEXORA_PANEL_URL` and `NEXORA_CLAIM_CODE`, the code the panel
+them come `NX_PANEL_URL` and `NX_CLAIM_CODE`, the code the panel
 issued for this install. A `bool` is `true` or `false`, a number in its JSON
 spelling.
 
@@ -198,9 +198,9 @@ as its first admin's password. An update keeps the claim code.
 
 ### The manifest
 
-- An **official** addon is signed by Nexora.
+- An **official** addon is signed by NX.
 - A **verified** addon is signed with its developer's own key
-  (`nexora-addon keygen`, `nexora-addon sign`), which the directory's signed
+  (`nx-addon keygen`, `nx-addon sign`), which the directory's signed
   index vouches for.
 - An **unsigned** addon is registered by hand.
 
@@ -215,11 +215,11 @@ the signature over it made after the build with **the key that signs the
 manifest**:
 
 ```bash
-nexora-addon sign-sums -key addon.key SHA256SUMS > SHA256SUMS.sig
+nx-addon sign-sums -key addon.key SHA256SUMS > SHA256SUMS.sig
 gh release upload v1.2.3 SHA256SUMS.sig
 ```
 
-The signature is the base64 Ed25519 signature of `nexora-addon SHA256SUMS
+The signature is the base64 Ed25519 signature of `nx-addon SHA256SUMS
 v1\n` followed by the file's bytes, so it can never pass for a manifest's.
 
 | Install | What is checked |

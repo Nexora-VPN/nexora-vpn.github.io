@@ -8,7 +8,7 @@ tags: [protocols, certificates]
 # OpenVPN and OpenConnect
 
 OpenVPN and OpenConnect are the VPNs that office laptops, routers and locked-down
-devices often already have. Nexora serves both as [[~endpoint|endpoints]]: each
+devices often already have. NX serves both as [[~endpoint|endpoints]]: each
 user signs in with their own account name and password, and the panel writes
 their client configuration for them.
 

@@ -68,7 +68,7 @@ tags: [monitoring]
 
 ```bash
 # 1. Fetch the monitoring directory next to your docker-compose.yml
-curl -fsSL https://github.com/nexora-vpn/panel/archive/refs/heads/main.tar.gz \
+curl -fsSL https://github.com/nx-panel/panel/archive/refs/heads/main.tar.gz \
   | tar -xz --strip-components=1 panel-main/monitoring
 
 # 2. Put a token with the stats:read scope where Prometheus reads it
@@ -95,7 +95,7 @@ ssh -L 3000:localhost:3000 you@your-server
 # then open http://localhost:3000 and sign in with GRAFANA_PASSWORD
 ```
 
-**Nexora fleet** 仪表盘已经在那里了。Prometheus 完全不对外发布：它没有自己的登录，而且掌握着你全部的运营情况。
+**NX fleet** 仪表盘已经在那里了。Prometheus 完全不对外发布：它没有自己的登录，而且掌握着你全部的运营情况。
 
 - **面板自己提供 HTTPS 时：** 在 `monitoring/prometheus/prometheus.yml` 中设置 `scheme: https` 和 `tls_config: { insecure_skip_verify: true }`。面板的证书写的是你的公开主机名，而不是 Prometheus 拨号使用的 `panel` 服务名。
 - **面板设置了基础路径时：** 设置 `metrics_path: /your-base-path/metrics`。
@@ -105,17 +105,17 @@ ssh -L 3000:localhost:3000 you@your-server
 
 ```yaml
 scrape_configs:
-  - job_name: nexora-panel
+  - job_name: nx-panel
     scheme: https
     metrics_path: /metrics
     authorization:
       type: Bearer
-      credentials_file: /etc/prometheus/nexora-token
+      credentials_file: /etc/prometheus/nx-token
     static_configs:
       - targets: ['panel.example.com']
 ```
 
-对于 Grafana，从[面板的仓库](https://github.com/nexora-vpn/panel)导入 `monitoring/grafana/dashboards/nexora-fleet.json`。它需要一个 uid 为 `nexora-prometheus` 的 Prometheus 数据源。
+对于 Grafana，从[面板的仓库](https://github.com/nx-panel/panel)导入 `monitoring/grafana/dashboards/nx-fleet.json`。它需要一个 uid 为 `nx-prometheus` 的 Prometheus 数据源。
 
 ::: tip 只给 Prometheus 用的端口
 在 [[use/ingress]] 中，把一个 **指标** 路由放在绑定到私有地址的监听器上，可以让 `/metrics` 不出现在面板的公开地址上。同时在面板路由上关闭 **/metrics**。
@@ -129,22 +129,22 @@ scrape_configs:
 
 | 指标 | 含义 |
 | --- | --- |
-| `nexora_panel_build_info` | 值为 1，以运行中的版本作为标签 |
-| `nexora_panel_start_time_seconds` | 面板进程的启动时间；`time() - this` 即为运行时长 |
-| `nexora_license_valid` | 许可证有效时为 1，否则为 0 |
-| `nexora_license_expires_at_seconds` | 许可证的到期时间；不会到期时不存在 |
-| `nexora_license_limit{resource}`、`nexora_license_used{resource}` | `user` 和 `node` 的上限与数量（−1 = 不限） |
-| `nexora_users_total{status}` | 按状态统计的账户：active、disabled、expired、limited、pending |
-| `nexora_users_online` | 在在线窗口内有流量的账户 |
-| `nexora_nodes_total` | 面板已知的节点 |
-| `nexora_node_up`、`nexora_node_enabled` | 每个节点：是否在应答、是否已启用 |
-| `nexora_node_traffic_bytes_total{direction}` | 计入该节点的流量 |
-| `nexora_node_online_users` | 在在线窗口内在该节点上有流量的账户 |
-| `nexora_node_connections`、`nexora_node_engine_restarts_total` | 打开的连接；节点启动以来的重启次数 |
-| `nexora_node_rejected_connections_total{outbound}` | 被拦截出站拒绝的连接 |
-| `nexora_node_disk_bytes`、`nexora_node_disk_used_bytes`、`nexora_node_memory_bytes`、`nexora_node_memory_used_bytes`、`nexora_node_load1` | 节点的主机 |
-| `nexora_event_deliveries{status}`、`nexora_event_subscribers` | 按状态（pending、delivered、dead）统计的事件投递，以及已启用的订阅者 |
-| `nexora_ingress_requests_total{route,outcome}` | 面板启动以来的请求数，按作出决定的 [[use/ingress\|路由]]（没有路由匹配时为空）和它的处理方式统计：`served`、`redirect` 或 `refused` |
+| `nx_panel_build_info` | 值为 1，以运行中的版本作为标签 |
+| `nx_panel_start_time_seconds` | 面板进程的启动时间；`time() - this` 即为运行时长 |
+| `nx_license_valid` | 许可证有效时为 1，否则为 0 |
+| `nx_license_expires_at_seconds` | 许可证的到期时间；不会到期时不存在 |
+| `nx_license_limit{resource}`、`nx_license_used{resource}` | `user` 和 `node` 的上限与数量（−1 = 不限） |
+| `nx_users_total{status}` | 按状态统计的账户：active、disabled、expired、limited、pending |
+| `nx_users_online` | 在在线窗口内有流量的账户 |
+| `nx_nodes_total` | 面板已知的节点 |
+| `nx_node_up`、`nx_node_enabled` | 每个节点：是否在应答、是否已启用 |
+| `nx_node_traffic_bytes_total{direction}` | 计入该节点的流量 |
+| `nx_node_online_users` | 在在线窗口内在该节点上有流量的账户 |
+| `nx_node_connections`、`nx_node_engine_restarts_total` | 打开的连接；节点启动以来的重启次数 |
+| `nx_node_rejected_connections_total{outbound}` | 被拦截出站拒绝的连接 |
+| `nx_node_disk_bytes`、`nx_node_disk_used_bytes`、`nx_node_memory_bytes`、`nx_node_memory_used_bytes`、`nx_node_load1` | 节点的主机 |
+| `nx_event_deliveries{status}`、`nx_event_subscribers` | 按状态（pending、delivered、dead）统计的事件投递，以及已启用的订阅者 |
+| `nx_ingress_requests_total{route,outcome}` | 面板启动以来的请求数，按作出决定的 [[use/ingress\|路由]]（没有路由匹配时为空）和它的处理方式统计：`served`、`redirect` 或 `refused` |
 
 每个节点指标都带有 `node`（其名称）和 `id` 两个标签。
 
@@ -152,22 +152,22 @@ scrape_configs:
 
 ```yaml
 groups:
-  - name: nexora
+  - name: nx
     rules:
-      - alert: NexoraPanelDown
-        expr: up{job="nexora-panel"} == 0
+      - alert: NXPanelDown
+        expr: up{job="nx-panel"} == 0
         for: 5m
-      - alert: NexoraNodeDown          # a switched-off node is not an outage
-        expr: nexora_node_up == 0 and nexora_node_enabled == 1
+      - alert: NXNodeDown          # a switched-off node is not an outage
+        expr: nx_node_up == 0 and nx_node_enabled == 1
         for: 10m
-      - alert: NexoraNodeDiskFilling
-        expr: nexora_node_disk_used_bytes / nexora_node_disk_bytes > 0.9
+      - alert: NXNodeDiskFilling
+        expr: nx_node_disk_used_bytes / nx_node_disk_bytes > 0.9
         for: 30m
-      - alert: NexoraEventDeliveriesDead
-        expr: increase(nexora_event_deliveries{status="dead"}[1h]) > 0
+      - alert: NXEventDeliveriesDead
+        expr: increase(nx_event_deliveries{status="dead"}[1h]) > 0
 ```
 
-如果你按许可证销售，再加上 `nexora_license_expires_at_seconds - time() < 7 * 86400`。
+如果你按许可证销售，再加上 `nx_license_expires_at_seconds - time() < 7 * 86400`。
 
 ## 作为事件的告警 {#alerts-as-events}
 

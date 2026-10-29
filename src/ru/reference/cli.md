@@ -1,6 +1,6 @@
 ---
 title: "Командная строка"
-description: "Все команды nexora-panel и nexora-node и как вернуться в панель, доступ к которой вы потеряли."
+description: "Все команды nx-panel и nx-node и как вернуться в панель, доступ к которой вы потеряли."
 order: 2
 tags: [reference, panel]
 ---
@@ -12,12 +12,12 @@ tags: [reference, panel]
 страницы панели. Они нужны, чтобы вернуть недоступную панель, восстановить
 резервную копию, когда панель не запускается, или автоматизировать установку.
 
-Установщик панели добавляет `nexora-panel` в PATH, а программа сама находит
+Установщик панели добавляет `nx-panel` в PATH, а программа сама находит
 свой файл конфигурации, поэтому любая команда работает из любого каталога. В
 Docker добавьте впереди `docker compose exec panel /app/`: `docker compose
-exec panel /app/nexora-panel config list`.
+exec panel /app/nx-panel config list`.
 
-## nexora-panel {#nexora-panel}
+## nx-panel {#nx-panel}
 
 | Команда | Что делает |
 | --- | --- |
@@ -38,7 +38,7 @@ exec panel /app/nexora-panel config list`.
 
 `-config FILE` направляет команду на другой файл конфигурации. Команды,
 которые открывают базу, принимают его после остальных аргументов, например
-`nexora-panel config list -config /path/to/config.json`.
+`nx-panel config list -config /path/to/config.json`.
 
 ### Настройки из командной строки {#settings-from-the-command-line}
 
@@ -54,14 +54,14 @@ exec panel /app/nexora-panel config list`.
 `config set` отказывается менять настройки адреса; используйте
 `ingress reset` ниже. Настройки резервного
 копирования подхватываются в течение часа без перезапуска; для остальных
-перезапустите панель (`systemctl restart nexora-panel`).
+перезапустите панель (`systemctl restart nx-panel`).
 
 ### restore {#restore}
 
 ```bash
-systemctl stop nexora-panel
-nexora-panel restore /var/opt/nexora/backups/nexora-backup-20260914-030000.tar.gz
-systemctl start nexora-panel
+systemctl stop nx-panel
+nx-panel restore /var/opt/nx-panel/backups/nx-backup-20260914-030000.tar.gz
+systemctl start nx-panel
 ```
 
 Сначала команда читает архив, печатает его содержимое и предупреждения и
@@ -87,10 +87,10 @@ PostgreSQL строки заменяются сразу, прямо под не�
 верните тот, до которого можете добраться:
 
 ```bash
-nexora-panel ingress list                        # every listener and route
-nexora-panel ingress reset                       # one plain listener, the panel on every host
-nexora-panel ingress reset -listen 0.0.0.0:2095  # the same, on this address
-systemctl restart nexora-panel
+nx-panel ingress list                        # every listener and route
+nx-panel ingress reset                       # one plain listener, the panel on every host
+nx-panel ingress reset -listen 0.0.0.0:2095  # the same, on this address
+systemctl restart nx-panel
 ```
 
 `ingress reset` заменяет все слушатели, маршруты и ответы по умолчанию одним
@@ -108,13 +108,13 @@ systemctl restart nexora-panel
 Пока у панели один адрес, её настройки можно менять по одной:
 
 ```bash
-nexora-panel config list                       # what is set
-nexora-panel config set web_listen_port 2095   # a port you can reach
-nexora-panel config set web_listen_ip ""       # listen everywhere again (IPv4 and IPv6)
-nexora-panel config set web_domain ""          # stop restricting the hostname
-nexora-panel config set web_basepath ""        # serve at the root again
-nexora-panel config set sub_domain ""          # stop reserving hosts for subscriptions
-systemctl restart nexora-panel
+nx-panel config list                       # what is set
+nx-panel config set web_listen_port 2095   # a port you can reach
+nx-panel config set web_listen_ip ""       # listen everywhere again (IPv4 and IPv6)
+nx-panel config set web_domain ""          # stop restricting the hostname
+nx-panel config set web_basepath ""        # serve at the root again
+nx-panel config set sub_domain ""          # stop reserving hosts for subscriptions
+systemctl restart nx-panel
 ```
 
 На последней многие попадаются, когда у панели **нет базового пути**. Домен в
@@ -129,9 +129,9 @@ systemctl restart nexora-panel
 ### Забытый пароль {#forgotten-password}
 
 ```bash
-nexora-panel admin list                        # the accounts, and which one owns the panel
-nexora-panel admin reset-password              # the owner; the password is typed, not shown
-nexora-panel admin reset-password -user alice  # any other account
+nx-panel admin list                        # the accounts, and which one owns the panel
+nx-panel admin reset-password              # the owner; the password is typed, not shown
+nx-panel admin reset-password -user alice  # any other account
 ```
 
 Без `-user` команда сбрасывает пароль **владельца** панели. Новый пароль
@@ -151,8 +151,8 @@ nexora-panel admin reset-password -user alice  # any other account
 никогда не блокировать:
 
 ```bash
-nexora-panel config set trusted_proxies "10.0.0.0/8"   # your reverse proxy or CDN, or empty
-nexora-panel config set login_allowlist "203.0.113.7"  # addresses never banned
+nx-panel config set trusted_proxies "10.0.0.0/8"   # your reverse proxy or CDN, or empty
+nx-panel config set login_allowlist "203.0.113.7"  # addresses never banned
 ```
 
 ::: warning За прокси или CDN
@@ -164,7 +164,7 @@ nexora-panel config set login_allowlist "203.0.113.7"  # addresses never banned
 Когда вы снова войдёте, главный администратор может снять блокировку в
 **Настройки → Безопасность** ([[use/security]]).
 
-## nexora-node {#nexora-node}
+## nx-node {#nx-node}
 
 Узел устанавливает и настраивает панель, поэтому команд у него немного:
 

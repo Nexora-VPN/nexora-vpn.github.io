@@ -14,20 +14,20 @@ for (const [key, locale] of Object.entries(locales)) {
   locale.themeConfig = { ...locale.themeConfig, sidebar: sidebarFor(SRC, lang) }
 }
 
-// The site answers on docs.nexora-panel.org only (src/public/CNAME, and the
+// The site answers on docs.nx-panel.org only (src/public/CNAME, and the
 // custom domain set on the repository's Pages settings), so it lives at the
 // root. Nothing here may load from another host: fonts and icons are bundled.
 export default defineConfig({
   srcDir: 'src',
   base: '/',
-  title: 'Nexora Docs',
+  title: 'NX Docs',
   // The offline bundle (NX_OFFLINE=1) keeps .html in its links, so any plain
   // static server — python3 -m http.server — can serve it from a folder.
   cleanUrls: !process.env.NX_OFFLINE,
   lastUpdated: true,
-  sitemap: { hostname: 'https://docs.nexora-panel.org' },
+  sitemap: { hostname: 'https://docs.nx-panel.org' },
   head: [
-    ['link', { rel: 'icon', type: 'image/png', href: '/nexora-mark.png' }],
+    ['link', { rel: 'icon', type: 'image/png', href: '/nx-mark.png' }],
     ['meta', { name: 'theme-color', content: '#6d4aff' }],
   ],
   locales,
@@ -53,9 +53,9 @@ export default defineConfig({
     pageFacts(pageData, SRC)
   },
   themeConfig: {
-    logo: { src: '/nexora-mark.png', alt: 'Nexora' },
-    siteTitle: 'Nexora Docs',
-    socialLinks: [{ icon: 'github', link: 'https://github.com/Nexora-VPN/panel' }],
+    logo: { src: '/nx-mark.png', alt: 'NX' },
+    siteTitle: 'NX Docs',
+    socialLinks: [{ icon: 'github', link: 'https://github.com/nx-panel/panel' }],
     search: {
       provider: 'local',
       options: {

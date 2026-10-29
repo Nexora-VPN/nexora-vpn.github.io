@@ -8,7 +8,7 @@ tags: [addons, users]
 
 # Shop: the customer portal
 
-[[shop|Nexora Shop]] gives your customers one web app at
+[[shop|NX Shop]] gives your customers one web app at
 `https://<shop>/app/`. This page covers what it is, how to give it HTTPS,
 and the three ways a customer signs in outside Telegram.
 
@@ -83,8 +83,8 @@ leave it out. Each code is sent as:
 
 ```http
 POST <your relay URL>
-X-Nexora-Timestamp: 1790000000
-X-Nexora-Signature: <hex HMAC-SHA256 of "1790000000.<body>" under the secret>
+X-Nx-Timestamp: 1790000000
+X-Nx-Signature: <hex HMAC-SHA256 of "1790000000.<body>" under the secret>
 Content-Type: application/json
 
 {"to": "+15550100", "text": "Your shop sign-in code: 123456"}
@@ -110,7 +110,7 @@ needs Telegram to be reachable; email and SMS are for when it is not.
 
 Codes, sign-ins and payment checks are rate-limited per client address.
 When Shop runs behind a reverse proxy that terminates TLS, set
-`NEXORA_OPT_TRUSTED_PROXIES` in the install's `.env` to the proxy's
+`NX_OPT_TRUSTED_PROXIES` in the install's `.env` to the proxy's
 addresses or ranges, for example `127.0.0.1, 10.0.0.0/8`. Shop then reads
 the client from the proxy's `X-Forwarded-For`. Left empty, the default, no
 forwarded header is believed.

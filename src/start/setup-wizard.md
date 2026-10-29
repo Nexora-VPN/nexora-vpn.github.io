@@ -12,7 +12,7 @@ installer prints. It creates the main administrator and decides where the panel
 answers and how. Everything on it is saved together, once, and the panel then
 restarts onto the address you described.
 
-<NxShot page="setup-wizard" alt="The Set up Nexora form: main administrator, panel address, HTTPS and time zone" />
+<NxShot page="setup-wizard" alt="The Set up NX form: main administrator, panel address, HTTPS and time zone" />
 
 ## The one-time link
 
@@ -25,8 +25,8 @@ allows creating the main administrator, so treat the link like a password.
   found", and so does the setup page without the token.
 - **It works until setup completes.** After that the token is gone and the panel
   shows its login page.
-- **Lost it?** `nexora-panel setup-token` prints it again on the server.
-  `nexora-panel setup-token -rotate` replaces it with a new one, which makes the
+- **Lost it?** `nx-panel setup-token` prints it again on the server.
+  `nx-panel setup-token -rotate` replaces it with a new one, which makes the
   old link useless.
 
 The page has a language switch and a theme switch at the top.
@@ -105,7 +105,7 @@ domain, add more ports and host names, or put other programs behind it on
 
 ## Restore a backup instead
 
-To move an existing Nexora panel to this server, choose **Moving from another
+To move an existing NX panel to this server, choose **Moving from another
 server? Restore a backup** at the bottom of the wizard instead of filling it in.
 
 1. Drop the backup archive on the page. An encrypted archive asks for its

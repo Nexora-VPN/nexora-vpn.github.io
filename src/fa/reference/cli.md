@@ -1,6 +1,6 @@
 ---
 title: "خط فرمان"
-description: "همهٔ دستورهای nexora-panel و nexora-node، و راه برگشتن به پنلی که از آن بیرون مانده‌اید."
+description: "همهٔ دستورهای nx-panel و nx-node، و راه برگشتن به پنلی که از آن بیرون مانده‌اید."
 order: 2
 tags: [reference, panel]
 ---
@@ -12,12 +12,12 @@ tags: [reference, panel]
 آن‌ها وقتی نیاز دارید که بخواهید پنلی را که به آن نمی‌رسید برگردانید، وقتی پنل
 بالا نمی‌آید پشتیبانی را بازیابی کنید، یا یک نصب را اسکریپت کنید.
 
-نصب‌کنندهٔ پنل `nexora-panel` را در PATH قرار می‌دهد، و این برنامه فایل
+نصب‌کنندهٔ پنل `nx-panel` را در PATH قرار می‌دهد، و این برنامه فایل
 پیکربندی خودش را پیدا می‌کند، پس همهٔ دستورها از هر پوشه‌ای کار می‌کنند. در
 Docker، `docker compose exec panel /app/` را جلوی دستور بگذارید:
-`docker compose exec panel /app/nexora-panel config list`.
+`docker compose exec panel /app/nx-panel config list`.
 
-## nexora-panel {#nexora-panel}
+## nx-panel {#nx-panel}
 
 | دستور | چه می‌کند |
 | --- | --- |
@@ -38,7 +38,7 @@ Docker، `docker compose exec panel /app/` را جلوی دستور بگذاری
 
 `-config FILE` یک دستور را به فایل پیکربندی دیگری می‌فرستد. دستورهایی که پایگاه
 داده را باز می‌کنند آن را بعد از آرگومان‌های دیگرشان می‌پذیرند، مثلاً
-`nexora-panel config list -config /path/to/config.json`.
+`nx-panel config list -config /path/to/config.json`.
 
 ### تنظیمات از خط فرمان {#settings-from-the-command-line}
 
@@ -53,14 +53,14 @@ Docker، `docker compose exec panel /app/` را جلوی دستور بگذاری
 `config set` تغییر تنظیمات آدرس را رد می‌کند؛ از `ingress reset` پایین‌تر استفاده
 کنید.
 تنظیمات پشتیبان‌گیری در کمتر از یک ساعت و بدون راه‌اندازی مجدد اعمال می‌شوند؛
-برای بقیه پنل را دوباره راه‌اندازی کنید (`systemctl restart nexora-panel`).
+برای بقیه پنل را دوباره راه‌اندازی کنید (`systemctl restart nx-panel`).
 
 ### restore {#restore}
 
 ```bash
-systemctl stop nexora-panel
-nexora-panel restore /var/opt/nexora/backups/nexora-backup-20260914-030000.tar.gz
-systemctl start nexora-panel
+systemctl stop nx-panel
+nx-panel restore /var/opt/nx-panel/backups/nx-backup-20260914-030000.tar.gz
+systemctl start nx-panel
 ```
 
 اول فایل را می‌خواند، محتوا و هر هشداری را چاپ می‌کند، و از شما می‌خواهد
@@ -87,10 +87,10 @@ systemctl start nexora-panel
 آدرسی را که به آن دسترسی دارید برگردانید:
 
 ```bash
-nexora-panel ingress list                        # every listener and route
-nexora-panel ingress reset                       # one plain listener, the panel on every host
-nexora-panel ingress reset -listen 0.0.0.0:2095  # the same, on this address
-systemctl restart nexora-panel
+nx-panel ingress list                        # every listener and route
+nx-panel ingress reset                       # one plain listener, the panel on every host
+nx-panel ingress reset -listen 0.0.0.0:2095  # the same, on this address
+systemctl restart nx-panel
 ```
 
 `ingress reset` همهٔ شنونده‌ها، مسیرها و پاسخ‌های جایگزین را با یک شنونده روی
@@ -108,13 +108,13 @@ systemctl restart nexora-panel
 تا وقتی پنل یک آدرس دارد، تنظیماتش را می‌توان یکی‌یکی تغییر داد:
 
 ```bash
-nexora-panel config list                       # what is set
-nexora-panel config set web_listen_port 2095   # a port you can reach
-nexora-panel config set web_listen_ip ""       # listen everywhere again (IPv4 and IPv6)
-nexora-panel config set web_domain ""          # stop restricting the hostname
-nexora-panel config set web_basepath ""        # serve at the root again
-nexora-panel config set sub_domain ""          # stop reserving hosts for subscriptions
-systemctl restart nexora-panel
+nx-panel config list                       # what is set
+nx-panel config set web_listen_port 2095   # a port you can reach
+nx-panel config set web_listen_ip ""       # listen everywhere again (IPv4 and IPv6)
+nx-panel config set web_domain ""          # stop restricting the hostname
+nx-panel config set web_basepath ""        # serve at the root again
+nx-panel config set sub_domain ""          # stop reserving hosts for subscriptions
+systemctl restart nx-panel
 ```
 
 مورد آخر وقتی پنل **مسیر پایه ندارد** غافلگیرتان می‌کند. دامنه‌ای که در
@@ -129,9 +129,9 @@ systemctl restart nexora-panel
 ### گذرواژهٔ فراموش‌شده {#forgotten-password}
 
 ```bash
-nexora-panel admin list                        # the accounts, and which one owns the panel
-nexora-panel admin reset-password              # the owner; the password is typed, not shown
-nexora-panel admin reset-password -user alice  # any other account
+nx-panel admin list                        # the accounts, and which one owns the panel
+nx-panel admin reset-password              # the owner; the password is typed, not shown
+nx-panel admin reset-password -user alice  # any other account
 ```
 
 بدون `-user`، گذرواژهٔ **مالک** پنل بازنشانی می‌شود. گذرواژهٔ تازه دو بار پرسیده
@@ -149,8 +149,8 @@ nexora-panel admin reset-password -user alice  # any other account
 هم می‌ماند. دو تنظیم تعیین می‌کنند آن آدرس کیست و چه کسی هرگز مسدود نمی‌شود:
 
 ```bash
-nexora-panel config set trusted_proxies "10.0.0.0/8"   # your reverse proxy or CDN, or empty
-nexora-panel config set login_allowlist "203.0.113.7"  # addresses never banned
+nx-panel config set trusted_proxies "10.0.0.0/8"   # your reverse proxy or CDN, or empty
+nx-panel config set login_allowlist "203.0.113.7"  # addresses never banned
 ```
 
 ::: warning پشت پراکسی یا CDN
@@ -162,7 +162,7 @@ nexora-panel config set login_allowlist "203.0.113.7"  # addresses never banned
 وقتی دوباره وارد شدید، مدیر اصلی می‌تواند مسدودی را در **تنظیمات ← امنیت**
 بردارد ([[use/security]]).
 
-## nexora-node {#nexora-node}
+## nx-node {#nx-node}
 
 نود را پنل نصب و پیکربندی می‌کند، پس دستورهایش کم‌اند:
 

@@ -33,7 +33,7 @@ tags: [access]
 - 不能被删除；
 - 不能被移出主管理员层级；
 - 是唯一能够移交面板的账户；
-- 是 `nexora-panel admin reset-password` 在未指定用户名时选择的账户（参见 [[reference/cli]]）。
+- 是 `nx-panel admin reset-password` 在未指定用户名时选择的账户（参见 [[reference/cli]]）。
 
 所有者始终有且只有一个，因此总有一个账户可以从服务器控制台找回。
 
@@ -79,7 +79,7 @@ tags: [access]
 
 因此，持有旧密码的人将无法再进入。账户回到其主人手中后，可以重新关联和配对。
 
-要修改你 **自己** 的密码，请使用账户菜单中的 **修改密码**，它会要求输入当前密码。如果你无法再进入任何主管理员账户，请在服务器上使用 `nexora-panel admin reset-password`，它还会关闭该账户的两步验证（参见 [[reference/cli]]）。
+要修改你 **自己** 的密码，请使用账户菜单中的 **修改密码**，它会要求输入当前密码。如果你无法再进入任何主管理员账户，请在服务器上使用 `nx-panel admin reset-password`，它还会关闭该账户的两步验证（参见 [[reference/cli]]）。
 
 ## 结束会话 {#ending-sessions}
 

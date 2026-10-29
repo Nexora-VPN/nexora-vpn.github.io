@@ -8,7 +8,7 @@ tags: [addons]
 
 # فروشگاه: پرداخت‌ها
 
-[[shop|Nexora Shop]] **هیچ درگاه پرداختی** همراه ندارد. چیزی که همراه دارد
+[[shop|NX Shop]] **هیچ درگاه پرداختی** همراه ندارد. چیزی که همراه دارد
 راه‌هایی برای گرفتن پول است که اصلاً درگاه نیستند (کارت‌به‌کارت، که یک نفر از روی
 رسید مشتری یا پیامک بانک شما تأییدش می‌کند) و یک توانایی عمومی: یک **درگاه HTTP
 عمومی**، قرارداد کوچکی بر پایهٔ JSON که می‌توانید به هر واسطه‌ای که انتخاب می‌کنید
@@ -117,7 +117,7 @@ tags: [addons]
 ### امضا {#signing}
 
 هر درخواست در هر دو جهت، و هر درخواستی که فروشگاه به سرویسی از شما می‌فرستد، به یک
-شکل امضا می‌شود: هدر `X-Nexora-Timestamp` (ثانیهٔ Unix) و `X-Nexora-Signature`،
+شکل امضا می‌شود: هدر `X-Nx-Timestamp` (ثانیهٔ Unix) و `X-Nx-Signature`،
 یعنی HMAC-SHA256 به صورت hex روی `<timestamp>.<raw body>` با رمز. امضای فروشگاه
 را در رله‌تان بررسی کنید. فروشگاه callbackی را که امضایش اشتباه است یا زمانش بیش
 از پنج دقیقه با ساعت فروشگاه فاصله دارد رد می‌کند.
@@ -127,7 +127,7 @@ TS=$(date +%s)
 BODY='{"text":"..."}'
 SIG=$(printf '%s.%s' "$TS" "$BODY" | openssl dgst -sha256 -hmac "$SECRET" -hex | sed 's/^.* //')
 curl -X POST https://shop.example.com/pay/hook/card \
-  -H "X-Nexora-Timestamp: $TS" -H "X-Nexora-Signature: $SIG" \
+  -H "X-Nx-Timestamp: $TS" -H "X-Nx-Signature: $SIG" \
   -H 'Content-Type: application/json' --data "$BODY"
 ```
 

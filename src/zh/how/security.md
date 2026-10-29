@@ -1,6 +1,6 @@
 ---
 title: "安全模型"
-description: "Nexora 如何保护面板、节点和运营者：双向 TLS 与固定、会话、两步验证登录、角色、权限范围与归属、API 令牌、登录保护、安装关卡和审计日志。"
+description: "NX 如何保护面板、节点和运营者：双向 TLS 与固定、会话、两步验证登录、角色、权限范围与归属、API 令牌、登录保护、安装关卡和审计日志。"
 order: 11
 tags: [security, access]
 ---
@@ -90,4 +90,4 @@ tags: [security, access]
 
 ## 恢复 {#recovery}
 
-在面板服务器上运行 `nexora-panel admin reset-password`，会为一个账户（默认为所有者）设置新密码、关闭其两步验证登录、结束其会话，并移除其单点登录绑定。丢失手机和丢失密码是同一种恢复，而这个命令始终是重新进入的途径。参见 [[start/install-panel]]。
+在面板服务器上运行 `nx-panel admin reset-password`，会为一个账户（默认为所有者）设置新密码、关闭其两步验证登录、结束其会话，并移除其单点登录绑定。丢失手机和丢失密码是同一种恢复，而这个命令始终是重新进入的途径。参见 [[start/install-panel]]。

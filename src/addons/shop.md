@@ -1,14 +1,14 @@
 ---
-title: "Nexora Shop"
+title: "NX Shop"
 description: "Sell your panel's plans through a Telegram bot and a web app: install Shop, set it up, and find your way around its admin."
 order: 3
 group: shop
 tags: [addons, plans]
 ---
 
-# Nexora Shop
+# NX Shop
 
-Nexora Shop is the official [[~addon]] that sells your panel's
+NX Shop is the official [[~addon]] that sells your panel's
 [[~plan|plans]] to customers: products, orders, a wallet, card-to-card and
 gateway payments, a Telegram bot, a web app, discount and gift codes,
 referrals and agents. This page covers installing Shop and its admin; the
@@ -33,7 +33,7 @@ sales** on Shop's dashboard.
 
 ## Install
 
-The recommended way is from the panel: **Addons → Browse**, pick **Nexora
+The recommended way is from the panel: **Addons → Browse**, pick **NX
 Shop**, answer its questions, and let the panel install it on its own
 server, over SSH, or give you a command to run. The panel registers Shop
 once it answers. Every way to install is in [[directory]].
@@ -41,14 +41,14 @@ once it answers. Every way to install is in [[directory]].
 By hand, on a Linux server, as root:
 
 ```bash
-curl -fsSLO https://raw.githubusercontent.com/nexora-vpn/shop/main/install.sh
+curl -fsSLO https://raw.githubusercontent.com/nx-panel/shop/main/install.sh
 sh install.sh --method script --opt port=8095 \
   --panel-url https://panel.example.com --claim-code XXXX-XXXX-XXXX-XXXX
 ```
 
 `--method script` runs the binary under the systemd unit
-`nexora-addon-shop`; `--method docker` runs Shop's compose stack. Everything
-lives in `/opt/nexora-addons/shop`: the answers in `.env`, the data in
+`nx-addon-shop`; `--method docker` runs Shop's compose stack. Everything
+lives in `/opt/nx-addons/shop`: the answers in `.env`, the data in
 `data/`.
 
 ### The install's questions

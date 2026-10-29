@@ -1,6 +1,6 @@
 ---
 title: "Command line"
-description: "Every nexora-panel and nexora-node command, and how to get back into a panel you are locked out of."
+description: "Every nx-panel and nx-node command, and how to get back into a panel you are locked out of."
 order: 2
 tags: [reference, panel]
 ---
@@ -12,12 +12,12 @@ days you never type them: the installers and the panel's pages do the work. You
 need them to recover a panel you cannot reach, to restore a backup when the
 panel will not start, or to script an install.
 
-The panel installer puts `nexora-panel` on your PATH, and it finds its own
+The panel installer puts `nx-panel` on your PATH, and it finds its own
 configuration file, so every command works from any directory. In Docker, put
 `docker compose exec panel /app/` in front: `docker compose exec panel
-/app/nexora-panel config list`.
+/app/nx-panel config list`.
 
-## nexora-panel
+## nx-panel
 
 | Command | What it does |
 | --- | --- |
@@ -38,7 +38,7 @@ configuration file, so every command works from any directory. In Docker, put
 
 `-config FILE` points a command at another configuration file. The commands that
 open the database accept it after their other arguments, for example
-`nexora-panel config list -config /path/to/config.json`.
+`nx-panel config list -config /path/to/config.json`.
 
 ### Settings from the command line
 
@@ -53,14 +53,14 @@ Once **Settings → Addresses** holds more than one address, such as a second
 port, `config set` refuses to change the address settings; use `ingress reset`
 below.
 The backup settings are picked up within the hour without a restart; for the
-others, restart the panel (`systemctl restart nexora-panel`).
+others, restart the panel (`systemctl restart nx-panel`).
 
 ### restore
 
 ```bash
-systemctl stop nexora-panel
-nexora-panel restore /var/opt/nexora/backups/nexora-backup-20260914-030000.tar.gz
-systemctl start nexora-panel
+systemctl stop nx-panel
+nx-panel restore /var/opt/nx-panel/backups/nx-backup-20260914-030000.tar.gz
+systemctl start nx-panel
 ```
 
 It reads the archive first, prints what it holds and any warnings, and asks you
@@ -86,10 +86,10 @@ If you changed the panel's addresses on **Settings → Addresses**, look at them
 and put back one you can reach:
 
 ```bash
-nexora-panel ingress list                        # every listener and route
-nexora-panel ingress reset                       # one plain listener, the panel on every host
-nexora-panel ingress reset -listen 0.0.0.0:2095  # the same, on this address
-systemctl restart nexora-panel
+nx-panel ingress list                        # every listener and route
+nx-panel ingress reset                       # one plain listener, the panel on every host
+nx-panel ingress reset -listen 0.0.0.0:2095  # the same, on this address
+systemctl restart nx-panel
 ```
 
 `ingress reset` replaces every listener, route and fallback with one listener
@@ -107,13 +107,13 @@ minutes, so a reset is needed only for one that was confirmed.
 While the panel has one address, its settings can be changed one by one:
 
 ```bash
-nexora-panel config list                       # what is set
-nexora-panel config set web_listen_port 2095   # a port you can reach
-nexora-panel config set web_listen_ip ""       # listen everywhere again (IPv4 and IPv6)
-nexora-panel config set web_domain ""          # stop restricting the hostname
-nexora-panel config set web_basepath ""        # serve at the root again
-nexora-panel config set sub_domain ""          # stop reserving hosts for subscriptions
-systemctl restart nexora-panel
+nx-panel config list                       # what is set
+nx-panel config set web_listen_port 2095   # a port you can reach
+nx-panel config set web_listen_ip ""       # listen everywhere again (IPv4 and IPv6)
+nx-panel config set web_domain ""          # stop restricting the hostname
+nx-panel config set web_basepath ""        # serve at the root again
+nx-panel config set sub_domain ""          # stop reserving hosts for subscriptions
+systemctl restart nx-panel
 ```
 
 The last one catches people out when the panel has **no base path**. A domain in
@@ -128,9 +128,9 @@ In Docker, the port is set in the compose file, not with `config set` or
 ### Forgotten password
 
 ```bash
-nexora-panel admin list                        # the accounts, and which one owns the panel
-nexora-panel admin reset-password              # the owner; the password is typed, not shown
-nexora-panel admin reset-password -user alice  # any other account
+nx-panel admin list                        # the accounts, and which one owns the panel
+nx-panel admin reset-password              # the owner; the password is typed, not shown
+nx-panel admin reset-password -user alice  # any other account
 ```
 
 Without `-user` it resets the panel's **owner**. The new password is asked for
@@ -148,8 +148,8 @@ Five failed logins from one address ban it, and the ban survives a restart. Two
 settings decide who that address is and who is never banned:
 
 ```bash
-nexora-panel config set trusted_proxies "10.0.0.0/8"   # your reverse proxy or CDN, or empty
-nexora-panel config set login_allowlist "203.0.113.7"  # addresses never banned
+nx-panel config set trusted_proxies "10.0.0.0/8"   # your reverse proxy or CDN, or empty
+nx-panel config set login_allowlist "203.0.113.7"  # addresses never banned
 ```
 
 ::: warning Behind a proxy or a CDN
@@ -161,7 +161,7 @@ the proxy's addresses, and keep your own address in `login_allowlist`.
 Once you are back in, the main administrator can lift a ban under **Settings →
 Security** ([[use/security]]).
 
-## nexora-node
+## nx-node
 
 A node is installed and configured by the panel, so its commands are few:
 

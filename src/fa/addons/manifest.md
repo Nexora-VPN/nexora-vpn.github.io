@@ -1,6 +1,6 @@
 ---
 title: "مانیفست افزونه"
-description: "مرجع nexora-addon.json: همهٔ فیلدها، بخش install و نوع گزینه‌هایش، requires.panel، و نحوهٔ امضای مانیفست‌ها و نسخه‌ها."
+description: "مرجع nx-addon.json: همهٔ فیلدها، بخش install و نوع گزینه‌هایش، requires.panel، و نحوهٔ امضای مانیفست‌ها و نسخه‌ها."
 order: 11
 group: authors
 tags: [addons, api, reference]
@@ -8,7 +8,7 @@ tags: [addons, api, reference]
 
 # مانیفست افزونه
 
-مانیفست، `nexora-addon.json`، قرارداد میان یک [[~addon|افزونه]] و پنل،
+مانیفست، `nx-addon.json`، قرارداد میان یک [[~addon|افزونه]] و پنل،
 [[directory|دایرکتوری افزونه‌ها]] و فرم نصب پنل است. می‌گوید افزونه کیست، چه
 می‌خواهد و چطور نصب می‌شود. این صفحه همهٔ فیلدها را فهرست می‌کند؛ [[build]]
 توضیح می‌دهد چطور از آن‌ها استفاده کنید.
@@ -17,14 +17,14 @@ tags: [addons, api, reference]
 اعتبارسنجی می‌کند. پیش از انتشار، مانیفست را بررسی کنید:
 
 ```bash
-nexora-addon check nexora-addon.json
+nx-addon check nx-addon.json
 ```
 
 ## کجا قرار دارد {#where-it-lives}
 
 - **در ریشهٔ مخزن عمومی افزونه.** دایرکتوری و فرم نصب پیش از اجرای هر چیزی آن را
   همان‌جا می‌خوانند. برای افزونهٔ بسته، این مخزن عمومی توزیع آن است.
-- **سرو شده توسط افزونهٔ در حال اجرا** در `/.well-known/nexora-addon.json`، که
+- **سرو شده توسط افزونهٔ در حال اجرا** در `/.well-known/nx-addon.json`، که
   ثبت آن را می‌خواند.
 
 ## یک نمونهٔ کامل {#a-complete-example}
@@ -38,9 +38,9 @@ nexora-addon check nexora-addon.json
   "publisher": "Example Ltd",
   "license": "Apache-2.0",
   "description": { "en": "A minimal addon to start from." },
-  "docs": "https://github.com/nexora-vpn/addon-template",
+  "docs": "https://github.com/nx-panel/addon-template",
   "install": {
-    "docker": { "image": "ghcr.io/nexora-vpn/addon-template", "compose": "deploy/compose.yml" },
+    "docker": { "image": "ghcr.io/nx-panel/addon-template", "compose": "deploy/compose.yml" },
     "binary": { "linux-amd64": "addon-template-linux-amd64.tar.gz" },
     "options": [
       { "key": "port", "type": "port", "default": 8090, "label": { "en": "Port" } }
@@ -50,8 +50,8 @@ nexora-addon check nexora-addon.json
     { "scope": "users:read", "purpose": "to show how many accounts the panel has" }
   ],
   "events": ["user.created", "panel.addon_removed"],
-  "webhook": "/nexora/events",
-  "setup": "/nexora/setup",
+  "webhook": "/nx/events",
+  "setup": "/nx/setup",
   "health": "/health",
   "ui": "/",
   "rateLimit": 60,
@@ -106,7 +106,7 @@ nexora-addon check nexora-addon.json
 
 ```json
 "install": {
-  "docker": { "image": "ghcr.io/nexora-vpn/shop", "compose": "deploy/compose.yml" },
+  "docker": { "image": "ghcr.io/nx-panel/shop", "compose": "deploy/compose.yml" },
   "binary": { "linux-amd64": "shop-linux-amd64.tar.gz", "linux-arm64": "shop-linux-arm64.tar.gz" },
   "options": [ … ]
 }
@@ -166,9 +166,9 @@ nexora-addon check nexora-addon.json
 
 ### جواب‌ها چطور به افزونه می‌رسند {#how-answers-reach-the-addon}
 
-جواب‌ها به صورت متغیرهای محیطی `NEXORA_OPT_<KEY>` می‌رسند، در یک `.env` کنار
-فایل compose یا در `EnvironmentFile` واحد systemd. کنارشان `NEXORA_PANEL_URL` و
-`NEXORA_CLAIM_CODE` می‌آیند، یعنی کدی که پنل برای این نصب صادر کرده است. `bool`
+جواب‌ها به صورت متغیرهای محیطی `NX_OPT_<KEY>` می‌رسند، در یک `.env` کنار
+فایل compose یا در `EnvironmentFile` واحد systemd. کنارشان `NX_PANEL_URL` و
+`NX_CLAIM_CODE` می‌آیند، یعنی کدی که پنل برای این نصب صادر کرده است. `bool`
 برابر `true` یا `false` است، و عدد به شکل نوشتاری JSON آن.
 
 ### نوع `path` {#the-path-type}
@@ -193,9 +193,9 @@ nexora-addon check nexora-addon.json
 
 ### مانیفست {#the-manifest}
 
-- افزونهٔ **رسمی** را نکسورا امضا می‌کند.
+- افزونهٔ **رسمی** را انیکس امضا می‌کند.
 - افزونهٔ **تأییدشده** با کلید خود توسعه‌دهنده امضا می‌شود
-  (`nexora-addon keygen`، `nexora-addon sign`)، که فهرست امضاشدهٔ دایرکتوری آن را
+  (`nx-addon keygen`، `nx-addon sign`)، که فهرست امضاشدهٔ دایرکتوری آن را
   تضمین می‌کند.
 - افزونهٔ **بدون امضا** دستی ثبت می‌شود.
 
@@ -210,11 +210,11 @@ nexora-addon check nexora-addon.json
 امضا می‌کند** ساخته می‌شود:
 
 ```bash
-nexora-addon sign-sums -key addon.key SHA256SUMS > SHA256SUMS.sig
+nx-addon sign-sums -key addon.key SHA256SUMS > SHA256SUMS.sig
 gh release upload v1.2.3 SHA256SUMS.sig
 ```
 
-امضا، امضای Ed25519 به صورت base64 روی `nexora-addon SHA256SUMS v1\n` و به
+امضا، امضای Ed25519 به صورت base64 روی `nx-addon SHA256SUMS v1\n` و به
 دنبالش بایت‌های فایل است، پس هرگز نمی‌تواند به جای امضای یک مانیفست پذیرفته شود.
 
 | نصب | چه چیزی بررسی می‌شود |

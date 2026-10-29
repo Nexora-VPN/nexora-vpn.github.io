@@ -1,14 +1,14 @@
 ---
-title: "Nexora Shop"
+title: "NX Shop"
 description: "Продавайте тарифы панели через Telegram-бота и веб-приложение: установите Shop, настройте его и освойтесь в его админке."
 order: 3
 group: shop
 tags: [addons, plans]
 ---
 
-# Nexora Shop
+# NX Shop
 
-Nexora Shop — официальное [[~addon|дополнение]], которое продаёт клиентам
+NX Shop — официальное [[~addon|дополнение]], которое продаёт клиентам
 [[~plan|тарифы]] вашей панели: товары, заказы, кошелёк, оплата переводом с
 карты на карту и через платёжные шлюзы, Telegram-бот, веб-приложение, коды
 скидок и подарочные коды, рефералы и агенты. Эта страница описывает
@@ -37,7 +37,7 @@ Shop не проверяет никакой собственной лиценз�
 ## Установка {#install}
 
 Рекомендуемый способ — из панели: **Дополнения → Каталог**, выберите
-**Nexora Shop**, ответьте на его вопросы и дайте панели установить его на
+**NX Shop**, ответьте на его вопросы и дайте панели установить его на
 свой сервер, по SSH или выдать вам команду для запуска. Панель
 регистрирует Shop, как только он ответит. Все способы установки описаны в
 [[directory]].
@@ -45,14 +45,14 @@ Shop не проверяет никакой собственной лиценз�
 Вручную, на Linux-сервере, от root:
 
 ```bash
-curl -fsSLO https://raw.githubusercontent.com/nexora-vpn/shop/main/install.sh
+curl -fsSLO https://raw.githubusercontent.com/nx-panel/shop/main/install.sh
 sh install.sh --method script --opt port=8095 \
   --panel-url https://panel.example.com --claim-code XXXX-XXXX-XXXX-XXXX
 ```
 
 `--method script` запускает бинарный файл под юнитом systemd
-`nexora-addon-shop`; `--method docker` запускает стек compose Shop. Всё
-лежит в `/opt/nexora-addons/shop`: ответы — в `.env`, данные — в `data/`.
+`nx-addon-shop`; `--method docker` запускает стек compose Shop. Всё
+лежит в `/opt/nx-addons/shop`: ответы — в `.env`, данные — в `data/`.
 
 ### Вопросы установки {#the-install-s-questions}
 

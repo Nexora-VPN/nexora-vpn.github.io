@@ -7,7 +7,7 @@ tags: [install, node, panel]
 
 # Panel and node on one server
 
-A [[~node]] can run on the same server as the [[~panel]]. Nothing in Nexora
+A [[~node]] can run on the same server as the [[~panel]]. Nothing in NX
 forbids it, and the two do not get in each other's way. It is **not
 recommended** for a service you sell, and this page says why before it says how.
 
@@ -33,16 +33,14 @@ For anything you would be upset to lose, give the panel its own server.
 - **It mixes the disposable with the irreplaceable.** A node is meant to be
   thrown away and installed again; the panel's database is what the fleet
   cannot be rebuilt without.
-- **Uninstalling the node needs care.** Both use `/var/opt/nexora`. Removing
-  that whole directory deletes the panel's database; see [[uninstall]].
 - **It still counts as a node** against your licence.
 
 ## Set it up with the install script
 
-The two install into separate directories and run as separate services:
-`/opt/nexora-panel` and `/opt/nexora-node`. Under `/var/opt/nexora`, the
-database, `bin/` and `backups/` are the panel's; `certs/` and `cache/` are the
-node's.
+The two install into separate directories and run as separate services: the
+programs in `/opt/nx-panel` and `/opt/nx-node`, their state in
+`/var/opt/nx-panel` (the database, `bin/` and `backups/`) and
+`/var/opt/nx-node` (`certs/` and `cache/`).
 
 1. Install the panel and finish the setup wizard as usual.
 2. In the panel, add a node with the address `127.0.0.1` and port 62050.
@@ -73,7 +71,7 @@ start, and the panel shows that certificate only once a node exists, so the
 stack starts in two steps:
 
 ```bash
-git clone https://github.com/nexora-vpn/panel
+git clone https://github.com/nx-panel/panel
 cd panel/docker/panel-and-node
 docker compose up -d panel
 docker compose logs panel | grep setup      # open the link, finish the wizard

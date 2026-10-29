@@ -8,7 +8,7 @@ tags: [addons, users]
 
 # Shop：客户门户
 
-[[shop|Nexora Shop]] 为你的客户提供一个位于 `https://<shop>/app/` 的网页应用。本页介绍它是什么、如何为它启用 HTTPS，以及客户在 Telegram 之外登录的三种方式。
+[[shop|NX Shop]] 为你的客户提供一个位于 `https://<shop>/app/` 的网页应用。本页介绍它是什么、如何为它启用 HTTPS，以及客户在 Telegram 之外登录的三种方式。
 
 ## 一个应用，两个入口 {#one-app-two-places}
 
@@ -54,8 +54,8 @@ Shop 不指定任何短信服务。请在 **设置** 中填写你自己的小型
 
 ```http
 POST <your relay URL>
-X-Nexora-Timestamp: 1790000000
-X-Nexora-Signature: <hex HMAC-SHA256 of "1790000000.<body>" under the secret>
+X-Nx-Timestamp: 1790000000
+X-Nx-Signature: <hex HMAC-SHA256 of "1790000000.<body>" under the secret>
 Content-Type: application/json
 
 {"to": "+15550100", "text": "Your shop sign-in code: 123456"}
@@ -71,6 +71,6 @@ Content-Type: application/json
 
 ## 位于反向代理之后 {#behind-a-reverse-proxy}
 
-验证码、登录和付款查询按客户端地址限制次数。如果 Shop 位于终止 TLS 的反向代理之后，请在安装的 `.env` 中把 `NEXORA_OPT_TRUSTED_PROXIES` 设为代理的地址或网段，例如 `127.0.0.1, 10.0.0.0/8`。Shop 随后会从代理的 `X-Forwarded-For` 读取客户端地址。留空（默认）则不信任任何转发头。
+验证码、登录和付款查询按客户端地址限制次数。如果 Shop 位于终止 TLS 的反向代理之后，请在安装的 `.env` 中把 `NX_OPT_TRUSTED_PROXIES` 设为代理的地址或网段，例如 `127.0.0.1, 10.0.0.0/8`。Shop 随后会从代理的 `X-Forwarded-For` 读取客户端地址。留空（默认）则不信任任何转发头。
 
 面板可以充当这个代理。在 **设置 → 地址** 中，为 Shop 的主机名添加一个 **其他程序** 路由，并把 **代理到** 设为 Shop（[[use/ingress#another-program]]）。这样客户就通过面板的端口访问 Shop，Shop 自己的端口无需对互联网开放。面板会在 `X-Forwarded-For` 中发送客户端地址，所以请列出 Shop 看到的面板地址，例如同一台服务器上的 `127.0.0.1`。

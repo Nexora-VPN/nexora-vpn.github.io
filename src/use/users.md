@@ -287,7 +287,7 @@ use **Extend and gift** to add days or traffic to one or many accounts (see
 its volume comes back on by itself within a minute once it is within its
 limits again.
 
-Programs such as Nexora Shop renew accounts through the panel's API (see
+Programs such as NX Shop renew accounts through the panel's API (see
 [[reference/api]]).
 
 ## Disabling and enabling

@@ -1,20 +1,20 @@
 ---
 layout: home
-title: "Nexora 文档"
+title: "NX 文档"
 hero:
-  name: "Nexora"
+  name: "NX"
   text: "用一个面板运营你自己的 VPN 节点集群。"
   tagline: "自托管的控制面板与节点:主流协议、用户与套餐、隧道、订阅与插件,一应俱全。"
   image:
-    src: /nexora-mark.png
-    alt: Nexora
+    src: /nx-mark.png
+    alt: NX
   actions:
     - theme: brand
       text: "下载版本"
-      link: https://github.com/Nexora-VPN/panel/releases
+      link: https://github.com/nx-panel/panel/releases
     - theme: alt
-      text: "nexora-panel.org"
-      link: https://nexora-panel.org
+      text: "nx-panel.org"
+      link: https://nx-panel.org
 features:
   - icon: '<i class="pi pi-server"></i>'
     title: "一个面板,管理全部节点"
@@ -30,7 +30,7 @@ features:
     details: "反向隧道把流量从中继节点送到源节点,可同时使用多个端口和协议。"
   - icon: '<i class="pi pi-arrow-right-arrow-left"></i>'
     title: "从其他面板迁移"
-    details: "nexora-migrate 可以从另外八种面板迁移用户、入站和设置。"
+    details: "nx-migrate 可以从另外八种面板迁移用户、入站和设置。"
   - icon: '<i class="pi pi-th-large"></i>'
     title: "插件"
     details: "接入面板的独立程序:销售套餐的商店、通知客户的工具,或你自己的插件。"
@@ -40,8 +40,8 @@ features:
 <div class="nx-home-diagram"><NxDiagram id="overview" /></div>
 
 <div class="nx-shot">
-  <img class="nx-light" src="/img/dashboard-light.webp" alt="Nexora 面板仪表盘:用户、节点、流量以及每个节点的健康状况" width="1440" height="940">
-  <img class="nx-dark" src="/img/dashboard-dark.webp" alt="Nexora 面板仪表盘:用户、节点、流量以及每个节点的健康状况" width="1440" height="940">
+  <img class="nx-light" src="/img/dashboard-light.webp" alt="NX 面板仪表盘:用户、节点、流量以及每个节点的健康状况" width="1440" height="940">
+  <img class="nx-dark" src="/img/dashboard-dark.webp" alt="NX 面板仪表盘:用户、节点、流量以及每个节点的健康状况" width="1440" height="940">
 </div>
 
 <p class="nx-section-title">支持的协议</p>

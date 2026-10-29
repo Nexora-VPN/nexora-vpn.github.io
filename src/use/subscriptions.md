@@ -180,7 +180,7 @@ there. The page follows the user's browser language.
 
 A theme is a directory in the themes directory holding an `index.html` (or
 `sub.html`) and any files it uses. The default directory is
-`/var/opt/nexora/sub-themes/` on a standard install, and `./sub-themes` next
+`/var/opt/nx-panel/sub-themes/` on a standard install, and `./sub-themes` next
 to the compose file in Docker. Drop a directory in, click
 **Rescan the themes directory**, and pick it under **Theme**. No restart.
 

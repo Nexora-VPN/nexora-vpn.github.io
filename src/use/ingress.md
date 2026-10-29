@@ -29,8 +29,8 @@ always stays:
   can be edited, but they cannot be deleted, given another service, bound to
   an account or taken off the primary listener.
 - The setup wizard writes it. While the panel has this one address,
-  `nexora-panel config get` and `config set` read and write it on the server,
-  and `nexora-panel ingress reset` rebuilds it ([[reference/cli]]).
+  `nx-panel config get` and `config set` read and write it on the server,
+  and `nx-panel ingress reset` rebuilds it ([[reference/cli]]).
 - In Docker its port is fixed by the compose file.
 
 A change on this page applies at once. A change from the server's command line
@@ -332,7 +332,7 @@ Any CDN works that:
 ## Locked out
 
 If a change leaves the panel unreachable and was confirmed anyway, put the
-addresses back from the server's command line with `nexora-panel ingress
+addresses back from the server's command line with `nx-panel ingress
 reset`, which leaves one plain listener with the panel on every host. See
 [[reference/cli#locked-out]].
 

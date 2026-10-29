@@ -51,7 +51,7 @@ The list of **Backups on this server** shows each archive's date, size and
 contents, with buttons to download, check or delete it. Archives marked
 **Pre-restore** are the safety copies a restore takes (below).
 
-The backup directory is `/var/opt/nexora/backups/` on a standard install. In
+The backup directory is `/var/opt/nx-panel/backups/` on a standard install. In
 Docker it is `./backups` next to the compose file, so archives survive the
 container. Copy it somewhere else as well: a backup that lives only on the
 machine it protects is not a backup.

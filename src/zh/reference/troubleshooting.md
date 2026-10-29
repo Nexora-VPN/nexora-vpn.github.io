@@ -7,14 +7,14 @@ tags: [reference]
 
 # 故障排查
 
-按你看到的现象列出问题，最常见的原因排在前面。大多数问题可以从两个地方入手：服务日志（面板上运行 `journalctl -u nexora-panel -n 50`，节点上运行 `journalctl -u nexora-node -n 50`），以及 **节点** 页面上该节点所在的行，把指针移到状态上会显示最近的错误。
+按你看到的现象列出问题，最常见的原因排在前面。大多数问题可以从两个地方入手：服务日志（面板上运行 `journalctl -u nx-panel -n 50`，节点上运行 `journalctl -u nx-node -n 50`），以及 **节点** 页面上该节点所在的行，把指针移到状态上会显示最近的错误。
 
 ## 安装后面板打不开 {#the-panel-does-not-open-after-install}
 
 - **端口未开放。** 安装程序随机选择了一个端口并打印出来。请在服务器的防火墙中开放它；如果云服务商有防火墙或安全组，也要在那里开放。
 - **地址不对。** 安装程序为找到的每个地址各打印一个链接。请使用从你所在位置能访问到服务器的那个：在 VPS 上通常是标有“as the internet sees this host”的公网地址。在容器内，其他地址大多无法访问。
 - **IPv6 链接缺少方括号。** 请完整粘贴：`http://[2001:db8::10]:28431/setup?t=…`。
-- **页面显示“not found”。** 设置完成之前，面板只响应带令牌的完整设置链接。用 `nexora-panel setup-token` 重新打印令牌（见 [[install-panel#lost-the-link]]）。
+- **页面显示“not found”。** 设置完成之前，面板只响应带令牌的完整设置链接。用 `nx-panel setup-token` 重新打印令牌（见 [[install-panel#lost-the-link]]）。
 
 ## 完成设置向导后面板打不开 {#the-panel-does-not-open-after-the-setup-wizard}
 
@@ -27,9 +27,9 @@ tags: [reference]
 
 ## 被锁在外面 {#locked-out}
 
-- **忘记密码：** `nexora-panel admin reset-password`。它也会关闭该账户的两步验证。
+- **忘记密码：** `nx-panel admin reset-password`。它也会关闭该账户的两步验证。
 - **登录失败后被封禁：** 把你的地址加入 `login_allowlist`；如果面板位于代理或 CDN 之后，还要设置 `trusted_proxies`。
-- **地址、域名或路径无法访问：** 运行 `nexora-panel config set …` 后重启；如果是在 **设置 → 地址** 中做了修改，则运行 `nexora-panel ingress reset` 后重启。
+- **地址、域名或路径无法访问：** 运行 `nx-panel config set …` 后重启；如果是在 **设置 → 地址** 中做了修改，则运行 `nx-panel ingress reset` 后重启。
 - **正确的密码只在某一个主机名上被拒绝：** 该主机可能在 **设置 → 地址** 中绑定到了另一个账户，或者你的账户绑定到了其他主机。只有被绑定的账户能在那里登录，而被拒绝时看起来与密码错误完全相同。参见 [[use/ingress#accounts-bound-to-hosts]]。
 
 这三种情况都在 [[reference/cli#locked-out]] 中。
@@ -39,8 +39,8 @@ tags: [reference]
 节点在运行，但面板连不上它，或者连上了却被拒绝。按以下顺序检查：
 
 ```bash
-systemctl status nexora-node          # on the node
-journalctl -u nexora-node -n 50       # on the node
+systemctl status nx-node          # on the node
+journalctl -u nx-node -n 50       # on the node
 nc -vz 198.51.100.20 62050            # from the panel server
 ```
 
@@ -55,9 +55,9 @@ nc -vz 198.51.100.20 62050            # from the panel server
 
   ```bash
   curl -fsSL -o /tmp/node.tar.gz \
-    https://github.com/nexora-vpn/node/releases/latest/download/nexora-node-linux-armv7.tar.gz
+    https://github.com/nx-panel/node/releases/latest/download/nx-node-linux-armv7.tar.gz
   tar -C /tmp -xzf /tmp/node.tar.gz
-  install -m 0755 /tmp/nexora-node/nexora-node /var/opt/nexora/bin/nexora-node-linux-armv7
+  install -m 0755 /tmp/nx-node/nx-node /var/opt/nx-panel/bin/nx-node-linux-armv7
   ```
 
   或者在命令中加上 `--source github`，让节点服务器自己下载发布版本。

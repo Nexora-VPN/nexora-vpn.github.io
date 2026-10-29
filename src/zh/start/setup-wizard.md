@@ -9,7 +9,7 @@ tags: [install, panel, security]
 
 [[~setup-wizard|设置向导]]是安装程序打印的链接所打开的页面。它创建主管理员，并决定面板在哪里、以何种方式响应。页面上的所有内容会一次性一起保存，随后面板重启到你填写的地址上。
 
-<NxShot page="setup-wizard" alt="设置 Nexora 表单：主管理员、面板地址、HTTPS 和时区" />
+<NxShot page="setup-wizard" alt="设置 NX 表单：主管理员、面板地址、HTTPS 和时区" />
 
 ## 一次性链接 {#the-one-time-link}
 
@@ -17,7 +17,7 @@ tags: [install, panel, security]
 
 - **只有这个链接能打开向导。** 设置完成之前，面板不显示任何其他内容：登录页、API 和订阅链接都返回“not found”，不带令牌的设置页也是如此。
 - **它在设置完成前一直有效。** 之后令牌失效，面板显示登录页。
-- **链接丢了？** 在服务器上运行 `nexora-panel setup-token` 会重新打印它。`nexora-panel setup-token -rotate` 会换成一个新令牌，旧链接随之作废。
+- **链接丢了？** 在服务器上运行 `nx-panel setup-token` 会重新打印它。`nx-panel setup-token -rotate` 会换成一个新令牌，旧链接随之作废。
 
 页面顶部有语言切换和主题切换。
 
@@ -72,7 +72,7 @@ tags: [install, panel, security]
 
 ## 改为还原备份 {#restore-a-backup-instead}
 
-要把现有的 Nexora 面板搬到这台服务器，请在向导底部选择 **从另一台服务器迁移？从备份还原**，而不是填写表单。
+要把现有的 NX 面板搬到这台服务器，请在向导底部选择 **从另一台服务器迁移？从备份还原**，而不是填写表单。
 
 1. 把备份归档拖到页面上。加密的归档会要求输入口令。
 2. 页面会显示归档的内容：备份时间、由哪个面板版本创建、来自哪个地址，以及多少行数据。任何异常都会给出警告。

@@ -7,7 +7,7 @@ tags: [install]
 
 # 快速开始
 
-Nexora 由一个运行在一台服务器上的[[~panel]]和任意数量承载用户流量的[[~node|节点]]组成。本节带你从一台空服务器走到第一位拿到可用链接的客户。
+NX 由一个运行在一台服务器上的[[~panel]]和任意数量承载用户流量的[[~node|节点]]组成。本节带你从一台空服务器走到第一位拿到可用链接的客户。
 
 ## 需要准备什么 {#what-you-need}
 
@@ -29,12 +29,12 @@ Nexora 由一个运行在一台服务器上的[[~panel]]和任意数量承载用
 
 ## 其他入口 {#other-ways-in}
 
-- **从其他面板迁移过来？** [[migrate]] 会把你的用户、入站和路由迁入 Nexora。
-- **把 Nexora 搬到新服务器？** 在设置向导中还原备份；见 [[setup-wizard#restore-a-backup-instead]]。
+- **从其他面板迁移过来？** [[migrate]] 会把你的用户、入站和路由迁入 NX。
+- **把 NX 搬到新服务器？** 在设置向导中还原备份；见 [[setup-wizard#restore-a-backup-instead]]。
 - **要加一个商店或机器人？** 见 [[install-addon]]。
 
 ## 之后 {#later}
 
 - [[start/update|更新]]面板及其节点。
-- 从服务器上[[uninstall|移除]] Nexora。
+- 从服务器上[[uninstall|移除]] NX。
 - 出现问题时，参阅[[reference/cli|命令行]]、[[files-and-ports|文件与端口]]和[[troubleshooting]]。

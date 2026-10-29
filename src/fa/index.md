@@ -1,20 +1,20 @@
 ---
 layout: home
-title: "مستندات نکسورا"
+title: "مستندات انیکس"
 hero:
-  name: "Nexora"
+  name: "NX"
   text: "ناوگان VPN خودت را از یک پنل اداره کن."
   tagline: "پنل مدیریت و نودهای خودمیزبان: همه‌ی پروتکل‌های اصلی، کاربرها و پلن‌ها، تونل‌ها، اشتراک‌ها و افزونه‌ها."
   image:
-    src: /nexora-mark.png
-    alt: Nexora
+    src: /nx-mark.png
+    alt: NX
   actions:
     - theme: brand
       text: "دانلود نسخه‌ها"
-      link: https://github.com/Nexora-VPN/panel/releases
+      link: https://github.com/nx-panel/panel/releases
     - theme: alt
-      text: "nexora-panel.org"
-      link: https://nexora-panel.org
+      text: "nx-panel.org"
+      link: https://nx-panel.org
 features:
   - icon: '<i class="pi pi-server"></i>'
     title: "یک پنل، کل ناوگان"
@@ -30,7 +30,7 @@ features:
     details: "تونل معکوس ترافیک را از نود رله به نودهای مقصد می‌برد، هم‌زمان روی چند پورت و پروتکل."
   - icon: '<i class="pi pi-arrow-right-arrow-left"></i>'
     title: "مهاجرت از پنل دیگر"
-    details: "nexora-migrate کاربرها، اینباندها و تنظیمات را از هشت پنل دیگر منتقل می‌کند."
+    details: "nx-migrate کاربرها، اینباندها و تنظیمات را از هشت پنل دیگر منتقل می‌کند."
   - icon: '<i class="pi pi-th-large"></i>'
     title: "افزونه‌ها"
     details: "برنامه‌های جدا که به پنل وصل می‌شوند: فروشگاهی که پلن‌هایت را می‌فروشد، اطلاع‌رسان مشتری‌ها، یا افزونه‌ی خودت."
@@ -40,8 +40,8 @@ features:
 <div class="nx-home-diagram"><NxDiagram id="overview" /></div>
 
 <div class="nx-shot">
-  <img class="nx-light" src="/img/dashboard-light.webp" alt="داشبورد پنل نکسورا: کاربرها، نودها، ترافیک و سلامت هر نود" width="1440" height="940">
-  <img class="nx-dark" src="/img/dashboard-dark.webp" alt="داشبورد پنل نکسورا: کاربرها، نودها، ترافیک و سلامت هر نود" width="1440" height="940">
+  <img class="nx-light" src="/img/dashboard-light.webp" alt="داشبورد پنل انیکس: کاربرها، نودها، ترافیک و سلامت هر نود" width="1440" height="940">
+  <img class="nx-dark" src="/img/dashboard-dark.webp" alt="داشبورد پنل انیکس: کاربرها، نودها، ترافیک و سلامت هر نود" width="1440" height="940">
 </div>
 
 <p class="nx-section-title">پروتکل‌های پشتیبانی‌شده</p>

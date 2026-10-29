@@ -117,7 +117,7 @@ Grafana и имена всех метрик описаны [ниже](#prometheu
 
 ```bash
 # 1. Fetch the monitoring directory next to your docker-compose.yml
-curl -fsSL https://github.com/nexora-vpn/panel/archive/refs/heads/main.tar.gz \
+curl -fsSL https://github.com/nx-panel/panel/archive/refs/heads/main.tar.gz \
   | tar -xz --strip-components=1 panel-main/monitoring
 
 # 2. Put a token with the stats:read scope where Prometheus reads it
@@ -146,7 +146,7 @@ ssh -L 3000:localhost:3000 you@your-server
 # then open http://localhost:3000 and sign in with GRAFANA_PASSWORD
 ```
 
-Дашборд **Nexora fleet** уже там. Prometheus не публикуется вовсе: у него нет
+Дашборд **NX fleet** уже там. Prometheus не публикуется вовсе: у него нет
 собственного входа, а хранит он всю вашу эксплуатационную картину.
 
 - **Панель сама обслуживает HTTPS:** в `monitoring/prometheus/prometheus.yml`
@@ -164,19 +164,19 @@ ssh -L 3000:localhost:3000 you@your-server
 
 ```yaml
 scrape_configs:
-  - job_name: nexora-panel
+  - job_name: nx-panel
     scheme: https
     metrics_path: /metrics
     authorization:
       type: Bearer
-      credentials_file: /etc/prometheus/nexora-token
+      credentials_file: /etc/prometheus/nx-token
     static_configs:
       - targets: ['panel.example.com']
 ```
 
-Для Grafana импортируйте `monitoring/grafana/dashboards/nexora-fleet.json` из
-[репозитория панели](https://github.com/nexora-vpn/panel). Он ожидает
-источник данных Prometheus с uid `nexora-prometheus`.
+Для Grafana импортируйте `monitoring/grafana/dashboards/nx-fleet.json` из
+[репозитория панели](https://github.com/nx-panel/panel). Он ожидает
+источник данных Prometheus с uid `nx-prometheus`.
 
 ::: tip Порт только для Prometheus
 На [[use/ingress]] маршрут **Метрики** на слушателе, привязанном к частному
@@ -194,22 +194,22 @@ scrape_configs:
 
 | Метрика | Значение |
 | --- | --- |
-| `nexora_panel_build_info` | 1, с работающей версией в метке |
-| `nexora_panel_start_time_seconds` | когда запустился процесс панели; `time() - this` — время работы |
-| `nexora_license_valid` | 1, пока лицензия действительна, иначе 0 |
-| `nexora_license_expires_at_seconds` | срок действия лицензии; отсутствует, если лицензия бессрочная |
-| `nexora_license_limit{resource}`, `nexora_license_used{resource}` | предел и текущее число для `user` и `node` (−1 = без ограничений) |
-| `nexora_users_total{status}` | учётные записи по состоянию: active, disabled, expired, limited, pending |
-| `nexora_users_online` | учётные записи с трафиком в окне онлайна |
-| `nexora_nodes_total` | узлы, известные панели |
-| `nexora_node_up`, `nexora_node_enabled` | по узлу: отвечает и включён |
-| `nexora_node_traffic_bytes_total{direction}` | трафик, учтённый на узле |
-| `nexora_node_online_users` | учётные записи с трафиком на этом узле в окне онлайна |
-| `nexora_node_connections`, `nexora_node_engine_restarts_total` | открытые соединения; перезапуски с момента запуска узла |
-| `nexora_node_rejected_connections_total{outbound}` | соединения, отклонённые блокирующим аутбаундом |
-| `nexora_node_disk_bytes`, `nexora_node_disk_used_bytes`, `nexora_node_memory_bytes`, `nexora_node_memory_used_bytes`, `nexora_node_load1` | хост узла |
-| `nexora_event_deliveries{status}`, `nexora_event_subscribers` | доставки событий по состоянию (pending, delivered, dead) и включённые подписчики |
-| `nexora_ingress_requests_total{route,outcome}` | запросы с момента запуска панели — по [[use/ingress\|маршруту]], который их решил (пусто, если ни один не совпал), и по тому, что он сделал: `served`, `redirect` или `refused` |
+| `nx_panel_build_info` | 1, с работающей версией в метке |
+| `nx_panel_start_time_seconds` | когда запустился процесс панели; `time() - this` — время работы |
+| `nx_license_valid` | 1, пока лицензия действительна, иначе 0 |
+| `nx_license_expires_at_seconds` | срок действия лицензии; отсутствует, если лицензия бессрочная |
+| `nx_license_limit{resource}`, `nx_license_used{resource}` | предел и текущее число для `user` и `node` (−1 = без ограничений) |
+| `nx_users_total{status}` | учётные записи по состоянию: active, disabled, expired, limited, pending |
+| `nx_users_online` | учётные записи с трафиком в окне онлайна |
+| `nx_nodes_total` | узлы, известные панели |
+| `nx_node_up`, `nx_node_enabled` | по узлу: отвечает и включён |
+| `nx_node_traffic_bytes_total{direction}` | трафик, учтённый на узле |
+| `nx_node_online_users` | учётные записи с трафиком на этом узле в окне онлайна |
+| `nx_node_connections`, `nx_node_engine_restarts_total` | открытые соединения; перезапуски с момента запуска узла |
+| `nx_node_rejected_connections_total{outbound}` | соединения, отклонённые блокирующим аутбаундом |
+| `nx_node_disk_bytes`, `nx_node_disk_used_bytes`, `nx_node_memory_bytes`, `nx_node_memory_used_bytes`, `nx_node_load1` | хост узла |
+| `nx_event_deliveries{status}`, `nx_event_subscribers` | доставки событий по состоянию (pending, delivered, dead) и включённые подписчики |
+| `nx_ingress_requests_total{route,outcome}` | запросы с момента запуска панели — по [[use/ingress\|маршруту]], который их решил (пусто, если ни один не совпал), и по тому, что он сделал: `served`, `redirect` или `refused` |
 
 Каждая метрика узла несёт метки `node` (его имя) и `id`.
 
@@ -217,23 +217,23 @@ scrape_configs:
 
 ```yaml
 groups:
-  - name: nexora
+  - name: nx
     rules:
-      - alert: NexoraPanelDown
-        expr: up{job="nexora-panel"} == 0
+      - alert: NXPanelDown
+        expr: up{job="nx-panel"} == 0
         for: 5m
-      - alert: NexoraNodeDown          # a switched-off node is not an outage
-        expr: nexora_node_up == 0 and nexora_node_enabled == 1
+      - alert: NXNodeDown          # a switched-off node is not an outage
+        expr: nx_node_up == 0 and nx_node_enabled == 1
         for: 10m
-      - alert: NexoraNodeDiskFilling
-        expr: nexora_node_disk_used_bytes / nexora_node_disk_bytes > 0.9
+      - alert: NXNodeDiskFilling
+        expr: nx_node_disk_used_bytes / nx_node_disk_bytes > 0.9
         for: 30m
-      - alert: NexoraEventDeliveriesDead
-        expr: increase(nexora_event_deliveries{status="dead"}[1h]) > 0
+      - alert: NXEventDeliveriesDead
+        expr: increase(nx_event_deliveries{status="dead"}[1h]) > 0
 ```
 
 Если вы продаёте по лицензии, добавьте
-`nexora_license_expires_at_seconds - time() < 7 * 86400`.
+`nx_license_expires_at_seconds - time() < 7 * 86400`.
 
 ## Оповещения как события {#alerts-as-events}
 

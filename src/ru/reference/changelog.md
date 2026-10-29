@@ -9,8 +9,8 @@ tags: [reference]
 
 У панели и узла свои номера версий. **Сначала обновите панель, потом узлы**
 ([[start/update]]). Загрузки и полные описания — на страницах выпусков
-[панели](https://github.com/nexora-vpn/panel/releases) и
-[узла](https://github.com/nexora-vpn/node/releases).
+[панели](https://github.com/nx-panel/panel/releases) и
+[узла](https://github.com/nx-panel/node/releases).
 
 ## Панель {#panel}
 
@@ -48,7 +48,7 @@ tags: [reference]
   Telegram) и единый вход (Google, Microsoft, GitHub, GitLab, Keycloak,
   Authentik, Okta, Auth0, любой провайдер OpenID Connect или OAuth 2.0).
   Вебхуки переехали в «Сервисы».
-- **Дополнения:** просмотр [каталога дополнений](https://addons.nexora-panel.org),
+- **Дополнения:** просмотр [каталога дополнений](https://addons.nx-panel.org),
   установка с кодом привязки или по SSH, приостановка, наблюдение за
   состоянием, одобрение обновления только тогда, когда оно просит больше
   прав.
@@ -103,10 +103,10 @@ tags: [reference]
 
 | Выпуск | Дата | Примечания |
 |---|---|---|
-| Nexora Shop v0.0.2 | 9 октября 2026 | Установка со страницы **Дополнения** панели или из `ghcr.io/nexora-vpn/shop:0.0.2` ([[addons/shop]]) |
-| Nexora Shop v0.0.1 | 4 октября 2026 | Первый выпуск |
-| Notifier v0.3.0 | 9 октября 2026 | `ghcr.io/nexora-vpn/notif:0.3.0` ([[addons/notifier]]) |
+| NX Shop v0.0.2 | 9 октября 2026 | Установка со страницы **Дополнения** панели или из `ghcr.io/nx-panel/shop:0.0.2` ([[addons/shop]]) |
+| NX Shop v0.0.1 | 4 октября 2026 | Первый выпуск |
+| Notifier v0.3.0 | 9 октября 2026 | `ghcr.io/nx-panel/notif:0.3.0` ([[addons/notifier]]) |
 | Notifier v0.2.0 | 4 октября 2026 | |
 | Notifier v0.1.0 | 4 октября 2026 | Первый выпуск |
-| nexora-migrate v0.0.2 | 9 октября 2026 | Сборки для Windows, Linux и macOS ([[start/migrate]]) |
-| nexora-migrate v0.0.1 | 23 сентября 2026 | Первый выпуск |
+| nx-migrate v0.0.2 | 9 октября 2026 | Сборки для Windows, Linux и macOS ([[start/migrate]]) |
+| nx-migrate v0.0.1 | 23 сентября 2026 | Первый выпуск |

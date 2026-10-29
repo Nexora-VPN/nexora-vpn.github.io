@@ -16,16 +16,16 @@ tags: [reference, install]
 
 | مسیر | چیست |
 | --- | --- |
-| `/opt/nexora-panel/nexora-panel` | برنامه |
-| `/opt/nexora-panel/nexora-panel.previous` | برنامه پیش از آخرین به‌روزرسانی، که برای برگرداندن نگه داشته می‌شود |
-| `/opt/nexora-panel/config.json` | اتصال پایگاه داده، و هیچ چیز دیگر |
-| `/var/opt/nexora/nexora.db` | پایگاه دادهٔ SQLite (با فایل‌های `-wal` و `-shm` کنارش تا وقتی پنل اجرا می‌شود) |
-| `/var/opt/nexora/bin/` | باینری‌های نود که پنل به نصب‌کننده‌های نود می‌دهد |
-| `/var/opt/nexora/sub-themes/` | تم‌های صفحهٔ اشتراک |
-| `/var/opt/nexora/presets/` | فایل‌های فهرست پیش‌تنظیم خودتان، که به پیش‌تنظیم‌های داخلی اضافه می‌شوند |
-| `/var/opt/nexora/backups/` | فایل‌های پشتیبان و نسخه‌های پیش از بازیابی (فقط root می‌تواند بخواند) |
-| `/var/opt/nexora/rulesets/` | نسخه‌های پنل از فایل‌های رول‌ست که به نودها می‌دهد؛ پاک کردنشان بی‌خطر است، پنل دوباره دانلودشان می‌کند |
-| `/etc/systemd/system/nexora-panel.service` | سرویس |
+| `/opt/nx-panel/nx-panel` | برنامه |
+| `/opt/nx-panel/nx-panel.previous` | برنامه پیش از آخرین به‌روزرسانی، که برای برگرداندن نگه داشته می‌شود |
+| `/opt/nx-panel/config.json` | اتصال پایگاه داده، و هیچ چیز دیگر |
+| `/var/opt/nx-panel/nx.db` | پایگاه دادهٔ SQLite (با فایل‌های `-wal` و `-shm` کنارش تا وقتی پنل اجرا می‌شود) |
+| `/var/opt/nx-panel/bin/` | باینری‌های نود که پنل به نصب‌کننده‌های نود می‌دهد |
+| `/var/opt/nx-panel/sub-themes/` | تم‌های صفحهٔ اشتراک |
+| `/var/opt/nx-panel/presets/` | فایل‌های فهرست پیش‌تنظیم خودتان، که به پیش‌تنظیم‌های داخلی اضافه می‌شوند |
+| `/var/opt/nx-panel/backups/` | فایل‌های پشتیبان و نسخه‌های پیش از بازیابی (فقط root می‌تواند بخواند) |
+| `/var/opt/nx-panel/rulesets/` | نسخه‌های پنل از فایل‌های رول‌ست که به نودها می‌دهد؛ پاک کردنشان بی‌خطر است، پنل دوباره دانلودشان می‌کند |
+| `/etc/systemd/system/nx-panel.service` | سرویس |
 
 کپی کردن فایل‌های پایگاه داده در حالی که پنل اجرا می‌شود پشتیبان‌گیری نیست. از
 پشتیبان‌گیری خود پنل استفاده کنید ([[use/backup]])، که بدون متوقف کردن چیزی یک
@@ -34,7 +34,7 @@ tags: [reference, install]
 `config.json` چنین شکلی دارد:
 
 ```json
-{ "db": { "driver": "sqlite", "dsn": "/var/opt/nexora/nexora.db" } }
+{ "db": { "driver": "sqlite", "dsn": "/var/opt/nx-panel/nx.db" } }
 ```
 
 با PostgreSQL، `driver` برابر `postgres` و `dsn` رشتهٔ اتصال است.
@@ -58,13 +58,13 @@ tags: [reference, install]
 
 | مسیر | چیست |
 | --- | --- |
-| `/opt/nexora-node/nexora-node` | برنامه |
-| `/opt/nexora-node/config.json` | آدرس پورت کنترل و مسیرهای گواهی، و هیچ چیز دیگر |
-| `/var/opt/nexora/certs/ssl_cert.pem` | گواهی خود نود |
-| `/var/opt/nexora/certs/ssl_key.pem` | کلید خصوصی آن |
-| `/var/opt/nexora/certs/panel_ca.pem` | گواهی پنل، تنها گواهی‌ای که نود می‌پذیرد |
-| `/var/opt/nexora/cache/` | رول‌ست‌ها و فایل‌های دیگری که پنل فرستاده، که اگر پاک شوند پنل دوباره می‌فرستد، و ورود اندپوینت Tailscale، که با پاک شدن از دست می‌رود |
-| `/etc/systemd/system/nexora-node.service` | سرویس |
+| `/opt/nx-node/nx-node` | برنامه |
+| `/opt/nx-node/config.json` | آدرس پورت کنترل و مسیرهای گواهی، و هیچ چیز دیگر |
+| `/var/opt/nx-node/certs/ssl_cert.pem` | گواهی خود نود |
+| `/var/opt/nx-node/certs/ssl_key.pem` | کلید خصوصی آن |
+| `/var/opt/nx-node/certs/panel_ca.pem` | گواهی پنل، تنها گواهی‌ای که نود می‌پذیرد |
+| `/var/opt/nx-node/cache/` | رول‌ست‌ها و فایل‌های دیگری که پنل فرستاده، که اگر پاک شوند پنل دوباره می‌فرستد، و ورود اندپوینت Tailscale، که با پاک شدن از دست می‌رود |
+| `/etc/systemd/system/nx-node.service` | سرویس |
 
 هر چه نود سرو می‌کند را پنل می‌فرستد و در حافظه نگه داشته می‌شود. نودی که
 دوباره راه‌اندازی شده تا وقتی پنل پیکربندی‌اش را دوباره بفرستد هیچ چیزی سرو
@@ -73,7 +73,7 @@ tags: [reference, install]
 
 در Docker، نود `./certs` و `./cache` را کنار فایل compose خودش نگه می‌دارد.
 
-وقتی پنل و نود روی یک سرورند، `/var/opt/nexora` مال هر دوست: پایگاه داده،
+وقتی پنل و نود روی یک سرورند، `/var/opt/nx-panel` مال هر دوست: پایگاه داده،
 `bin`، `backups` و بقیه مال پنل‌اند، و `certs` و `cache` مال نود.
 [[same-server]] را ببینید.
 
@@ -89,7 +89,7 @@ tags: [reference, install]
 | 5432 TCP، فقط محلی | PostgreSQL (با `--postgres`) | پایگاه داده، که پنل روی `127.0.0.1` به آن می‌رسد |
 
 پورت پنل را می‌شود در ویزارد راه‌اندازی و بعداً در صفحهٔ تنظیمات تغییر داد، یا
-با `nexora-panel config set web_listen_port`. پنل و نود هر دو هم‌زمان روی IPv6 و
+با `nx-panel config set web_listen_port`. پنل و نود هر دو هم‌زمان روی IPv6 و
 IPv4 گوش می‌دهند، و روی سروری که IPv6 آن خاموش است به IPv4 برمی‌گردند.
 
 ## متغیرهای محیطی {#environment-variables}
@@ -98,25 +98,25 @@ IPv4 گوش می‌دهند، و روی سروری که IPv6 آن خاموش ا�
 
 | متغیر | اثر |
 | --- | --- |
-| `NEXORA_DB_DRIVER` | `sqlite` یا `postgres` |
-| `NEXORA_DB_DSN` | اتصال پایگاه داده: مسیر فایل برای SQLite، رشتهٔ اتصال برای PostgreSQL |
-| `NEXORA_DB_MAX_OPEN_CONNS` | اندازهٔ استخر اتصال پایگاه داده |
-| `NEXORA_WEB_LISTEN` | آدرس شنود را ثابت می‌کند (`IP:PORT`). در این صورت پنل آدرس ذخیره‌شده در تنظیماتش را نادیده می‌گیرد، و ویزارد راه‌اندازی نمی‌تواند آن را تغییر دهد. استک‌های Docker از این استفاده می‌کنند |
+| `NX_DB_DRIVER` | `sqlite` یا `postgres` |
+| `NX_DB_DSN` | اتصال پایگاه داده: مسیر فایل برای SQLite، رشتهٔ اتصال برای PostgreSQL |
+| `NX_DB_MAX_OPEN_CONNS` | اندازهٔ استخر اتصال پایگاه داده |
+| `NX_WEB_LISTEN` | آدرس شنود را ثابت می‌کند (`IP:PORT`). در این صورت پنل آدرس ذخیره‌شده در تنظیماتش را نادیده می‌گیرد، و ویزارد راه‌اندازی نمی‌تواند آن را تغییر دهد. استک‌های Docker از این استفاده می‌کنند |
 
-این‌ها `config.json` را باطل می‌کنند. `nexora-panel run -listen IP:PORT` آدرس را
-به همان شکل `NEXORA_WEB_LISTEN` ثابت می‌کند.
+این‌ها `config.json` را باطل می‌کنند. `nx-panel run -listen IP:PORT` آدرس را
+به همان شکل `NX_WEB_LISTEN` ثابت می‌کند.
 
 ### نود {#node}
 
 | متغیر | اثر |
 | --- | --- |
-| `NEXORA_NODE_LISTEN` | آدرس پورت کنترل، به طور پیش‌فرض `[::]:62050` |
-| `NEXORA_NODE_CERT` | فایل گواهی نود |
-| `NEXORA_NODE_KEY` | فایل کلید خصوصی آن |
-| `NEXORA_NODE_CLIENT_CA` | فایل گواهی پنل |
-| `NEXORA_STATE_DIR` | پوشهٔ `certs` و `cache`، به طور پیش‌فرض `/var/opt/nexora` |
+| `NX_NODE_LISTEN` | آدرس پورت کنترل، به طور پیش‌فرض `[::]:62050` |
+| `NX_NODE_CERT` | فایل گواهی نود |
+| `NX_NODE_KEY` | فایل کلید خصوصی آن |
+| `NX_NODE_CLIENT_CA` | فایل گواهی پنل |
+| `NX_STATE_DIR` | پوشهٔ `certs` و `cache`، به طور پیش‌فرض `/var/opt/nx-panel` |
 
-این‌ها `config.json` نود را باطل می‌کنند. نصب‌کنندهٔ نود `NEXORA_INSTALL_TOKEN`
+این‌ها `config.json` نود را باطل می‌کنند. نصب‌کنندهٔ نود `NX_INSTALL_TOKEN`
 را هم به جای `--token` می‌خواند.
 
 ## مرتبط {#related}

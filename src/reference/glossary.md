@@ -1,6 +1,6 @@
 ---
 title: Glossary
-description: The words Nexora uses, each in a sentence or two.
+description: The words NX uses, each in a sentence or two.
 order: 1
 tags: [reference]
 ---
@@ -12,7 +12,7 @@ word with a dotted underline is one of these: point at it to read its entry.
 
 ## Panel {#panel}
 
-The control side of Nexora: one program with a web interface that keeps every
+The control side of NX: one program with a web interface that keeps every
 setting, user and node in its database and tells each [[~node]] what to
 serve. Users connect to nodes, never to the panel.
 
@@ -140,7 +140,7 @@ addresses and [[~addon|addons]].
 
 ## Addon {#addon}
 
-A separate program that attaches to the panel, such as Nexora Shop or the
+A separate program that attaches to the panel, such as NX Shop or the
 notifier. Once you approve it, the panel registers it, gives it exactly the
 access its signed manifest asks for and links to its interface; the addon
 runs on its own.

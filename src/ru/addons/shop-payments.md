@@ -8,7 +8,7 @@ tags: [addons]
 
 # Shop: платежи
 
-[[shop|Nexora Shop]] поставляется **без платёжного шлюза**. В нём есть
+[[shop|NX Shop]] поставляется **без платёжного шлюза**. В нём есть
 способы принимать деньги, которые вовсе не шлюзы (перевод с карты на карту,
 подтверждённый человеком по квитанции клиента или SMS вашего банка), и
 одна общая возможность: **общий HTTP-шлюз** — небольшой JSON-контракт,
@@ -127,8 +127,8 @@ tags: [addons]
 ### Подпись {#signing}
 
 Каждый запрос в обе стороны и каждый вызов Shop к вашему сервису
-подписываются одинаково: заголовок `X-Nexora-Timestamp` (секунды Unix) и
-`X-Nexora-Signature` — HMAC-SHA256 в шестнадцатеричном виде от
+подписываются одинаково: заголовок `X-Nx-Timestamp` (секунды Unix) и
+`X-Nx-Signature` — HMAC-SHA256 в шестнадцатеричном виде от
 `<timestamp>.<raw body>` с секретом. Проверяйте подпись Shop в своём
 посреднике. Shop отклоняет обратный вызов с неверной подписью или с меткой
 времени, отличающейся от его часов больше чем на пять минут.
@@ -138,7 +138,7 @@ TS=$(date +%s)
 BODY='{"text":"..."}'
 SIG=$(printf '%s.%s' "$TS" "$BODY" | openssl dgst -sha256 -hmac "$SECRET" -hex | sed 's/^.* //')
 curl -X POST https://shop.example.com/pay/hook/card \
-  -H "X-Nexora-Timestamp: $TS" -H "X-Nexora-Signature: $SIG" \
+  -H "X-Nx-Timestamp: $TS" -H "X-Nx-Signature: $SIG" \
   -H 'Content-Type: application/json' --data "$BODY"
 ```
 

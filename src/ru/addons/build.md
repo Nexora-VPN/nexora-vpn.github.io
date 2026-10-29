@@ -9,7 +9,7 @@ tags: [addons, api]
 # Создание дополнения
 
 Эта страница для разработчиков, которые хотят написать
-[[~addon|дополнение]] для Nexora: отдельную программу, которая работает с
+[[~addon|дополнение]] для NX: отдельную программу, которая работает с
 панелью по сети, с ограниченным [[~api-token|API-токеном]], подписанными
 [[~event|событиями]] панели и манифестом, где сказано, что ей нужно. Здесь
 разобраны части, из которых состоит дополнение, и инструменты, которые
@@ -23,7 +23,7 @@ tags: [addons, api]
 
 | Часть | Что делает |
 | --- | --- |
-| Манифест | `nexora-addon.json`: кто такое дополнение, что оно запрашивает, как устанавливается. Работающее дополнение отдаёт его по адресу `/.well-known/nexora-addon.json`. |
+| Манифест | `nx-addon.json`: кто такое дополнение, что оно запрашивает, как устанавливается. Работающее дополнение отдаёт его по адресу `/.well-known/nx-addon.json`. |
 | Путь настройки | Куда панель при регистрации доставляет токен и секрет вебхука вместе с кодом привязки. |
 | Путь вебхука | Куда панель отправляет запрошенные дополнением события, каждое подписанное. |
 | Путь проверки состояния | Отвечает `200`, пока дополнение исправно. Панель обращается к нему раз в минуту. |
@@ -36,11 +36,11 @@ tags: [addons, api]
 Большую часть этого за вас пишут два публичных репозитория.
 
 - **Addon kit** — модуль Go
-  [`github.com/nexora-vpn/addon-kit`](https://github.com/nexora-vpn/addon-kit)
+  [`github.com/nx-panel/addon-kit`](https://github.com/nx-panel/addon-kit)
   под лицензией Apache-2.0, поэтому построенное на нём дополнение может быть
   открытым или закрытым. Панель проверяет манифесты тем же кодом.
 - **Шаблон**,
-  [`github.com/nexora-vpn/addon-template`](https://github.com/nexora-vpn/addon-template):
+  [`github.com/nx-panel/addon-template`](https://github.com/nx-panel/addon-template):
   полное минимальное дополнение с файлом compose, бинарным выпуском и
   скриптом установки. Оно регистрируется по коду привязки, получает
   события, отвечает на проверку состояния и показывает страницу с числом
@@ -54,12 +54,12 @@ tags: [addons, api]
 | `auth` | Собственный вход администратора дополнения: хешированные пароли, сессии, второй фактор TOTP, ограничение неудачных попыток. |
 | `telegram` | Небольшой клиент Telegram Bot API, через прокси или зеркало Bot API; также Bale. |
 | `web` | Отдаёт админку под базовым путём установки, а публичные страницы — вне его, с HTTPS от панели, через ACME или с самоподписанным сертификатом. |
-| `cmd/nexora-addon` | `check`, `keygen`, `sign` и `verify` для манифеста; `sign-sums` и `verify-sums` для контрольных сумм выпуска. |
+| `cmd/nx-addon` | `check`, `keygen`, `sign` и `verify` для манифеста; `sign-sums` и `verify-sums` для контрольных сумм выпуска. |
 
 Самое маленькое дополнение:
 
 ```go
-raw, _ := os.ReadFile("nexora-addon.json")
+raw, _ := os.ReadFile("nx-addon.json")
 a, err := addon.New(addon.Config{Manifest: raw, DataDir: "data"}.FromEnv())
 if err != nil { log.Fatal(err) }
 a.OnEvent(func(e addon.Event) { log.Printf("%s %s", e.Event, e.Data) })
@@ -71,7 +71,7 @@ log.Fatal(http.ListenAndServe(":8090", mux))
 ## Сделайте шаблон своим {#make-the-template-yours}
 
 1. Измените `slug`, `name`, `publisher`, области и события в
-   `nexora-addon.json`, а также `SLUG`, `REPO` и `BIN` в начале
+   `nx-addon.json`, а также `SLUG`, `REPO` и `BIN` в начале
    `install.sh`.
 2. Объявите вопросы, нужные вашей установке, в `install.options`
    ([[manifest#install-options]]).
@@ -83,7 +83,7 @@ log.Fatal(http.ListenAndServe(":8090", mux))
 ## Регистрация по коду привязки {#registration-with-a-claim-code}
 
 Дополнение начинает работу незарегистрированным. Установка передаёт ему
-одноразовый **код привязки** в `NEXORA_CLAIM_CODE`; если запустить его
+одноразовый **код привязки** в `NX_CLAIM_CODE`; если запустить его
 вручную без кода, kit сам создаст код и запишет его в журнал.
 
 1. Панель читает манифест по адресу дополнения и проверяет его подпись.
@@ -99,7 +99,7 @@ Kit хранит учётные данные в своём каталоге да
 или nil до регистрации; `ClaimCode()` возвращает ещё ожидающий код.
 
 По коду привязки панель регистрирует только манифест, подписанный ключом,
-которому она доверяет: ключом Nexora или ключом разработчика, за который
+которому она доверяет: ключом NX или ключом разработчика, за который
 ручается каталог. Во время разработки регистрируйте дополнение вручную
 (**Дополнения → Добавить своё дополнение**): вы сами выбираете права токена
 и события вебхука, а панель один раз показывает токен и секрет подписи
@@ -123,9 +123,9 @@ Kit хранит учётные данные в своём каталоге да
 ## Получение событий {#receiving-events}
 
 Панель отправляет каждое запрошенное дополнением событие на его путь
-`webhook`. Доставка несёт `X-Nexora-Signature: t=<unix>,v1=<hex>`, где hex —
+`webhook`. Доставка несёт `X-Nx-Signature: t=<unix>,v1=<hex>`, где hex —
 HMAC-SHA256 от `<t>.<body>` с секретом вебхука, и идентификатор
-`X-Nexora-Delivery`, одинаковый при каждом повторе.
+`X-Nx-Delivery`, одинаковый при каждом повторе.
 
 Kit проверяет подпись и отклоняет доставку, отклонившуюся по времени больше
 чем на пять минут, передаёт каждое проверенное событие вашему обработчику
@@ -176,8 +176,8 @@ err := client.Get(ctx, "/users?limit=1", &list)
 
 Каждый вопрос в `install.options` становится полем формы установки в панели
 и флагом вашего скрипта установки. Ответы приходят в дополнение как
-переменные окружения `NEXORA_OPT_<KEY>`, рядом с `NEXORA_PANEL_URL` и
-`NEXORA_CLAIM_CODE`; читайте их через `addon.Option("key")`. Типы параметров
+переменные окружения `NX_OPT_<KEY>`, рядом с `NX_PANEL_URL` и
+`NX_CLAIM_CODE`; читайте их через `addon.Option("key")`. Типы параметров
 и их правила — в [[manifest#install-options]].
 
 Два типа меняют то, как панель вас устанавливает:
@@ -218,11 +218,11 @@ err := client.Get(ctx, "/users?limit=1", &list)
 подписанный ключом, которым подписан манифест:
 
 ```bash
-go install github.com/nexora-vpn/addon-kit/cmd/nexora-addon@latest
-nexora-addon check nexora-addon.json                    # would a panel accept it?
-nexora-addon keygen -out addon.key                      # once: your signing key
-nexora-addon sign -key addon.key nexora-addon.json > signed.json
-nexora-addon sign-sums -key addon.key SHA256SUMS > SHA256SUMS.sig
+go install github.com/nx-panel/addon-kit/cmd/nx-addon@latest
+nx-addon check nx-addon.json                    # would a panel accept it?
+nx-addon keygen -out addon.key                      # once: your signing key
+nx-addon sign -key addon.key nx-addon.json > signed.json
+nx-addon sign-sums -key addon.key SHA256SUMS > SHA256SUMS.sig
 gh release upload v1.2.3 SHA256SUMS.sig
 ```
 
@@ -240,11 +240,11 @@ gh release upload v1.2.3 SHA256SUMS.sig
 ## Попадание в каталог {#getting-listed}
 
 Дополнения публикуются на
-[addons.nexora-panel.org](https://addons.nexora-panel.org) как
+[addons.nx-panel.org](https://addons.nx-panel.org) как
 официальные, проверенные или неофициальные
 ([[directory#what-the-directory-lists]]). Чтобы попасть в каталог,
-подпишите манифест своим ключом (`nexora-addon keygen`, `sign`) и откройте
-pull request в каталог. Держите `nexora-addon.json` в корне своего
+подпишите манифест своим ключом (`nx-addon keygen`, `sign`) и откройте
+pull request в каталог. Держите `nx-addon.json` в корне своего
 публичного репозитория (для закрытого дополнения — его публичного
 репозитория распространения): каталог и мастер установки читают его
 оттуда.

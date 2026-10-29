@@ -107,7 +107,7 @@ identity, when it was linked and its last sign-in, with **Unlink** on each.
 
 Unlinking an identity, deleting the account, or a main admin resetting its
 password on the [[admins]] page removes the account's links. The recovery
-command `nexora-panel admin reset-password` removes them too, so the console
+command `nx-panel admin reset-password` removes them too, so the console
 stays the one way back in (see [[reference/cli]]).
 
 ## Related

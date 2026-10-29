@@ -8,7 +8,7 @@ tags: [protocols]
 # WireGuard
 
 WireGuard is a standard VPN, read by the official WireGuard apps, routers and
-most proxy apps. In Nexora it is an [[~endpoint]], made on the **Endpoints**
+most proxy apps. In NX it is an [[~endpoint]], made on the **Endpoints**
 page, and every user becomes a peer with their own keys and address. Users get
 a ready `.conf` file; you never edit peers by hand.
 

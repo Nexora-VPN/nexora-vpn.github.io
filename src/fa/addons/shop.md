@@ -1,14 +1,14 @@
 ---
-title: "Nexora Shop"
+title: "NX Shop"
 description: "پلن‌های پنلتان را از راه یک ربات تلگرام و یک وب‌اپ بفروشید: نصب فروشگاه، راه‌اندازی، و آشنایی با بخش مدیریتش."
 order: 3
 group: shop
 tags: [addons, plans]
 ---
 
-# Nexora Shop
+# NX Shop
 
-Nexora Shop [[~addon|افزونهٔ]] رسمی‌ای است که [[~plan|پلن‌های]] پنل شما را به
+NX Shop [[~addon|افزونهٔ]] رسمی‌ای است که [[~plan|پلن‌های]] پنل شما را به
 مشتری‌ها می‌فروشد: محصولات، سفارش‌ها، کیف پول، پرداخت کارت‌به‌کارت و درگاه، ربات
 تلگرام، وب‌اپ، کد تخفیف و هدیه، معرفی دوستان و نماینده‌ها. این صفحه نصب فروشگاه و
 بخش مدیریتش را توضیح می‌دهد؛ صفحه‌های بعدی هر بخش را با جزئیات.
@@ -32,7 +32,7 @@ Nexora Shop [[~addon|افزونهٔ]] رسمی‌ای است که [[~plan|پلن
 
 ## نصب {#install}
 
-راه پیشنهادی از پنل است: **افزونه‌ها ← مرور**، **Nexora Shop** را انتخاب کنید، به
+راه پیشنهادی از پنل است: **افزونه‌ها ← مرور**، **NX Shop** را انتخاب کنید، به
 سؤال‌هایش جواب دهید، و بگذارید پنل آن را روی سرور خودش یا با SSH نصب کند، یا
 دستوری برای اجرا به شما بدهد. پنل فروشگاه را وقتی جواب داد ثبت می‌کند. همهٔ
 راه‌های نصب در [[directory]] آمده است.
@@ -40,14 +40,14 @@ Nexora Shop [[~addon|افزونهٔ]] رسمی‌ای است که [[~plan|پلن
 دستی، روی یک سرور لینوکس با root:
 
 ```bash
-curl -fsSLO https://raw.githubusercontent.com/nexora-vpn/shop/main/install.sh
+curl -fsSLO https://raw.githubusercontent.com/nx-panel/shop/main/install.sh
 sh install.sh --method script --opt port=8095 \
   --panel-url https://panel.example.com --claim-code XXXX-XXXX-XXXX-XXXX
 ```
 
-`--method script` باینری را زیر واحد systemd به نام `nexora-addon-shop` اجرا
+`--method script` باینری را زیر واحد systemd به نام `nx-addon-shop` اجرا
 می‌کند؛ `--method docker` استک compose فروشگاه را اجرا می‌کند. همه چیز در
-`/opt/nexora-addons/shop` است: جواب‌ها در `.env` و داده‌ها در `data/`.
+`/opt/nx-addons/shop` است: جواب‌ها در `.env` و داده‌ها در `data/`.
 
 ### سؤال‌های نصب {#the-install-s-questions}
 

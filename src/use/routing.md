@@ -169,7 +169,7 @@ The presets shelves (rule sets, inbounds, routing and DNS) come from a
 catalogue the panel serves. You can add to it, or replace entries in it,
 without waiting for a release:
 
-1. Put a `.json` file in the presets directory: `/var/opt/nexora/presets/` on
+1. Put a `.json` file in the presets directory: `/var/opt/nx-panel/presets/` on
    a standard install, or the directory set under
    **Settings → General → Preset catalogue → Catalogue directory**.
 2. Open the presets dialog again. No restart is needed.

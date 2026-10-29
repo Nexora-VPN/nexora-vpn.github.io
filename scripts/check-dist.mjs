@@ -40,8 +40,8 @@ for (const file of walk(DIST)) {
   }
 }
 
-if (!existsSync(join(DIST, 'CNAME')) || readFileSync(join(DIST, 'CNAME'), 'utf8').trim() !== 'docs.nexora-panel.org') {
-  problems.push(`${DIST}/CNAME: missing or not docs.nexora-panel.org`)
+if (!existsSync(join(DIST, 'CNAME')) || readFileSync(join(DIST, 'CNAME'), 'utf8').trim() !== 'docs.nx-panel.org') {
+  problems.push(`${DIST}/CNAME: missing or not docs.nx-panel.org`)
 }
 
 try {

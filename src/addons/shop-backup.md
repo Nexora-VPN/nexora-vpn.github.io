@@ -54,11 +54,11 @@ copy of the key with it, and without the key no archive can be restored.
 ## Moving to a new server
 
 1. Install Shop on the new server as usual ([[shop#install]]), then stop it:
-   `systemctl stop nexora-addon-shop`, or `docker compose stop shop`.
+   `systemctl stop nx-addon-shop`, or `docker compose stop shop`.
 2. Copy an archive there and restore it with the key:
 
    ```bash
-   nexora-shop restore -i shop-20261004-120000.nxsb -key nxsb-…
+   nx-shop restore -i shop-20261004-120000.nxsb -key nxsb-…
    ```
 
    With Docker, copy the archive into `data/backups/` first, then:
@@ -75,10 +75,10 @@ and `receipts.before-restore`. A wrong key or a damaged archive changes
 nothing.
 
 The panel's registration is not in the archive. If the new server keeps the
-old address, copy `data/nexora-credentials.json` along. Otherwise remove Shop
+old address, copy `data/nx-credentials.json` along. Otherwise remove Shop
 on the panel's **Addons** page and register it again ([[directory]]).
 
-`nexora-shop backup` takes an archive by hand, with the same key.
+`nx-shop backup` takes an archive by hand, with the same key.
 
 ## After a panel restore
 

@@ -71,9 +71,9 @@ and these headers:
 
 | Header | Carries |
 | --- | --- |
-| `X-Nexora-Event` | the event name, as in the body |
-| `X-Nexora-Delivery` | this delivery's id; the same on every retry |
-| `X-Nexora-Signature` | `t=<unix seconds>,v1=<hex>` |
+| `X-Nx-Event` | the event name, as in the body |
+| `X-Nx-Delivery` | this delivery's id; the same on every retry |
+| `X-Nx-Signature` | `t=<unix seconds>,v1=<hex>` |
 
 The `v1` value is `HMAC-SHA256(secret, "<t>.<body>")`: the timestamp, a dot,
 then the raw body exactly as received. The receiver computes the same value
@@ -116,11 +116,11 @@ status (**Pending**, **Delivered** or **Dead**), with the time of the next
 attempt for a pending one.
 
 **Send again** on any delivery queues it once more, with a fresh count of
-tries. It keeps its `X-Nexora-Delivery` id, so a receiver that ignores ids it
+tries. It keeps its `X-Nx-Delivery` id, so a receiver that ignores ids it
 has seen will ignore it too.
 
 The log keeps seven days by default. The `event_retention_days` setting (up
-to 90) changes it, with `nexora-panel config set` (see [[reference/cli]]).
+to 90) changes it, with `nx-panel config set` (see [[reference/cli]]).
 
 ## Rotating the secret
 

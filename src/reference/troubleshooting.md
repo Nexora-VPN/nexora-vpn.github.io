@@ -8,8 +8,8 @@ tags: [reference]
 # Troubleshooting
 
 Problems by what you see, with the usual cause first. Two places help with most
-of them: the service log (`journalctl -u nexora-panel -n 50` on the panel,
-`journalctl -u nexora-node -n 50` on a node) and the node's row on the
+of them: the service log (`journalctl -u nx-panel -n 50` on the panel,
+`journalctl -u nx-node -n 50` on a node) and the node's row on the
 **Nodes** page, whose status shows the last error when you point at it.
 
 ## The panel does not open after install
@@ -25,7 +25,7 @@ of them: the service log (`journalctl -u nexora-panel -n 50` on the panel,
   `http://[2001:db8::10]:28431/setup?t=…`.
 - **The page says "not found".** Until setup is finished, the panel answers only
   the full setup link with its token. Print the token again with
-  `nexora-panel setup-token` (see [[install-panel#lost-the-link]]).
+  `nx-panel setup-token` (see [[install-panel#lost-the-link]]).
 
 ## The panel does not open after the setup wizard
 
@@ -44,12 +44,12 @@ path.
 
 ## Locked out
 
-- **Forgotten password:** `nexora-panel admin reset-password`. It also turns off
+- **Forgotten password:** `nx-panel admin reset-password`. It also turns off
   two-factor authentication for the account.
 - **Banned after failed logins:** add your address to `login_allowlist`, and set
   `trusted_proxies` if the panel sits behind a proxy or a CDN.
-- **Unreachable address, domain or path:** `nexora-panel config set …` and a
-  restart, or `nexora-panel ingress reset` and a restart after changes on
+- **Unreachable address, domain or path:** `nx-panel config set …` and a
+  restart, or `nx-panel ingress reset` and a restart after changes on
   **Settings → Addresses**.
 - **A correct password is refused on one host name only:** that host may be
   bound to another account on **Settings → Addresses**, or your account bound
@@ -64,8 +64,8 @@ The node runs but the panel cannot reach it, or reaches it and is refused.
 Check in this order:
 
 ```bash
-systemctl status nexora-node          # on the node
-journalctl -u nexora-node -n 50       # on the node
+systemctl status nx-node          # on the node
+journalctl -u nx-node -n 50       # on the node
 nc -vz 198.51.100.20 62050            # from the panel server
 ```
 
@@ -88,9 +88,9 @@ nc -vz 198.51.100.20 62050            # from the panel server
 
   ```bash
   curl -fsSL -o /tmp/node.tar.gz \
-    https://github.com/nexora-vpn/node/releases/latest/download/nexora-node-linux-armv7.tar.gz
+    https://github.com/nx-panel/node/releases/latest/download/nx-node-linux-armv7.tar.gz
   tar -C /tmp -xzf /tmp/node.tar.gz
-  install -m 0755 /tmp/nexora-node/nexora-node /var/opt/nexora/bin/nexora-node-linux-armv7
+  install -m 0755 /tmp/nx-node/nx-node /var/opt/nx-panel/bin/nx-node-linux-armv7
   ```
 
   Or add `--source github` to the command so the node server downloads the

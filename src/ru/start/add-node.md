@@ -88,7 +88,7 @@ curl -fsSLk https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOK
 2. обменивает токен на сертификат панели. Токен работает один раз и имеет
    срок действия;
 3. создаёт собственный сертификат узла;
-4. записывает `/opt/nexora-node/config.json` и службу и запускает её.
+4. записывает `/opt/nx-node/config.json` и службу и запускает её.
 
 Затем подключается панель. При первом подключении она запоминает сертификат
 узла и дальше принимает только его, а узел принимает только панель. Никто
@@ -172,7 +172,7 @@ not provisioned`, см. [[troubleshooting]].
 из поля **Сертификат mTLS** на той же вкладке как `certs/panel_ca.pem`, затем:
 
 ```bash
-git clone https://github.com/nexora-vpn/node
+git clone https://github.com/nx-panel/node
 cd node
 mkdir -p certs
 cp /path/to/panel_ca.pem certs/

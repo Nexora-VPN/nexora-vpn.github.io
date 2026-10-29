@@ -36,11 +36,11 @@ Shop 数据库的归档（在 Shop 运行期间获取的一致副本）加上卡
 
 ## 迁移到新服务器 {#moving-to-a-new-server}
 
-1. 照常在新服务器上安装 Shop（[[shop#install]]），然后停止它：`systemctl stop nexora-addon-shop` 或 `docker compose stop shop`。
+1. 照常在新服务器上安装 Shop（[[shop#install]]），然后停止它：`systemctl stop nx-addon-shop` 或 `docker compose stop shop`。
 2. 把一个归档复制过去，并用密钥还原：
 
    ```bash
-   nexora-shop restore -i shop-20261004-120000.nxsb -key nxsb-…
+   nx-shop restore -i shop-20261004-120000.nxsb -key nxsb-…
    ```
 
    使用 Docker 时，先把归档复制到 `data/backups/` 中，然后：
@@ -53,9 +53,9 @@ Shop 数据库的归档（在 Shop 运行期间获取的一致副本）加上卡
 
 还原在改动任何东西之前，会先检查密钥，并确认其中的数据库属于 Shop。被替换的内容会保留为 `shop.db.before-restore` 和 `receipts.before-restore`。密钥错误或归档损坏时，不会改变任何东西。
 
-面板的注册信息不在归档中。如果新服务器沿用旧地址，请一并复制 `data/nexora-credentials.json`。否则，请在面板的 **扩展** 页面上移除 Shop，然后重新注册（[[directory]]）。
+面板的注册信息不在归档中。如果新服务器沿用旧地址，请一并复制 `data/nx-credentials.json`。否则，请在面板的 **扩展** 页面上移除 Shop，然后重新注册（[[directory]]）。
 
-`nexora-shop backup` 可以用同一把密钥手动生成归档。
+`nx-shop backup` 可以用同一把密钥手动生成归档。
 
 ## 面板还原之后 {#after-a-panel-restore}
 

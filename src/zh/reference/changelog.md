@@ -7,7 +7,7 @@ tags: [reference]
 
 # 更新日志
 
-面板和节点有各自的版本号。**先更新面板，再更新节点**（[[start/update]]）。下载和完整说明在[面板](https://github.com/nexora-vpn/panel/releases)和[节点](https://github.com/nexora-vpn/node/releases)的发布页面上。
+面板和节点有各自的版本号。**先更新面板，再更新节点**（[[start/update]]）。下载和完整说明在[面板](https://github.com/nx-panel/panel/releases)和[节点](https://github.com/nx-panel/node/releases)的发布页面上。
 
 ## 面板 {#panel}
 
@@ -26,7 +26,7 @@ tags: [reference]
 ### v0.0.2 — 2026 年 10 月 5 日 {#panel-v0-0-2}
 
 - **服务菜单：** 面向管理员的 Telegram 和电子邮件通知、投递日志、备份目的地（兼容 S3、SFTP、Telegram）和单点登录（Google、Microsoft、GitHub、GitLab、Keycloak、Authentik、Okta、Auth0，以及任何 OpenID Connect 或 OAuth 2.0 提供方）。Webhook 移到了服务下。
-- **插件：** 浏览[插件目录](https://addons.nexora-panel.org)，用认领码或通过 SSH 安装，暂停，查看健康状态，只在更新请求更多权限时才需要批准。
+- **插件：** 浏览[插件目录](https://addons.nx-panel.org)，用认领码或通过 SSH 安装，暂停，查看健康状态，只在更新请求更多权限时才需要批准。
 - **路由测试：** 询问节点某个连接会命中哪条规则、走哪个出站。
 - **用户和代理商：** 管理员停用的账户会保持停用；过期的代理商不能再使用面板；新增读取、修补和续费单个用户的路由；新增用于链接的 `public_address` 设置。
 - **界面：** 可以固定的菜单，第二个内置订阅页面主题（琥珀色）。
@@ -60,10 +60,10 @@ tags: [reference]
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
-| Nexora Shop v0.0.2 | 2026 年 10 月 9 日 | 从面板的 **扩展** 页面安装，或使用 `ghcr.io/nexora-vpn/shop:0.0.2`（[[addons/shop]]） |
-| Nexora Shop v0.0.1 | 2026 年 10 月 4 日 | 首个版本 |
-| Notifier v0.3.0 | 2026 年 10 月 9 日 | `ghcr.io/nexora-vpn/notif:0.3.0`（[[addons/notifier]]） |
+| NX Shop v0.0.2 | 2026 年 10 月 9 日 | 从面板的 **扩展** 页面安装，或使用 `ghcr.io/nx-panel/shop:0.0.2`（[[addons/shop]]） |
+| NX Shop v0.0.1 | 2026 年 10 月 4 日 | 首个版本 |
+| Notifier v0.3.0 | 2026 年 10 月 9 日 | `ghcr.io/nx-panel/notif:0.3.0`（[[addons/notifier]]） |
 | Notifier v0.2.0 | 2026 年 10 月 4 日 | |
 | Notifier v0.1.0 | 2026 年 10 月 4 日 | 首个版本 |
-| nexora-migrate v0.0.2 | 2026 年 10 月 9 日 | Windows、Linux 和 macOS 版本（[[start/migrate]]） |
-| nexora-migrate v0.0.1 | 2026 年 9 月 23 日 | 首个版本 |
+| nx-migrate v0.0.2 | 2026 年 10 月 9 日 | Windows、Linux 和 macOS 版本（[[start/migrate]]） |
+| nx-migrate v0.0.1 | 2026 年 9 月 23 日 | 首个版本 |

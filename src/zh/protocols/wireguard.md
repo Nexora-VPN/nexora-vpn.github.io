@@ -7,7 +7,7 @@ tags: [protocols]
 
 # WireGuard
 
-WireGuard 是一种标准 VPN，WireGuard 官方应用、路由器和大多数代理应用都能读取。在 Nexora 中它是一个[[~endpoint]]，在 **端点** 页面上创建，每个用户都成为一个拥有自己密钥和地址的对等端（peer）。用户拿到现成的 `.conf` 文件；你永远不需要手动编辑对等端。
+WireGuard 是一种标准 VPN，WireGuard 官方应用、路由器和大多数代理应用都能读取。在 NX 中它是一个[[~endpoint]]，在 **端点** 页面上创建，每个用户都成为一个拥有自己密钥和地址的对等端（peer）。用户拿到现成的 `.conf` 文件；你永远不需要手动编辑对等端。
 
 ## 适用场景 {#what-it-is-good-for}
 

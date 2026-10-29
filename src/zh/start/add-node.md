@@ -65,7 +65,7 @@ curl -fsSLk https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOK
 1. **从你的面板** 而不是从互联网下载节点程序；
 2. 用令牌换取面板的证书。令牌只能用一次，并会过期；
 3. 生成节点自己的证书；
-4. 写入 `/opt/nexora-node/config.json` 和一个服务，然后启动它。
+4. 写入 `/opt/nx-node/config.json` 和一个服务，然后启动它。
 
 随后面板发起连接。它在第一次连接时记住节点的证书，之后只接受这一张证书；节点也只接受这个面板。其他任何东西都无法使用 62050 端口。
 
@@ -126,7 +126,7 @@ ufw allow from 203.0.113.10 to any port 62050 proto tcp
 如果想手动运行节点的 compose 文件，请把同一选项卡中 **mTLS 证书** 下显示的证书保存为 `certs/panel_ca.pem`，然后：
 
 ```bash
-git clone https://github.com/nexora-vpn/node
+git clone https://github.com/nx-panel/node
 cd node
 mkdir -p certs
 cp /path/to/panel_ca.pem certs/

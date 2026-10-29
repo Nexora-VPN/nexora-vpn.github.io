@@ -8,8 +8,8 @@ tags: [reference]
 # Решение проблем
 
 Проблемы по тому, что вы видите, — самая частая причина первой. С
-большинством помогают два места: журнал службы (`journalctl -u nexora-panel
--n 50` на панели, `journalctl -u nexora-node -n 50` на узле) и строка узла на
+большинством помогают два места: журнал службы (`journalctl -u nx-panel
+-n 50` на панели, `journalctl -u nx-node -n 50` на узле) и строка узла на
 странице **Узлы**, чей статус при наведении указателя показывает последнюю
 ошибку.
 
@@ -26,7 +26,7 @@ tags: [reference]
   `http://[2001:db8::10]:28431/setup?t=…`.
 - **Страница пишет «not found».** Пока настройка не завершена, панель
   отвечает только на полную ссылку настройки с токеном. Выведите токен снова
-  командой `nexora-panel setup-token` (см. [[install-panel#lost-the-link]]).
+  командой `nx-panel setup-token` (см. [[install-panel#lost-the-link]]).
 
 ## Панель не открывается после мастера настройки {#the-panel-does-not-open-after-the-setup-wizard}
 
@@ -44,13 +44,13 @@ tags: [reference]
 
 ## Нет доступа {#locked-out}
 
-- **Забытый пароль:** `nexora-panel admin reset-password`. Команда также
+- **Забытый пароль:** `nx-panel admin reset-password`. Команда также
   выключает двухфакторную аутентификацию учётной записи.
 - **Блокировка после неудачных входов:** добавьте свой адрес в
   `login_allowlist` и задайте `trusted_proxies`, если панель стоит за прокси
   или CDN.
-- **Недоступный адрес, домен или путь:** `nexora-panel config set …` и
-  перезапуск, или `nexora-panel ingress reset` и перезапуск после изменений в
+- **Недоступный адрес, домен или путь:** `nx-panel config set …` и
+  перезапуск, или `nx-panel ingress reset` и перезапуск после изменений в
   **Настройки → Адреса**.
 - **Верный пароль отклоняется только на одном имени хоста:** этот хост может
   быть привязан к другой учётной записи в **Настройки → Адреса**, или ваша
@@ -66,8 +66,8 @@ tags: [reference]
 получила отказ. Проверяйте в таком порядке:
 
 ```bash
-systemctl status nexora-node          # on the node
-journalctl -u nexora-node -n 50       # on the node
+systemctl status nx-node          # on the node
+journalctl -u nx-node -n 50       # on the node
 nc -vz 198.51.100.20 62050            # from the panel server
 ```
 
@@ -91,9 +91,9 @@ nc -vz 198.51.100.20 62050            # from the panel server
 
   ```bash
   curl -fsSL -o /tmp/node.tar.gz \
-    https://github.com/nexora-vpn/node/releases/latest/download/nexora-node-linux-armv7.tar.gz
+    https://github.com/nx-panel/node/releases/latest/download/nx-node-linux-armv7.tar.gz
   tar -C /tmp -xzf /tmp/node.tar.gz
-  install -m 0755 /tmp/nexora-node/nexora-node /var/opt/nexora/bin/nexora-node-linux-armv7
+  install -m 0755 /tmp/nx-node/nx-node /var/opt/nx-panel/bin/nx-node-linux-armv7
   ```
 
   Или добавьте к команде `--source github`, чтобы сервер узла сам скачал

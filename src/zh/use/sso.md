@@ -73,7 +73,7 @@ tags: [access, security]
 
 ## 需要撤销访问时 {#when-access-must-be-withdrawn}
 
-取消关联身份、删除账户，或主管理员在 [[admins]] 页面重置其密码，都会移除该账户的关联。恢复命令 `nexora-panel admin reset-password` 同样会移除它们，因此控制台始终是唯一的找回途径（参见 [[reference/cli]]）。
+取消关联身份、删除账户，或主管理员在 [[admins]] 页面重置其密码，都会移除该账户的关联。恢复命令 `nx-panel admin reset-password` 同样会移除它们，因此控制台始终是唯一的找回途径（参见 [[reference/cli]]）。
 
 ## 相关页面 {#related}
 

@@ -26,7 +26,7 @@ to finish, see [[start/install-addon]].
 
 - **Registered**: the addons this panel works with, and any install still
   **Waiting for an addon to answer**.
-- **Browse**: the addon directory at addons.nexora-panel.org, read once a day
+- **Browse**: the addon directory at addons.nx-panel.org, read once a day
   and when you press **Read now**. Each addon there is **Official**,
   **Verified** or **Unofficial**; what the tiers mean, and how to point the
   panel at a mirror with **Change source**, is on [[addons/directory]].
@@ -68,7 +68,7 @@ itself. To register one you started yourself:
 3. The panel reads the addon's description, checks its signature, and shows
    what it asks for: each permission of its token with the reason, the request
    rate it wants, and each event its webhook should hear. Read it. An
-   **Unofficial** addon carries a warning that Nexora has not reviewed it.
+   **Unofficial** addon carries a warning that NX has not reviewed it.
 4. Type the claim code and **Approve and register**.
 
 The panel creates exactly that token and webhook and hands them to the addon,

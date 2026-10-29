@@ -188,7 +188,7 @@ Telegram、Bale 或 Soroush 的 id 是数字聊天 id 或 `@username`。客户�
 
 续期时，编辑账户并推后其**到期时间**或提高其**流量**，或使用**续期与赠送**为一个或多个账户增加天数或流量（见 [[use/user-operations]]）。因到期或流量用尽而被面板关闭的账户，在重新回到限额之内后，一分钟内会自动恢复。
 
-Nexora Shop 等程序通过面板 API 为账户续期（见 [[reference/api]]）。
+NX Shop 等程序通过面板 API 为账户续期（见 [[reference/api]]）。
 
 ## 停用与启用 {#disabling-and-enabling}
 

@@ -56,10 +56,10 @@ with a token if you need them.
 | Header | |
 | --- | --- |
 | `Content-Type` | `application/json` |
-| `User-Agent` | `nexora-panel` |
-| `X-Nexora-Event` | the event name |
-| `X-Nexora-Delivery` | the delivery's id: the same on every retry and on **Send again** |
-| `X-Nexora-Signature` | `t=<unix seconds>,v1=<hex>`, present when the subscriber has a secret |
+| `User-Agent` | `nx-panel` |
+| `X-Nx-Event` | the event name |
+| `X-Nx-Delivery` | the delivery's id: the same on every retry and on **Send again** |
+| `X-Nx-Signature` | `t=<unix seconds>,v1=<hex>`, present when the subscriber has a secret |
 
 `v1` is the hex HMAC-SHA256 of the timestamp, a dot and the raw body, keyed
 with the subscriber's signing secret:

@@ -57,7 +57,7 @@ tags: [access, api]
 توکن را در هر درخواست بفرستید:
 
 ```bash
-curl -H "Authorization: Bearer $NEXORA_TOKEN" \
+curl -H "Authorization: Bearer $NX_TOKEN" \
   https://panel.example.com/your-base-path/api/v1/me
 ```
 

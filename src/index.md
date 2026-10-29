@@ -1,20 +1,20 @@
 ---
 layout: home
-title: "Nexora Docs"
+title: "NX Docs"
 hero:
-  name: "Nexora"
+  name: "NX"
   text: "Run your own VPN fleet from one panel."
   tagline: "A self-hosted control panel and nodes: every major protocol, users and plans, tunnels, subscriptions and addons."
   image:
-    src: /nexora-mark.png
-    alt: Nexora
+    src: /nx-mark.png
+    alt: NX
   actions:
     - theme: brand
       text: "Releases"
-      link: https://github.com/Nexora-VPN/panel/releases
+      link: https://github.com/nx-panel/panel/releases
     - theme: alt
-      text: "nexora-panel.org"
-      link: https://nexora-panel.org
+      text: "nx-panel.org"
+      link: https://nx-panel.org
 features:
   - icon: '<i class="pi pi-server"></i>'
     title: "One panel, the whole fleet"
@@ -30,7 +30,7 @@ features:
     details: "Reverse tunnels carry traffic from a relay to origin nodes over several ports and protocols at once."
   - icon: '<i class="pi pi-arrow-right-arrow-left"></i>'
     title: "Move from another panel"
-    details: "nexora-migrate brings users, inbounds and settings across from eight other panels."
+    details: "nx-migrate brings users, inbounds and settings across from eight other panels."
   - icon: '<i class="pi pi-th-large"></i>'
     title: "Addons"
     details: "Separate programs that attach to the panel: a shop that sells your plans, a notifier for your customers, or your own."
@@ -40,8 +40,8 @@ features:
 <div class="nx-home-diagram"><NxDiagram id="overview" /></div>
 
 <div class="nx-shot">
-  <img class="nx-light" src="/img/dashboard-light.webp" alt="The Nexora panel dashboard: users, nodes, traffic and the health of every node" width="1440" height="940">
-  <img class="nx-dark" src="/img/dashboard-dark.webp" alt="The Nexora panel dashboard: users, nodes, traffic and the health of every node" width="1440" height="940">
+  <img class="nx-light" src="/img/dashboard-light.webp" alt="The NX panel dashboard: users, nodes, traffic and the health of every node" width="1440" height="940">
+  <img class="nx-dark" src="/img/dashboard-dark.webp" alt="The NX panel dashboard: users, nodes, traffic and the health of every node" width="1440" height="940">
 </div>
 
 <p class="nx-section-title">Supported protocols</p>

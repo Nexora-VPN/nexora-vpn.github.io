@@ -1,14 +1,14 @@
 ---
-title: "Nexora Shop"
+title: "NX Shop"
 description: "通过 Telegram 机器人和网页应用销售面板的套餐：安装 Shop、完成设置，并熟悉它的管理后台。"
 order: 3
 group: shop
 tags: [addons, plans]
 ---
 
-# Nexora Shop
+# NX Shop
 
-Nexora Shop 是官方[[~addon|插件]]，用于向客户销售面板的[[~plan|套餐]]：商品、订单、钱包、卡对卡转账和网关支付、Telegram 机器人、网页应用、折扣码和礼品码、推荐和代理。本页介绍 Shop 的安装及其管理后台；后续页面逐一深入介绍各个部分。
+NX Shop 是官方[[~addon|插件]]，用于向客户销售面板的[[~plan|套餐]]：商品、订单、钱包、卡对卡转账和网关支付、Telegram 机器人、网页应用、折扣码和礼品码、推荐和代理。本页介绍 Shop 的安装及其管理后台；后续页面逐一深入介绍各个部分。
 
 ## Shop 与面板如何配合 {#how-shop-fits-with-the-panel}
 
@@ -22,17 +22,17 @@ Shop 不检查自己的许可证；由面板检查。当面板因[[~licence|许�
 
 ## 安装 {#install}
 
-推荐的方式是从面板安装：**扩展 → 浏览**，选择 **Nexora Shop**，回答它的问题，然后让面板把它装在自己的服务器上、通过 SSH 安装，或给你一条命令自己运行。Shop 响应后，面板会完成注册。所有安装方式见 [[directory]]。
+推荐的方式是从面板安装：**扩展 → 浏览**，选择 **NX Shop**，回答它的问题，然后让面板把它装在自己的服务器上、通过 SSH 安装，或给你一条命令自己运行。Shop 响应后，面板会完成注册。所有安装方式见 [[directory]]。
 
 手动安装时，在 Linux 服务器上以 root 身份运行：
 
 ```bash
-curl -fsSLO https://raw.githubusercontent.com/nexora-vpn/shop/main/install.sh
+curl -fsSLO https://raw.githubusercontent.com/nx-panel/shop/main/install.sh
 sh install.sh --method script --opt port=8095 \
   --panel-url https://panel.example.com --claim-code XXXX-XXXX-XXXX-XXXX
 ```
 
-`--method script` 以 systemd 单元 `nexora-addon-shop` 运行程序；`--method docker` 运行 Shop 的 compose 部署。所有内容都在 `/opt/nexora-addons/shop` 下：回答在 `.env` 中，数据在 `data/` 中。
+`--method script` 以 systemd 单元 `nx-addon-shop` 运行程序；`--method docker` 运行 Shop 的 compose 部署。所有内容都在 `/opt/nx-addons/shop` 下：回答在 `.env` 中，数据在 `data/` 中。
 
 ### 安装时的问题 {#the-install-s-questions}
 

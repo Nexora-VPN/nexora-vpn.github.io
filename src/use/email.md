@@ -25,7 +25,7 @@ address hears about its own customers and nothing else. The service is under
 | **Security** | how the connection is protected (below) |
 | **Certificate** | **Verify**, or **Do not verify (self-signed)** |
 | **Username**, **Password** | the login; an empty username sends without logging in |
-| **Sender** | the address mail comes from, optionally with a name: `Nexora <panel@example.com>` |
+| **Sender** | the address mail comes from, optionally with a name: `NX <panel@example.com>` |
 
 Switch **Service on**, save, and press **Test**. The test uses what is saved,
 so save first. The password is never shown again once saved: an empty box

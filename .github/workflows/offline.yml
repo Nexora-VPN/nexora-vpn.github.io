@@ -28,17 +28,17 @@ jobs:
       - run: NX_OFFLINE=1 npx vitepress build
       - name: Zip
         run: |
-          name="nexora-docs-${GITHUB_REF_NAME}"
+          name="nx-docs-${GITHUB_REF_NAME}"
           cp -r .vitepress/dist "$name"
           cat > "$name/README-OFFLINE.txt" <<'TXT'
-          Nexora documentation, offline copy.
+          NX documentation, offline copy.
 
           Open a terminal in this folder and run:
               python3 -m http.server 8080
           then open http://localhost:8080 in a browser. Search works offline.
           Any other static web server pointed at this folder works too.
 
-          Online: https://docs.nexora-panel.org
+          Online: https://docs.nx-panel.org
           TXT
           zip -qr "$name.zip" "$name"
           echo "ZIP=$name.zip" >> "$GITHUB_ENV"
@@ -49,4 +49,4 @@ jobs:
         run: |
           gh release create "$GITHUB_REF_NAME" "$ZIP" \
             --title "Offline documentation $GITHUB_REF_NAME" \
-            --notes "The whole of docs.nexora-panel.org in four languages, to read without a connection. Unzip, run \`python3 -m http.server 8080\` in the folder and open http://localhost:8080."
+            --notes "The whole of docs.nx-panel.org in four languages, to read without a connection. Unzip, run \`python3 -m http.server 8080\` in the folder and open http://localhost:8080."

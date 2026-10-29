@@ -52,9 +52,9 @@ Telegram 聊天和电子邮件地址通过各自的页面接收同样的事件�
 
 | 头部 | 内容 |
 | --- | --- |
-| `X-Nexora-Event` | 事件名称，与请求体中相同 |
-| `X-Nexora-Delivery` | 本次投递的 id；每次重试都相同 |
-| `X-Nexora-Signature` | `t=<unix seconds>,v1=<hex>` |
+| `X-Nx-Event` | 事件名称，与请求体中相同 |
+| `X-Nx-Delivery` | 本次投递的 id；每次重试都相同 |
+| `X-Nx-Signature` | `t=<unix seconds>,v1=<hex>` |
 
 `v1` 的值是 `HMAC-SHA256(secret, "<t>.<body>")`：时间戳、一个点，然后是与收到的内容完全一致的原始请求体。接收方用自己的密钥计算同样的值，以恒定时间比较二者，并拒绝 `t` 与自身时钟相差超过五分钟的请求。完整的信封格式和示例见 [[reference/events]]。
 
@@ -76,9 +76,9 @@ Telegram 聊天和电子邮件地址通过各自的页面接收同样的事件�
 
 在某行点击 **投递记录** 会列出发送给该订阅者的内容：事件、时间、尝试次数、接收方的状态码、错误，以及状态（**等待中**、**已送达** 或 **已放弃**）；对于等待中的投递，还会显示下次尝试的时间。
 
-在任意投递上点击 **重新发送** 会把它再次加入队列，并重新开始计算尝试次数。它保留原来的 `X-Nexora-Delivery` id，因此会忽略已见过 id 的接收方也会忽略它。
+在任意投递上点击 **重新发送** 会把它再次加入队列，并重新开始计算尝试次数。它保留原来的 `X-Nx-Delivery` id，因此会忽略已见过 id 的接收方也会忽略它。
 
-投递记录默认保留七天。`event_retention_days` 设置（最多 90）可以修改保留时间，使用 `nexora-panel config set` 设置（参见 [[reference/cli]]）。
+投递记录默认保留七天。`event_retention_days` 设置（最多 90）可以修改保留时间，使用 `nx-panel config set` 设置（参见 [[reference/cli]]）。
 
 ## 轮换密钥 {#rotating-the-secret}
 

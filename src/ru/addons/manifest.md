@@ -1,6 +1,6 @@
 ---
 title: "Манифест дополнения"
-description: "Справочник по nexora-addon.json: все поля, раздел install и типы его параметров, requires.panel и подпись манифестов и выпусков."
+description: "Справочник по nx-addon.json: все поля, раздел install и типы его параметров, requires.panel и подпись манифестов и выпусков."
 order: 11
 group: authors
 tags: [addons, api, reference]
@@ -8,7 +8,7 @@ tags: [addons, api, reference]
 
 # Манифест дополнения
 
-Манифест `nexora-addon.json` — это договор между [[~addon|дополнением]] и
+Манифест `nx-addon.json` — это договор между [[~addon|дополнением]] и
 панелью, [[directory|каталогом дополнений]] и формой установки в панели. Он
 сообщает, кто такое дополнение, что оно запрашивает и как
 устанавливается. Эта страница перечисляет все поля; как ими пользоваться,
@@ -19,7 +19,7 @@ tags: [addons, api, reference]
 публикацией:
 
 ```bash
-nexora-addon check nexora-addon.json
+nx-addon check nx-addon.json
 ```
 
 ## Где он лежит {#where-it-lives}
@@ -28,7 +28,7 @@ nexora-addon check nexora-addon.json
   читают его там ещё до того, как что-либо запущено. Для закрытого
   дополнения это его публичный репозиторий распространения.
 - **Его отдаёт работающее дополнение** по адресу
-  `/.well-known/nexora-addon.json`; оттуда его читает регистрация.
+  `/.well-known/nx-addon.json`; оттуда его читает регистрация.
 
 ## Полный пример {#a-complete-example}
 
@@ -41,9 +41,9 @@ nexora-addon check nexora-addon.json
   "publisher": "Example Ltd",
   "license": "Apache-2.0",
   "description": { "en": "A minimal addon to start from." },
-  "docs": "https://github.com/nexora-vpn/addon-template",
+  "docs": "https://github.com/nx-panel/addon-template",
   "install": {
-    "docker": { "image": "ghcr.io/nexora-vpn/addon-template", "compose": "deploy/compose.yml" },
+    "docker": { "image": "ghcr.io/nx-panel/addon-template", "compose": "deploy/compose.yml" },
     "binary": { "linux-amd64": "addon-template-linux-amd64.tar.gz" },
     "options": [
       { "key": "port", "type": "port", "default": 8090, "label": { "en": "Port" } }
@@ -53,8 +53,8 @@ nexora-addon check nexora-addon.json
     { "scope": "users:read", "purpose": "to show how many accounts the panel has" }
   ],
   "events": ["user.created", "panel.addon_removed"],
-  "webhook": "/nexora/events",
-  "setup": "/nexora/setup",
+  "webhook": "/nx/events",
+  "setup": "/nx/setup",
   "health": "/health",
   "ui": "/",
   "rateLimit": 60,
@@ -111,7 +111,7 @@ nexora-addon check nexora-addon.json
 
 ```json
 "install": {
-  "docker": { "image": "ghcr.io/nexora-vpn/shop", "compose": "deploy/compose.yml" },
+  "docker": { "image": "ghcr.io/nx-panel/shop", "compose": "deploy/compose.yml" },
   "binary": { "linux-amd64": "shop-linux-amd64.tar.gz", "linux-arm64": "shop-linux-arm64.tar.gz" },
   "options": [ … ]
 }
@@ -172,9 +172,9 @@ nexora-addon check nexora-addon.json
 
 ### Как ответы попадают в дополнение {#how-answers-reach-the-addon}
 
-Ответы приходят как переменные окружения `NEXORA_OPT_<KEY>` — в `.env` рядом
+Ответы приходят как переменные окружения `NX_OPT_<KEY>` — в `.env` рядом
 с файлом compose или в `EnvironmentFile` юнита systemd. Рядом с ними
-приходят `NEXORA_PANEL_URL` и `NEXORA_CLAIM_CODE` — код, который панель
+приходят `NX_PANEL_URL` и `NX_CLAIM_CODE` — код, который панель
 выдала для этой установки. `bool` передаётся как `true` или `false`, число —
 в записи JSON.
 
@@ -203,9 +203,9 @@ nexora-addon check nexora-addon.json
 
 ### Манифест {#the-manifest}
 
-- **Официальное** дополнение подписывает Nexora.
+- **Официальное** дополнение подписывает NX.
 - **Проверенное** дополнение подписано собственным ключом разработчика
-  (`nexora-addon keygen`, `nexora-addon sign`), за который ручается
+  (`nx-addon keygen`, `nx-addon sign`), за который ручается
   подписанный индекс каталога.
 - Дополнение **без подписи** регистрируется вручную.
 
@@ -221,11 +221,11 @@ nexora-addon check nexora-addon.json
 ключом, которым подписан манифест**:
 
 ```bash
-nexora-addon sign-sums -key addon.key SHA256SUMS > SHA256SUMS.sig
+nx-addon sign-sums -key addon.key SHA256SUMS > SHA256SUMS.sig
 gh release upload v1.2.3 SHA256SUMS.sig
 ```
 
-Это подпись Ed25519 в base64 над строкой `nexora-addon SHA256SUMS v1\n`, за
+Это подпись Ed25519 в base64 над строкой `nx-addon SHA256SUMS v1\n`, за
 которой следуют байты файла, поэтому её никогда нельзя выдать за подпись
 манифеста.
 

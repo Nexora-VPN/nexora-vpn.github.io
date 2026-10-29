@@ -1,7 +1,7 @@
 ---
 title: "Uninstall"
 description: "Remove the panel or a node from a server, and what each removal keeps."
-order: 10
+order: 11
 tags: [install]
 ---
 
@@ -14,20 +14,20 @@ certificates, is left in place for you to delete when you are sure.
 ## The panel
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/nexora-vpn/panel/main/install.sh) --uninstall
+bash <(curl -fsSL https://raw.githubusercontent.com/nx-panel/panel/main/install.sh) --uninstall
 ```
 
 | Removed | Kept |
 | --- | --- |
-| the `nexora-panel` service | the database in `/var/opt/nexora` |
-| `/opt/nexora-panel`, with the binary and `config.json` | backups in `/var/opt/nexora/backups` |
-| the `nexora-panel` command | node binaries, themes and rule sets under `/var/opt/nexora` |
+| the `nx-panel` service | the database in `/var/opt/nx-panel` |
+| `/opt/nx-panel`, with the binary and `config.json` | backups in `/var/opt/nx-panel/backups` |
+| the `nx-panel` command | node binaries, themes and rule sets under `/var/opt/nx-panel` |
 
 ::: danger Copy your backups first
-If the server itself is going away, copy `/var/opt/nexora/backups` somewhere
+If the server itself is going away, copy `/var/opt/nx-panel/backups` somewhere
 else before you delete anything. Then remove the rest yourself:
-`rm -rf /var/opt/nexora`. Do not do this if a node runs on the same server
-without reading the next section.
+`rm -rf /var/opt/nx-panel`. A node on the same server keeps its own files in
+`/var/opt/nx-node` and is not affected.
 :::
 
 With PostgreSQL, the database lives in PostgreSQL and is not touched.
@@ -48,26 +48,26 @@ On the node's server, the installer removes it too:
 curl -fsSL https://PANEL/install-node.sh | bash -s -- --uninstall
 ```
 
-It removes the service or container and `/opt/nexora-node`, and leaves the
-certificates in `/var/opt/nexora/certs` and the cache in `/var/opt/nexora/cache`.
+It removes the service or container and `/opt/nx-node`, and leaves the
+certificates in `/var/opt/nx-node/certs` and the cache in `/var/opt/nx-node/cache`.
 If this server will not host a node again, delete those two:
 
 ```bash
-rm -rf /var/opt/nexora/certs /var/opt/nexora/cache
+rm -rf /var/opt/nx-node/certs /var/opt/nx-node/cache
 ```
 
 Or remove everything by hand:
 
 ```bash
-systemctl disable --now nexora-node
-rm -f /etc/systemd/system/nexora-node.service
+systemctl disable --now nx-node
+rm -f /etc/systemd/system/nx-node.service
 systemctl daemon-reload
-rm -rf /opt/nexora-node /var/opt/nexora/certs /var/opt/nexora/cache
+rm -rf /opt/nx-node /var/opt/nx-node/certs /var/opt/nx-node/cache
 ```
 
-::: danger Panel on the same server
-Never remove `/var/opt/nexora` as a whole on a server that also runs the panel.
-That directory holds the panel's database. Remove only `certs` and `cache`.
+::: tip Panel on the same server
+The panel keeps its files in `/var/opt/nx-panel`, so removing the node's leaves
+the panel untouched.
 :::
 
 Then **delete the node in the panel** too. Otherwise it keeps counting against

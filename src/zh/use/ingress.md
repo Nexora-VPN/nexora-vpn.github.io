@@ -19,7 +19,7 @@ tags: [panel, tls, access]
 - 它可以编辑，包括端口、地址和 TLS，但不能删除、关闭或被另一个监听器取代。
 - 它始终带有一个 **面板** 路由，并提供订阅：通过一个 **订阅** 路由，或在面板路由上选中 **订阅**。
 - 这两个路由标记为 **主路由**。它们的主机、路径前缀和选项可以编辑，但不能删除、更换服务、绑定到账户或移出主监听器。
-- 设置向导会写入它。在面板只有这一个地址期间，`nexora-panel config get` 和 `config set` 可以在服务器上读取和写入它，`nexora-panel ingress reset` 会重建它（[[reference/cli]]）。
+- 设置向导会写入它。在面板只有这一个地址期间，`nx-panel config get` 和 `config set` 可以在服务器上读取和写入它，`nx-panel ingress reset` 会重建它（[[reference/cli]]）。
 - 在 Docker 中，它的端口由 compose 文件固定。
 
 在本页所做的更改立即生效。从服务器命令行所做的更改在面板下次启动时生效。
@@ -220,7 +220,7 @@ WebSocket 连接可以通过。面板的会话 cookie 永远不会到达该程�
 
 ## 被锁在外面 {#locked-out}
 
-如果某次更改让面板无法访问，而它又已经被确认，请在服务器命令行用 `nexora-panel ingress reset` 恢复地址，它只留下一个在每个主机上提供面板的普通监听器。参见 [[reference/cli#locked-out]]。
+如果某次更改让面板无法访问，而它又已经被确认，请在服务器命令行用 `nx-panel ingress reset` 恢复地址，它只留下一个在每个主机上提供面板的普通监听器。参见 [[reference/cli#locked-out]]。
 
 ## 相关页面 {#related}
 

@@ -1,6 +1,6 @@
 ---
 title: "插件清单"
-description: "nexora-addon.json 参考：每个字段、install 部分及其选项类型、requires.panel，以及清单和发布版本如何签名。"
+description: "nx-addon.json 参考：每个字段、install 部分及其选项类型、requires.panel，以及清单和发布版本如何签名。"
 order: 11
 group: authors
 tags: [addons, api, reference]
@@ -8,18 +8,18 @@ tags: [addons, api, reference]
 
 # 插件清单
 
-清单 `nexora-addon.json` 是[[~addon|插件]]与面板、[[directory|插件目录]]以及面板安装表单之间的约定。它说明插件是谁、请求什么、如何安装。本页列出每个字段；[[build]] 说明如何使用它们。
+清单 `nx-addon.json` 是[[~addon|插件]]与面板、[[directory|插件目录]]以及面板安装表单之间的约定。它说明插件是谁、请求什么、如何安装。本页列出每个字段；[[build]] 说明如何使用它们。
 
 插件工具包的 `manifest` 包强制执行这份约定，面板也用同样的代码进行校验。发布前请检查清单：
 
 ```bash
-nexora-addon check nexora-addon.json
+nx-addon check nx-addon.json
 ```
 
 ## 存放位置 {#where-it-lives}
 
 - **在插件公开仓库的根目录。** 目录和安装表单会在任何东西运行之前从那里读取它。对于闭源插件，这是它的公开分发仓库。
-- **由运行中的插件提供**，地址为 `/.well-known/nexora-addon.json`，注册时会读取它。
+- **由运行中的插件提供**，地址为 `/.well-known/nx-addon.json`，注册时会读取它。
 
 ## 完整示例 {#a-complete-example}
 
@@ -32,9 +32,9 @@ nexora-addon check nexora-addon.json
   "publisher": "Example Ltd",
   "license": "Apache-2.0",
   "description": { "en": "A minimal addon to start from." },
-  "docs": "https://github.com/nexora-vpn/addon-template",
+  "docs": "https://github.com/nx-panel/addon-template",
   "install": {
-    "docker": { "image": "ghcr.io/nexora-vpn/addon-template", "compose": "deploy/compose.yml" },
+    "docker": { "image": "ghcr.io/nx-panel/addon-template", "compose": "deploy/compose.yml" },
     "binary": { "linux-amd64": "addon-template-linux-amd64.tar.gz" },
     "options": [
       { "key": "port", "type": "port", "default": 8090, "label": { "en": "Port" } }
@@ -44,8 +44,8 @@ nexora-addon check nexora-addon.json
     { "scope": "users:read", "purpose": "to show how many accounts the panel has" }
   ],
   "events": ["user.created", "panel.addon_removed"],
-  "webhook": "/nexora/events",
-  "setup": "/nexora/setup",
+  "webhook": "/nx/events",
+  "setup": "/nx/setup",
   "health": "/health",
   "ui": "/",
   "rateLimit": 60,
@@ -96,7 +96,7 @@ nexora-addon check nexora-addon.json
 
 ```json
 "install": {
-  "docker": { "image": "ghcr.io/nexora-vpn/shop", "compose": "deploy/compose.yml" },
+  "docker": { "image": "ghcr.io/nx-panel/shop", "compose": "deploy/compose.yml" },
   "binary": { "linux-amd64": "shop-linux-amd64.tar.gz", "linux-arm64": "shop-linux-arm64.tar.gz" },
   "options": [ … ]
 }
@@ -153,7 +153,7 @@ nexora-addon check nexora-addon.json
 
 ### 回答如何到达插件 {#how-answers-reach-the-addon}
 
-回答以环境变量 `NEXORA_OPT_<KEY>` 的形式到达，写在 compose 文件旁边的 `.env` 中，或 systemd 单元的 `EnvironmentFile` 中。同时提供的还有 `NEXORA_PANEL_URL` 和 `NEXORA_CLAIM_CODE`（面板为这次安装签发的认领码）。`bool` 为 `true` 或 `false`，数字采用其 JSON 写法。
+回答以环境变量 `NX_OPT_<KEY>` 的形式到达，写在 compose 文件旁边的 `.env` 中，或 systemd 单元的 `EnvironmentFile` 中。同时提供的还有 `NX_PANEL_URL` 和 `NX_CLAIM_CODE`（面板为这次安装签发的认领码）。`bool` 为 `true` 或 `false`，数字采用其 JSON 写法。
 
 ### `path` 类型 {#the-path-type}
 
@@ -169,8 +169,8 @@ nexora-addon check nexora-addon.json
 
 ### 清单 {#the-manifest}
 
-- **官方** 插件由 Nexora 签名。
-- **已验证** 插件用开发者自己的密钥签名（`nexora-addon keygen`、`nexora-addon sign`），目录的签名索引为该密钥背书。
+- **官方** 插件由 NX 签名。
+- **已验证** 插件用开发者自己的密钥签名（`nx-addon keygen`、`nx-addon sign`），目录的签名索引为该密钥背书。
 - **未签名** 插件需要手动注册。
 
 签名覆盖除 `signature` 以外的所有字段，按键排序后重新编码，因此文件可以随意缩进或调整顺序。
@@ -180,11 +180,11 @@ nexora-addon check nexora-addon.json
 发布版本会发布 **`SHA256SUMS`**，以 `sha256sum` 的格式覆盖所有资产（包括 `install.sh` 和各个程序）；以及 **`SHA256SUMS.sig`**，即构建后用 **签名清单的同一把密钥** 对它做的签名：
 
 ```bash
-nexora-addon sign-sums -key addon.key SHA256SUMS > SHA256SUMS.sig
+nx-addon sign-sums -key addon.key SHA256SUMS > SHA256SUMS.sig
 gh release upload v1.2.3 SHA256SUMS.sig
 ```
 
-该签名是对 `nexora-addon SHA256SUMS v1\n` 加上文件字节所做的 base64 Ed25519 签名，因此它永远不会被当作清单的签名。
+该签名是对 `nx-addon SHA256SUMS v1\n` 加上文件字节所做的 base64 Ed25519 签名，因此它永远不会被当作清单的签名。
 
 | 安装方式 | 校验内容 |
 | --- | --- |

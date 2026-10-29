@@ -7,7 +7,7 @@ tags: [protocols, certificates]
 
 # OpenVPN 与 OpenConnect
 
-办公笔记本、路由器和受限设备上往往已经自带 OpenVPN 和 OpenConnect 这两种 VPN。Nexora 把两者都作为[[~endpoint|端点]]提供：每个用户用自己的账户名和密码登录，面板为他们生成客户端配置。
+办公笔记本、路由器和受限设备上往往已经自带 OpenVPN 和 OpenConnect 这两种 VPN。NX 把两者都作为[[~endpoint|端点]]提供：每个用户用自己的账户名和密码登录，面板为他们生成客户端配置。
 
 ## 适用场景 {#what-they-are-good-for}
 

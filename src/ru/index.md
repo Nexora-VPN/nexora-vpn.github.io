@@ -1,20 +1,20 @@
 ---
 layout: home
-title: "Документация Nexora"
+title: "Документация NX"
 hero:
-  name: "Nexora"
+  name: "NX"
   text: "Управляйте своим VPN-флотом из одной панели."
   tagline: "Собственная панель управления и узлы: все основные протоколы, пользователи и тарифы, туннели, подписки и дополнения."
   image:
-    src: /nexora-mark.png
-    alt: Nexora
+    src: /nx-mark.png
+    alt: NX
   actions:
     - theme: brand
       text: "Релизы"
-      link: https://github.com/Nexora-VPN/panel/releases
+      link: https://github.com/nx-panel/panel/releases
     - theme: alt
-      text: "nexora-panel.org"
-      link: https://nexora-panel.org
+      text: "nx-panel.org"
+      link: https://nx-panel.org
 features:
   - icon: '<i class="pi pi-server"></i>'
     title: "Одна панель — весь флот"
@@ -30,7 +30,7 @@ features:
     details: "Обратные туннели переносят трафик от ретранслятора к исходным узлам сразу по нескольким портам и протоколам."
   - icon: '<i class="pi pi-arrow-right-arrow-left"></i>'
     title: "Переезд с другой панели"
-    details: "nexora-migrate переносит пользователей, инбаунды и настройки из восьми других панелей."
+    details: "nx-migrate переносит пользователей, инбаунды и настройки из восьми других панелей."
   - icon: '<i class="pi pi-th-large"></i>'
     title: "Дополнения"
     details: "Отдельные программы, подключаемые к панели: магазин для продажи тарифов, уведомления клиентам или ваше собственное."
@@ -40,8 +40,8 @@ features:
 <div class="nx-home-diagram"><NxDiagram id="overview" /></div>
 
 <div class="nx-shot">
-  <img class="nx-light" src="/img/dashboard-light.webp" alt="Панель Nexora: пользователи, узлы, трафик и состояние каждого узла" width="1440" height="940">
-  <img class="nx-dark" src="/img/dashboard-dark.webp" alt="Панель Nexora: пользователи, узлы, трафик и состояние каждого узла" width="1440" height="940">
+  <img class="nx-light" src="/img/dashboard-light.webp" alt="Панель NX: пользователи, узлы, трафик и состояние каждого узла" width="1440" height="940">
+  <img class="nx-dark" src="/img/dashboard-dark.webp" alt="Панель NX: пользователи, узлы, трафик и состояние каждого узла" width="1440" height="940">
 </div>
 
 <p class="nx-section-title">Поддерживаемые протоколы</p>

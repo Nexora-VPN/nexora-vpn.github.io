@@ -109,7 +109,7 @@ edit its URL, or re-point the catalogue entry with a presets file.
 
 **Settings → General → Rule set mirror → Storage directory** sets where the
 copies are kept: an absolute path on the panel's server. Empty keeps them
-beside the database, in `/var/opt/nexora/rulesets/` on a standard install and
+beside the database, in `/var/opt/nx-panel/rulesets/` on a standard install and
 in `./rulesets` next to the compose file in Docker.
 
 The copies are a cache. They are left out of backups, and clearing the

@@ -64,7 +64,7 @@ const WORDS = {
 } as const
 const w = computed(() => WORDS[lang.value.slice(0, 2) as keyof typeof WORDS] ?? WORDS.en)
 
-const INSTALL = 'bash <(curl -fsSL https://raw.githubusercontent.com/nexora-vpn/panel/main/install.sh)'
+const INSTALL = 'bash <(curl -fsSL https://raw.githubusercontent.com/nx-panel/panel/main/install.sh)'
 const NODE = 'curl -fsSL https://PANEL/install-node.sh | bash -s -- --panel PANEL --token TOKEN'
 const pin = computed(() => {
   const v = version.value.trim()
@@ -80,7 +80,7 @@ const result = computed(() => {
     notes.push(w.value.notePanel)
   } else if (what.value === 'panel') {
     lines = [
-      'git clone https://github.com/nexora-vpn/panel',
+      'git clone https://github.com/nx-panel/panel',
       `cd panel/docker/${db.value}`,
       ...(db.value === 'postgres' ? ['cp .env.example .env    # then set a password in .env'] : []),
       'docker compose up -d',
@@ -92,7 +92,7 @@ const result = computed(() => {
     notes.push(w.value.noteNode)
   } else if (what.value === 'node') {
     lines = [
-      'git clone https://github.com/nexora-vpn/node',
+      'git clone https://github.com/nx-panel/node',
       'cd node',
       'mkdir -p certs && cp /path/to/panel_ca.pem certs/',
       'docker compose up -d',
@@ -107,7 +107,7 @@ const result = computed(() => {
     notes.push(w.value.noteBoth)
   } else {
     lines = [
-      'git clone https://github.com/nexora-vpn/panel',
+      'git clone https://github.com/nx-panel/panel',
       'cd panel/docker/panel-and-node',
       'docker compose up -d panel',
       'docker compose logs panel | grep setup',
