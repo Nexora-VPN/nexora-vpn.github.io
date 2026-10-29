@@ -102,9 +102,10 @@ the fields you want to change; the rest are left exactly as they are.
 
 Sets the same config limit on every ticked account, replacing its own, or
 removes the limit from all of them (**Remove the limit**). The rules are the
-ones the user form has (see [[use/users#limiting-configs]]). Only accounts
-whose limit changed are counted. A reseller that sells plans only cannot run
-it.
+ones the user form has (see [[use/users#limiting-configs]]). **Set this
+limit** needs at least one rule: removing the limit is its own choice. Only
+accounts whose limit changed are counted. A reseller that sells plans only
+cannot run it.
 
 ### Change owner
 

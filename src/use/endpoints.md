@@ -60,6 +60,10 @@ bigger pool such as `10.8.0.1/16`.
 Adding or removing a user rebuilds the WireGuard endpoint on its nodes, and
 connected WireGuard clients come back within about twenty seconds.
 
+Select a WireGuard server only in a template assigned to a single node. Every
+account on the templates that select it becomes one of its peers, which is
+also why the form's **Listen port** carries this note.
+
 See [[protocols/wireguard]] for the options and for client apps.
 
 ## OpenVPN and OpenConnect

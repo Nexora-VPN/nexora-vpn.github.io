@@ -96,8 +96,13 @@ is now on a copy of its template named *template* · *node*, for example
 `Germany · de-2` (just the node's name if it had no template). The copy holds
 the template's selections plus the node's own outbounds and endpoints, now in
 the pools; the template's routing with the node's rules after it, and the
-node's final outbound if it set one; and the same users and reseller grants.
-The node serves what it served before.
+node's final outbound if it set one; and the same users, reseller grants and
+plans. The node serves what it served before, with one exception for a node
+that had no template and so served no users: its own OpenVPN or OpenConnect
+server, which did not run without users, is left in the pool unselected rather
+than handed to every user on all templates, and its own WireGuard server keeps
+running with its hand-written peers, but the users on all templates become its
+peers too. The panel's log names both.
 
 ## Which users reach a template
 

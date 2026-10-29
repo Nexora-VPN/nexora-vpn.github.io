@@ -193,8 +193,10 @@ form shows rules for **Inbounds** and for **Endpoints**:
    operators, which ignore case.
 
 A config is allowed when it matches every rule of its section. A section with
-no rules allows everything. A rule may name a tag that is on none of the account's templates; it
-simply matches nothing there. Drag a rule by its handle to reorder it.
+no rules allows everything. A rule may name a tag that is on none of the
+account's templates; it simply matches nothing there. A section takes up to 32
+rules and a rule up to 64 values. Drag a rule by its handle, or focus the
+handle and use the arrow keys, to reorder it.
 
 **Show result**, beside the switch, lists the inbounds and endpoints of the
 account's templates under the rules and marks each allowed or not, as the panel judges them for the

@@ -44,6 +44,8 @@ tags: [protocols]
 
 添加或移除用户会在其节点上重建 WireGuard 端点，已连接的 WireGuard 客户端会在约二十秒内恢复。
 
+只在分配给单个节点的模板中选择 WireGuard 服务端。选择它的模板上的每个账户都会成为它的 peer；表单中 **Listen port** 旁的提示也说明了这一点。
+
 选项和客户端应用见 [[protocols/wireguard]]。
 
 ## OpenVPN 和 OpenConnect {#openvpn-and-openconnect}

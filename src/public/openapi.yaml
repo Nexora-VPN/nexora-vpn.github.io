@@ -858,8 +858,10 @@ paths:
       description: >
         Per section (`inbounds`, `endpoints`) and field, every value the field
         takes: each inbound's and endpoint's tag and type, each inbound's
-        transport, and the three `security` values. Across the whole pool, or
-        for a reseller limited to chosen templates across the rows of those
+        transport, and the three `security` values. Across the rows some
+        template selects that carry accounts (a client endpoint or a
+        static-key OpenVPN server is no row a rule can match), or for a
+        reseller limited to chosen templates across the rows of those
         templates — a reseller cannot read the pool lists itself.
       responses:
         "200":
@@ -868,6 +870,7 @@ paths:
             application/json:
               schema:
                 type: object
+                required: [inbounds, endpoints]
                 properties:
                   inbounds: { type: object, additionalProperties: { type: array, items: { type: string } } }
                   endpoints: { type: object, additionalProperties: { type: array, items: { type: string } } }
@@ -878,8 +881,11 @@ paths:
       tags: [users]
       summary: Which of an account's configs a filter allows
       description: >
-        The user-carrying inbounds and endpoints of the templates named (fitted
-        to a restricted reseller's grant as a save would fit them), each with
+        The user-carrying inbounds and endpoints of the templates named — for
+        `allTemplates`, of every template, never a pool row no template
+        selects — fitted to a restricted reseller's grant as a save would fit
+        them (a reseller's own, or for any other caller the grant of the owner
+        `adminId` names), each with
         whether `configFilter` lets the account on it — judged by the same
         code the node plan and the subscription use. Changes nothing. A filter
         a save would refuse is `400` with the same message.
@@ -892,6 +898,7 @@ paths:
               properties:
                 allTemplates: { type: boolean }
                 templateIds: { type: array, items: { type: integer } }
+                adminId: { type: integer, description: "The account's owner as the form holds it, whose template grant the templates are fitted to. Ignored when the caller is a reseller: its own grant applies." }
                 configFilter: { allOf: [ { $ref: "#/components/schemas/ConfigFilter" } ], nullable: true }
       responses:
         "200":
@@ -1042,7 +1049,7 @@ paths:
                 resetStartMonth: { type: integer, minimum: 1, maximum: 12, description: "`limits`: the anchor month, read for the yearly cycle only. Only beside `resetPeriod` (400 alone)." }
                 resetCalendar: { type: string, enum: ["", "jalali"], description: "`limits`: the calendar a monthly or yearly boundary is counted in. Empty = Gregorian. Only beside `resetPeriod` (400 alone)." }
                 adminId: { type: integer, minimum: 0, description: "`owner`: the account to hand the selection to, 0 for the panel. Required." }
-                configFilter: { allOf: [ { $ref: "#/components/schemas/ConfigFilter" } ], nullable: true, description: "`config-filter`: the filter every selected account gets, replacing its own; `null` lifts it. Required. `affected` counts the accounts whose filter changed." }
+                configFilter: { allOf: [ { $ref: "#/components/schemas/ConfigFilter" } ], nullable: true, description: "`config-filter`: the filter every selected account gets, replacing its own; `null` lifts it, and a filter with no rules is `400` rather than a lift under another name. Required. `affected` counts the accounts whose filter changed." }
       responses:
         "200":
           description: OK
@@ -1424,8 +1431,14 @@ paths:
         - { $ref: "#/components/parameters/IdempotencyKey" }
       tags: [pools]
       summary: Create a pool outbound
+      description: >
+        A body carrying `nodeId` — the per-node rows that are gone; a node's
+        outbounds are its template's — is refused with 400 rather than stored
+        as a row no template selects.
       requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/Outbound" } } } }
-      responses: { "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Outbound" } } } } }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Outbound" } } } }
+        "400": { $ref: "#/components/responses/Error" }
   /api/endpoints:
     get:
       parameters:
@@ -1449,7 +1462,8 @@ paths:
         with no or an unknown type, no key, a key and a key_path both, a key
         of the wrong kind or length, or a direction or force_cookie its type
         does not take; and a server with tls_auth, auth NONE and a data cipher
-        that is not AEAD, whose users' profiles could not match it.
+        that is not AEAD, whose users' profiles could not match it. So is a
+        body carrying `nodeId`: a node's endpoints are its template's.
       requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/Endpoint" } } } }
       responses:
         "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Endpoint" } } } }
@@ -2154,13 +2168,18 @@ paths:
       tags: [nodes]
       summary: Follow the node engine log over a WebSocket
       description: >
-        Upgrades to a WebSocket and sends each new log line of the node's
-        engine as a text frame while the socket is open. Operator-only;
-        `GET /api/nodes/{id}/logs` is the polled form, and the history before
-        the socket opened.
+        Upgrades to a WebSocket that starts at the oldest line the node still
+        holds and then follows the engine's log: every second the node is
+        asked for what is new, and when there is something it is sent as one
+        text frame carrying a JSON `{lines, cursor}` — the shape of
+        `GET /api/nodes/{id}/logs`, the polled form. A node that does not
+        answer sends nothing until it does; the socket stays open until the
+        client closes it. Operator-only.
       responses:
         "101": { description: Switching to the WebSocket protocol }
-        "404": { $ref: "#/components/responses/Error" }
+        "400": { description: "An invalid id (JSON `Error`), or a malformed WebSocket handshake (plain text)" }
+        "403": { description: A cross-origin handshake (plain text) }
+        "426": { description: A request that is not a WebSocket upgrade (plain text) }
   /api/nodes/{id}/logs:
     parameters:
       - { $ref: "#/components/parameters/Id" }
@@ -2488,6 +2507,7 @@ paths:
                 required: [links]
                 properties:
                   links: { type: array, items: { type: string } }
+        "400": { $ref: "#/components/responses/Error" }
         "404": { $ref: "#/components/responses/Error" }
   /api/users/{id}/app-configs:
     parameters: [ { $ref: "#/components/parameters/Id" } ]
@@ -3129,6 +3149,7 @@ paths:
       responses:
         "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/LicenseView" } } } }
         "400": { $ref: "#/components/responses/Error" }
+        "428": { description: The second factor must be presented again (POST /api/me/confirm), content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
   /api/license/checkout:
     post:
       parameters:
@@ -6939,8 +6960,8 @@ components:
         (`null`). A rule naming a tag on none of the account's templates is
         accepted and does nothing.
       properties:
-        inbounds: { type: array, maxItems: 200, items: { $ref: "#/components/schemas/ConfigRule" } }
-        endpoints: { type: array, maxItems: 200, items: { $ref: "#/components/schemas/ConfigRule" }, description: "Fields `protocol` and `tag` only." }
+        inbounds: { type: array, maxItems: 32, items: { $ref: "#/components/schemas/ConfigRule" } }
+        endpoints: { type: array, maxItems: 32, items: { $ref: "#/components/schemas/ConfigRule" }, description: "Fields `protocol` and `tag` only." }
     ConfigFilterPreviewRow:
       type: object
       required: [id, tag, type, allowed]
@@ -6958,7 +6979,7 @@ components:
         field: { type: string, enum: [protocol, tag, security, transport], description: "`protocol` is the row's type and `tag` its tag. Inbounds only: `security` (`none`, `tls`, `reality`) and `transport` (the transport's type, `none` when the inbound names none)." }
         op: { type: string, enum: [eq, neq, in, notIn, prefix, suffix, contains], description: "`eq`/`neq` read `value`, `in`/`notIn` read `values`, and the three text operators read `value` ignoring case. `security` takes no text operator." }
         value: { type: string, maxLength: 256 }
-        values: { type: array, maxItems: 200, items: { type: string, maxLength: 256 } }
+        values: { type: array, maxItems: 64, items: { type: string, maxLength: 256 } }
     User:
       type: object
       properties:
@@ -7026,7 +7047,7 @@ components:
         allTemplates: { type: boolean, description: "Provision the user on every template (ignores templateIds). Under an owner limited to chosen templates (Admin.templatesOnly) it is stored as false with ownerTemplates set. On an edit that hands a user with ownerTemplates to an owner with no grant, it is read as that mark echoed back and the user keeps its templates; only a PATCH naming allTemplates alone widens it." }
         ownerTemplates: { type: boolean, description: "Every template the owner may use, on a user of a reseller limited to chosen templates: stored as those templates (templateIds), and a template added to the reseller's grant later is added here too. Sending it, or allTemplates, asks for the same thing; the panel sets whichever fits the owner. Absent on an edit (a PUT included) it keeps the stored value while the edit's templateIds are absent or the templates the user is on; a different templateIds is a choice of templates and clears it. A user handed with it to an owner with no grant — the panel, an operator — keeps the templates it is on rather than widening to every template." }
         templateIds: { type: array, items: { type: integer }, description: "Explicit template membership (used when allTemplates is false); absent on create keeps legacy all-templates behaviour. Narrowed to the owner's template grant when the owner is a restricted reseller." }
-        configFilter: { allOf: [ { $ref: "#/components/schemas/ConfigFilter" } ], nullable: true, description: "Limits the account to some of its templates' inbounds and endpoints; `null` = no limit. Absent on an edit (a PUT included) = unchanged, so a client that never heard of it cannot lift it; `null` lifts it. Ignored, and left as stored, for an account of a plans-only reseller." }
+        configFilter: { allOf: [ { $ref: "#/components/schemas/ConfigFilter" } ], nullable: true, description: "Limits the account to some of its templates' inbounds and endpoints; `null` = no limit. Absent on an edit (a PUT included) = unchanged, so a client that never heard of it cannot lift it; `null` lifts it. For an account a plans-only reseller owns, a create stores none, whoever makes it (the plan sold carries no filter), and the reseller's own edits keep the stored one without reading what they send; a main admin's or an operator's edit sets it as for any account." }
         subUrl: { type: string, readOnly: true, description: "This account's absolute subscription URL, computed per response and never stored. It is returned because a wildcard sub_domain mints a hostname per subscriber, derived from the account, which no client of this API can compute — build links from this rather than from the sub_domain setting. Omitted where a response does not carry it." }
         licensed: { type: boolean, readOnly: true, description: "Whether the row is inside the licence cap: one of the first N users by id, N being the licensed count. A row outside it is listed and can be deleted, is served on no node, and answers 402 to every other write. Computed per response; the cap moves whenever a row is deleted or a licence installed." }
         planId: { type: integer, writeOnly: true, description: "Create only: apply this plan's limits over the rest of the body. Ignored on update — see PUT /api/users/{id}. Nothing links the user to the plan afterwards." }
