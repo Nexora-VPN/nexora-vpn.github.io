@@ -32,7 +32,7 @@ $ bash <(curl -fsSL https://raw.githubusercontent.com/nx-panel/panel/main/instal
 database migrated: sqlite
 no admin seeded; the panel will open its setup wizard on first start
 ==> the panel will listen on port 28431
-==> NX 0.0.3 is installed
+==> NX 0.1.0 is installed
 
   Finish the setup by opening one of these links — whichever address
   reaches this server from where you are:
