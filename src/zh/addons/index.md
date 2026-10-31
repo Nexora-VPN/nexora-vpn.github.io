@@ -66,3 +66,4 @@ tags: [addons]
 - 要安装插件，先读 [[start/install-addon]] 了解快捷路径，再读 [[directory]] 了解安装、更新和移除的所有方式。
 - 要维护已在运行的插件，见 [[use/addons]]。
 - 要编写自己的插件，从 [[build]] 开始，并在旁边打开 [[manifest]]。
+- 要改变用户在浏览器中打开订阅时看到的内容，不需要插件：见 [[addons/sub-themes]]。

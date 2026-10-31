@@ -94,3 +94,5 @@ register**, especially for an unofficial one.
 - To look after one you already run, see [[use/addons]].
 - To write your own, start with [[build]] and keep [[manifest]] open beside
   it.
+- To change what users see when they open their subscription in a browser,
+  no addon is needed: see [[addons/sub-themes]].

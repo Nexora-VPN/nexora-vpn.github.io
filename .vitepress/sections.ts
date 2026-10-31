@@ -23,5 +23,5 @@ export const GROUPS: Record<string, Words> = {
   access: { en: 'Access', fa: 'دسترسی', ru: 'Доступ', zh: '访问控制' },
   services: { en: 'Services', fa: 'سرویس‌ها', ru: 'Сервисы', zh: '服务' },
   shop: { en: 'NX Shop', fa: 'NX Shop', ru: 'NX Shop', zh: 'NX Shop' },
-  authors: { en: 'For addon authors', fa: 'برای سازندگان افزونه', ru: 'Для авторов дополнений', zh: '插件开发者' },
+  authors: { en: 'For developers', fa: 'برای توسعه‌دهندگان', ru: 'Для разработчиков', zh: '开发者' },
 }

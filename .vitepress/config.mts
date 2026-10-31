@@ -44,6 +44,14 @@ export default defineConfig({
     config: (md) => {
       wikiLinks(md, SRC)
       terminalFences(md)
+      // Vue reads {{ … }} in a page as an interpolation, inline code included;
+      // the theme guide quotes Go template actions in nearly every line.
+      // Fenced blocks are already left alone.
+      const codeInline = md.renderer.rules.code_inline!
+      md.renderer.rules.code_inline = (tokens, idx, options, env, self) => {
+        const html = codeInline(tokens, idx, options, env, self)
+        return tokens[idx].content.includes('{{') ? html.replace(/^<code/, '<code v-pre') : html
+      }
     },
   },
   buildEnd(site) {

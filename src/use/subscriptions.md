@@ -188,24 +188,13 @@ to the compose file in Docker. Drop a directory in, click
 - Edits show within a few seconds.
 - A theme that fails to load or render falls back to the violet page, so a bad
   edit never costs a user their subscription. The panel log says why.
-- The two built-in pages are good starting points: each is one self-contained
-  `index.html`.
+- A commented starter theme and copies of the two built-in pages are in
+  [`nx-panel/sub-themes`](https://github.com/nx-panel/sub-themes).
 
 To preview a theme, open a user's subscription address with `/page` added.
 
-**For theme authors.** The page is an HTML template filled in by the panel.
-It receives the user (`.User`: name, remark, status, online), their traffic
-(`.Usage`, as numbers and formatted text), `.Expire` and `.Reset`, their
-traffic history laid out as SVG bars (`.Chart`), each way to connect
-(`.Links`, `.Configs`), the WireGuard, OpenVPN and OpenConnect files
-(`.Apps`), the subscription address in each format with ready import links
-for apps (`.Sub`), your title, support link and announcement (`.Panel`), and
-the visitor's language with the built-in page's translated phrases (`.Lang`,
-`.Dir`, `.T`). Helper functions format bytes and dates and draw QR codes.
-Files next to `index.html` are served under the address in `.AssetBase`.
-Adding `/info` to the subscription address returns the same data as JSON,
-without the links, for a page that refreshes itself. A theme can only format
-what it is given: it cannot reach the database, the disk or the network.
+To write your own, see [[addons/sub-themes]]: every value the page receives,
+the helper functions and the app import links.
 
 ### Encrypted import links
 
